@@ -7,6 +7,8 @@ import AdminSecurity from "../Components/Contribute/AdminSecurity";
 import AdminDashboard from "../Components/Contribute/AdminDashboard";
 import AllMembers from "../Components/AllMembers/AllMembers"; 
 import Contact from "../Components/Contact/Contact";
+import Activities from "../Components/Activities/Activities";
+import Executive from "../Components/Executive/Executive";
 
 export const router = createBrowserRouter([
   {
@@ -26,8 +28,16 @@ export const router = createBrowserRouter([
             element:  <AdminSecurity></AdminSecurity>
         },
         {
-            path: 'contact', 
+            path: '/contact', 
             element: <Contact></Contact>,
+        },
+        {
+            path: '/activities', 
+            element: <Activities></Activities>,
+        },
+        {
+            path: '/executive', 
+            element: <Executive></Executive>,
         },
         {
             path: 'admin-dashboard', 
