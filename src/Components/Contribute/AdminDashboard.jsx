@@ -1,143 +1,148 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, PieChart, Pie, Cell } from 'recharts';
 
 const AdminDashboard = () => {
+    const [pending, setPending] = useState([]);
+    const [analytics, setAnalytics] = useState(null);
+    const [adminCode, setAdminCode] = useState('');
     const [authenticated, setAuthenticated] = useState(false);
-    const navigate = useNavigate();
+    const [error, setError] = useState('');
 
-    useEffect(() => {
-        // চেক করুন অ্যাডমিন অথেনটিকেটেড কিনা
-        const isAuth = localStorage.getItem('adminAuthenticated');
-        const authTime = localStorage.getItem('adminAuthTime');
-        
-        if (!isAuth || !authTime) {
-            navigate('/admin-security');
-            return;
-        }
-        
-        // 30 মিনিট পরে সেশন এক্সপায়ার হবে
-        const timeElapsed = Date.now() - parseInt(authTime);
-        if (timeElapsed > 30 * 60 * 1000) {
-            localStorage.removeItem('adminAuthenticated');
-            localStorage.removeItem('adminAuthTime');
-            navigate('/admin-security');
-            return;
-        }
-        
-        setAuthenticated(true);
-    }, [navigate]);
+    const ADMIN_SECURITY_CODE = '884913';
 
-    const handleLogout = () => {
-        localStorage.removeItem('adminAuthenticated');
-        localStorage.removeItem('adminAuthTime');
-        navigate('/admin-security');
+    const handleLogin = (e) => {
+        e.preventDefault();
+        if (adminCode === ADMIN_SECURITY_CODE) {
+            setAuthenticated(true);
+            localStorage.setItem('adminAuth', 'true');
+            fetchData();
+        } else {
+            setError('Invalid security code!');
+        }
+    };
+
+    const fetchData = async () => {
+        const [pendingRes, analyticsRes] = await Promise.all([
+            axios.get('http://localhost:5000/api/admin/pending'),
+            axios.get('http://localhost:5000/api/admin/analytics')
+        ]);
+        setPending(pendingRes.data.data);
+        setAnalytics(analyticsRes.data.data);
+    };
+
+    const handleAction = async (id, action, reason = '') => {
+        const url = `http://localhost:5000/api/admin/${action}/${id}`;
+        await axios.put(url, { reason });
+        fetchData();
     };
 
     if (!authenticated) {
         return (
-            <div className="min-h-screen flex items-center justify-center">
-                <div className="text-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto"></div>
-                    <p className="mt-4 text-gray-600">Verifying access...</p>
+            <div className="min-h-screen bg-gradient-to-br from-purple-600 to-blue-600 flex items-center justify-center">
+                <div className="bg-white p-8 rounded-xl shadow-xl w-96">
+                    <h2 className="text-2xl font-bold text-center mb-4">👑 Admin Access</h2>
+                    <form onSubmit={handleLogin}>
+                        <input type="password" placeholder="Enter 6-digit code" value={adminCode}
+                            onChange={(e) => setAdminCode(e.target.value.replace(/[^0-9]/g, '').slice(0,6))}
+                            className="w-full p-3 border rounded-lg text-center text-2xl tracking-widest mb-4" />
+                        {error && <p className="text-red-500 text-center mb-4">{error}</p>}
+                        <button type="submit" className="w-full bg-purple-600 text-white py-2 rounded-lg">Verify</button>
+                    </form>
                 </div>
             </div>
         );
     }
 
+    const COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#ff7300'];
+
     return (
-        <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
-            {/* Admin Navbar */}
-            <nav className="bg-white dark:bg-gray-800 shadow-lg">
-                <div className="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
-                    <div className="flex items-center gap-3">
-                        <span className="text-2xl">👑</span>
-                        <h1 className="text-xl font-bold text-gray-800 dark:text-white">Admin Dashboard</h1>
-                    </div>
-                    <button
-                        onClick={handleLogout}
-                        className="flex items-center gap-2 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
-                    >
-                        <span>🚪</span> Logout
-                    </button>
-                </div>
-            </nav>
-
-            {/* Admin Content */}
-            <div className="max-w-7xl mx-auto px-4 py-8">
+        <div className="min-h-screen bg-gray-100">
+            <div className="bg-white shadow-lg p-4">
+                <h1 className="text-2xl font-bold text-purple-600">👑 Admin Dashboard</h1>
+            </div>
+            
+            <div className="p-6">
                 {/* Stats Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-                    <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-gray-500 dark:text-gray-400">Total Members</p>
-                                <p className="text-3xl font-bold text-purple-600">156</p>
-                            </div>
-                            <span className="text-3xl">👥</span>
+                {analytics && (
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                        <div className="bg-white rounded-xl p-6 shadow">
+                            <p className="text-gray-500">Total Students</p>
+                            <p className="text-3xl font-bold text-purple-600">{analytics.totalStudents}</p>
+                        </div>
+                        <div className="bg-white rounded-xl p-6 shadow">
+                            <p className="text-gray-500">Pending</p>
+                            <p className="text-3xl font-bold text-yellow-600">{analytics.pendingCount}</p>
+                        </div>
+                        <div className="bg-white rounded-xl p-6 shadow">
+                            <p className="text-gray-500">Approved</p>
+                            <p className="text-3xl font-bold text-green-600">{analytics.approvedCount}</p>
+                        </div>
+                        <div className="bg-white rounded-xl p-6 shadow">
+                            <p className="text-gray-500">Rejected</p>
+                            <p className="text-3xl font-bold text-red-600">{analytics.rejectedCount}</p>
                         </div>
                     </div>
-                    <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-gray-500 dark:text-gray-400">Pending Requests</p>
-                                <p className="text-3xl font-bold text-yellow-600">12</p>
-                            </div>
-                            <span className="text-3xl">⏳</span>
+                )}
+                
+                {/* Charts */}
+                {analytics && (
+                    <div className="grid md:grid-cols-2 gap-6 mb-8">
+                        <div className="bg-white rounded-xl p-6 shadow">
+                            <h3 className="font-bold mb-4">Department-wise Count</h3>
+                            <PieChart width={400} height={300}>
+                                <Pie data={analytics.departmentCount} dataKey="count" nameKey="_id" cx="50%" cy="50%" outerRadius={80}>
+                                    {analytics.departmentCount.map((entry, index) => (
+                                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                    ))}
+                                </Pie>
+                                <Tooltip />
+                            </PieChart>
+                        </div>
+                        <div className="bg-white rounded-xl p-6 shadow">
+                            <h3 className="font-bold mb-4">Monthly Registrations</h3>
+                            <BarChart width={400} height={300} data={analytics.monthlyRegistrations}>
+                                <CartesianGrid strokeDasharray="3 3" />
+                                <XAxis dataKey="month" />
+                                <YAxis />
+                                <Tooltip />
+                                <Bar dataKey="count" fill="#8884d8" />
+                            </BarChart>
                         </div>
                     </div>
-                    <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-gray-500 dark:text-gray-400">Approved</p>
-                                <p className="text-3xl font-bold text-green-600">144</p>
-                            </div>
-                            <span className="text-3xl">✅</span>
-                        </div>
-                    </div>
-                    <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-gray-500 dark:text-gray-400">Export Ready</p>
-                                <p className="text-3xl font-bold text-blue-600">CSV</p>
-                            </div>
-                            <span className="text-3xl">📁</span>
-                        </div>
-                    </div>
-                </div>
-
+                )}
+                
                 {/* Pending Requests Table */}
-                <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden">
-                    <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-                        <h2 className="text-xl font-bold text-gray-800 dark:text-white">⏳ Pending Requests</h2>
-                    </div>
+                <div className="bg-white rounded-xl shadow overflow-hidden">
+                    <h3 className="font-bold p-4 border-b">⏳ Pending Requests ({pending.length})</h3>
                     <div className="overflow-x-auto">
                         <table className="w-full">
-                            <thead className="bg-gray-50 dark:bg-gray-700">
+                            <thead className="bg-gray-50">
                                 <tr>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Roll</th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Department</th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Action</th>
+                                    <th className="p-3 text-left">Name</th>
+                                    <th className="p-3 text-left">Roll</th>
+                                    <th className="p-3 text-left">Dept</th>
+                                    <th className="p-3 text-left">CGPA</th>
+                                    <th className="p-3 text-left">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-                                {/* Map through pending members */}
-                                <tr>
-                                    <td className="px-6 py-4">John Doe</td>
-                                    <td className="px-6 py-4">123456</td>
-                                    <td className="px-6 py-4">CST</td>
-                                    <td className="px-6 py-4">
-                                        <span className="px-2 py-1 text-xs rounded-full bg-yellow-100 text-yellow-800">Pending</span>
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <button className="px-3 py-1 bg-green-500 text-white rounded-lg text-sm hover:bg-green-600 mr-2">
-                                            Approve
-                                        </button>
-                                        <button className="px-3 py-1 bg-red-500 text-white rounded-lg text-sm hover:bg-red-600">
-                                            Reject
-                                        </button>
-                                    </td>
-                                </tr>
+                            <tbody>
+                                {pending.map(student => (
+                                    <tr key={student._id} className="border-t">
+                                        <td className="p-3">{student.name}</td>
+                                        <td className="p-3">{student.roll}</td>
+                                        <td className="p-3">{student.department}</td>
+                                        <td className="p-3">{student.cgpa}</td>
+                                        <td className="p-3 space-x-2">
+                                            <button onClick={() => handleAction(student._id, 'approve')}
+                                                className="px-3 py-1 bg-green-500 text-white rounded text-sm">Approve</button>
+                                            <button onClick={() => {
+                                                const reason = prompt('Rejection reason:');
+                                                if (reason) handleAction(student._id, 'reject', reason);
+                                            }} className="px-3 py-1 bg-red-500 text-white rounded text-sm">Reject</button>
+                                        </td>
+                                    </tr>
+                                ))}
                             </tbody>
                         </table>
                     </div>
