@@ -1,7 +1,7 @@
     import React, { useState } from "react";
     import { Helmet } from "react-helmet-async"; 
     import { CheckCircle, Send, Loader2 } from "lucide-react";
-    import {  AnimatePresence } from "framer-motion";
+    import { motion, AnimatePresence } from "framer-motion";
 
     import {
     FaPhone,
@@ -139,14 +139,14 @@
                 />
             </div>
 
-            <p className="text-slate-600 dark:text-slate-300 text-base md:text-lg max-w-md text-center md:text-left mt-8 leading-relaxed">
-                I specialize in React.js, Node.js, and MongoDB. 
-                Whatever project you have in mind, or just want to say hi, 
-                my inbox is always open!
-            </p>
-
+        <p className="text-slate-600 dark:text-slate-300 text-base md:text-lg max-w-md text-center md:text-left mt-2 leading-relaxed">
+            Welcome to BSPI Robotics Club! We're passionate about building robots, 
+            solving real-world problems, and competing in national challenges. 
+            Got questions about membership, workshops, or upcoming events? 
+            Let's connect and build the future together!
+        </p>
             {/* Contact List */}
-            <div className="space-y-4 mt-8">
+            <div className="space-y-4 mt-4">
                 {contactItems.map((item, index) => (
                 <motion.div 
                     key={index} 
@@ -234,7 +234,7 @@
                 <input
                     type="text"
                     name="name"
-                    placeholder="John Doe"
+                    placeholder="Your Full Name"
                     value={formData.name}
                     onChange={handleChange}
                     required
@@ -250,7 +250,7 @@
                 <input
                     type="email"
                     name="email"
-                    placeholder="john@example.com"
+                    placeholder="Your Email"
                     value={formData.email}
                     onChange={handleChange}
                     required
