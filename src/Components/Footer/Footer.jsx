@@ -16,6 +16,7 @@
                 Innovating robotics education and technology at Bangladesh 
                 Sweden Polytechnic Institute, Rangamati.
                 </p>
+                <p className="text-xl text-gray-300 font-bold leading-relaxed">From: 10-February-2024</p>
             </div>
 
             {/* Quick Links */}
