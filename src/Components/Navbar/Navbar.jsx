@@ -45,7 +45,7 @@
         </li>
         <li>
             <Link
-            to="/"
+            to="/contact"
             className="hover:text-purple-400 transition-colors duration-200"
             >
             Contact
