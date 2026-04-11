@@ -51,6 +51,14 @@
             Contact
             </Link>
         </li>
+        <li>
+            <Link
+            to="/"
+            className="hover:text-purple-400 transition-colors duration-200"
+            >
+            All Member
+            </Link>
+        </li>
         {/* <li>
             <Link
             to="/dashboard"

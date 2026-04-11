@@ -179,7 +179,7 @@ const MemberForm = () => {
                             <label className="block text-sm font-medium mb-2">Profile Photo *</label>
                             <input type="file" name="photo" accept="image/*" required onChange={handleFileChange}
                                 className="w-full px-4 py-2 border rounded-lg" />
-                            <p className="text-xs text-gray-500 mt-1">Max 2MB, JPG/PNG only</p>
+                            <p className="text-xs text-gray-500 mt-1">Max 10MB, JPG/PNG only</p>
                         </div>
 
                         <div>
