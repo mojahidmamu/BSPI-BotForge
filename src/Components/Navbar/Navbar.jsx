@@ -29,15 +29,15 @@
         </li>
         <li>
             <Link
-            to="/"
+            to="/activities"
             className="hover:text-purple-400 transition-colors duration-200"
             >
-            Activitics
+            Activities
             </Link>
         </li>
         <li>
             <Link
-            to="/"
+            to="/executive"
             className="hover:text-purple-400 transition-colors duration-200"
             >
             Executive
