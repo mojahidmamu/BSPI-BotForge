@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState } from "react";
-import president from "../../assets/image/Executive2025/A.jpeg";
+import president from "../../assets/image/Executive2025/precident.jpeg";
 import B from "../../assets/image/Executive2025/B.jpeg";
 import C from "../../assets/image/Executive2025/C.jpeg";
 import D from "../../assets/image/Executive2025/D.jpeg";
@@ -12,101 +12,154 @@ import I from "../../assets/image/Executive2025/I.jpeg";
 import J from "../../assets/image/Executive2025/J.jpeg";
 import K from "../../assets/image/Executive2025/K.jpeg";
 import L from "../../assets/image/Executive2025/L.jpeg";
+// 
+// import president2 from "../../assets/image/Executive2026/";
+// import a from "../../assets/image/Executive2025/B.jpeg";
+// import b from "../../assets/image/Executive2025/C.jpeg";
+// import c from "../../assets/image/Executive2025/D.jpeg";
+// import d from "../../assets/image/Executive2025/E.jpeg";
+// import e from "../../assets/image/Executive2025/F.jpeg";
+// import f from "../../assets/image/Executive2025/G.jpeg";
+// import g from "../../assets/image/Executive2025/H.jpeg";
+// import h from "../../assets/image/Executive2025/I.jpeg";
+// import i from "../../assets/image/Executive2025/J.jpeg";
+// import j from "../../assets/image/Executive2025/K.jpeg";
+// import k from "../../assets/image/Executive2025/L.jpeg";
 
 const data = {
-  "2024-2025": [
-        {
-        name: "Tarek Hossain",
-        role: "President",
-        img: {president},
-        },
-        {
-        name: "Saiful Islam",
-        role: "Vice President",
-        img: {C},
-        },
-        {
-        name: "Tasin Kabir Ratul",
-        role: "Joint Secretary",
-        img: {B},
-        },
-        {
-        name: "Md. Tarek",
-        role: "Joint Secretary",
-        img: {D}, 
-        },
-        {
-        name: "Md. Maruful Islam",
-        role: "PR of Socail Department",
-        img: {E},
-        },
-        {
-        name: "Md. Rayan",
-        role: "Finance Secretary",
-        img: {F},
-        },
-        {
-        name: "Md. Shahidullah Kaisar",
-        role: "Event Planing & Management",
-        img: {G},
-        },
-        {
-        name: "Md. Sayed Sabbir",
-        role: "Event Planing & Management",
-        img: {H},
-        },
-        {
-        name: "Md. Sohel",
-        role: "Joint Secretary",
-        img: {I},
-        },
-        {
-        name: "Rodra Biswas",
-        role: "Secretary Technical Dept. ",
-        img: {J},
-        },
-        {
-        name: "Arafat Uddin Rafit",
-        role: "PR of Socail Department",
-        img: {K},
-        },
-        {
-        name: "Emon Datta",
-        role: "Secretary Technical Dept. ",
-        img: {L},
-        },
-  ],
+    "2024-2025": [
+            {
+            name: "Tarek Hossain",
+            role: "President",
+            img: {president},
+            },
+            {
+            name: "Saiful Islam",
+            role: "Vice President",
+            img: {C},
+            },
+            {
+            name: "Tasin Kabir Ratul",
+            role: "Joint Secretary",
+            img: {B},
+            },
+            {
+            name: "Md. Tarek",
+            role: "Joint Secretary",
+            img: {D}, 
+            },
+            {
+            name: "Md. Maruful Islam",
+            role: "PR of Socail Department",
+            img: {E},
+            },
+            {
+            name: "Md. Rayan",
+            role: "Finance Secretary",
+            img: {F},
+            },
+            {
+            name: "Md. Shahidullah Kaisar",
+            role: "Event Planing & Management",
+            img: {G},
+            },
+            {
+            name: "Md. Sayed Sabbir",
+            role: "Event Planing & Management",
+            img: {H},
+            },
+            {
+            name: "Md. Sohel",
+            role: "Joint Secretary",
+            img: {I},
+            },
+            {
+            name: "Rodra Biswas",
+            role: "Secretary Technical Dept. ",
+            img: {J},
+            },
+            {
+            name: "Arafat Uddin Rafit",
+            role: "PR of Socail Department",
+            img: {K},
+            },
+            {
+            name: "Emon Datta",
+            role: "Secretary Technical Dept. ",
+            img: {L},
+            },
+    ],
 
-  "2025-2026": [
-    {
-      name: "Alice",
-      role: "President",
-      img: "https://i.pravatar.cc/300?img=6",
-    },
-    {
-      name: "Bob",
-      role: "Vice President",
-      img: "https://i.pravatar.cc/300?img=7",
-    },
-    {
-      name: "Charlie",
-      role: "Secretary",
-      img: "https://i.pravatar.cc/300?img=8",
-    },
-    {
-      name: "David",
-      role: "Treasurer",
-      img: "https://i.pravatar.cc/300?img=9",
-    },
-  ],
+    "2025-2026": [
+            {
+            name: "Tarek Hossain",
+            role: "President",
+            img: {president},
+            },
+            {
+            name: "Saiful Islam",
+            role: "Vice President",
+            img: {C},
+            },
+            {
+            name: "Tasin Kabir Ratul",
+            role: "Joint Secretary",
+            img: {B},
+            },
+            {
+            name: "Md. Tarek",
+            role: "Joint Secretary",
+            img: {D}, 
+            },
+            {
+            name: "Md. Maruful Islam",
+            role: "PR of Socail Department",
+            img: {E},
+            },
+            {
+            name: "Md. Rayan",
+            role: "Finance Secretary",
+            img: {F},
+            },
+            {
+            name: "Md. Shahidullah Kaisar",
+            role: "Event Planing & Management",
+            img: {G},
+            },
+            {
+            name: "Md. Sayed Sabbir",
+            role: "Event Planing & Management",
+            img: {H},
+            },
+            {
+            name: "Md. Sohel",
+            role: "Joint Secretary",
+            img: {I},
+            },
+            {
+            name: "Rodra Biswas",
+            role: "Secretary Technical Dept. ",
+            img: {J},
+            },
+            {
+            name: "Arafat Uddin Rafit",
+            role: "PR of Socail Department",
+            img: {K},
+            },
+            {
+            name: "Emon Datta",
+            role: "Secretary Technical Dept. ",
+            img: {L},
+            },
+    ],
 
-  "2026-2027": [
-    {
-      name: "Future President will be select in 2027",
-      role: "President",
-      img: "",
-    },
-  ],
+    "2026-2027": [
+        {
+            name: "Future President will be select in 2027",
+            role: "President",
+            img: "",
+        },    
+    ],
 };
 
 const Executive = () => {
