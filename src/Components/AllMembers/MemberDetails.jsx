@@ -35,7 +35,7 @@ import {
     FaGlobe, 
     FaTwitter, 
     FaInstagram,
-    FaWhatsapp,  FaDiscord 
+    FaWhatsapp
 } from 'react-icons/fa';
 
 const MemberDetails = () => {
@@ -54,8 +54,7 @@ const MemberDetails = () => {
         github: '',
         portfolio: '',
         twitter: '',
-        instagram: '' , 
-        discord: ''
+        instagram: ''
     });
 
     useEffect(() => {
@@ -88,8 +87,7 @@ const MemberDetails = () => {
                     github: socialLinks.github || '',
                     portfolio: socialLinks.portfolio || '',
                     twitter: socialLinks.twitter || '',
-                    instagram: socialLinks.instagram || '', 
-                    discord: socialLinks.discord || ''  
+                    instagram: socialLinks.instagram || ''
                 });
             } else {
                 setError(response.data.error || 'Failed to load member details');
@@ -157,8 +155,7 @@ const MemberDetails = () => {
             github: socialLinks.github || '',
             portfolio: socialLinks.portfolio || '',
             twitter: socialLinks.twitter || '',
-            instagram: socialLinks.instagram || '', 
-            discord: socialLinks.discord || ''  
+            instagram: socialLinks.instagram || ''
         });
     };
 
@@ -502,37 +499,6 @@ const MemberDetails = () => {
                                             )}
                                         </div>
                                     </div>
-
-                                    {/* Discord */}
-                                    <div className="flex items-start gap-3">
-                                        <FaDiscord className="w-5 h-5 text-indigo-500 mt-0.5" />
-                                        <div className="flex-1">
-                                            <p className="text-xs text-gray-500 dark:text-gray-400 uppercase">Discord</p>
-                                            {isEditing ? (
-                                                <input 
-                                                    type="url" 
-                                                    value={editedSocialLinks.discord} 
-                                                    onChange={(e) => handleSocialLinkChange('discord', e.target.value)} 
-                                                    placeholder="https://discord.com/users/username or discord.gg/invite" 
-                                                    className="w-full mt-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-800 dark:text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent" 
-                                                />
-                                            ) : (
-                                                member.socialLinks?.discord ? (
-                                                    <a 
-                                                        href={member.socialLinks.discord} 
-                                                        target="_blank" 
-                                                        rel="noopener noreferrer" 
-                                                        className="text-purple-600 dark:text-purple-400 font-medium hover:underline break-all hover:text-indigo-500 transition-colors"
-                                                    >
-                                                        {member.socialLinks.discord}
-                                                    </a>
-                                                ) : (
-                                                    <p className="text-gray-800 dark:text-white font-medium">Not specified</p>
-                                                )
-                                            )}
-                                        </div>
-                                    </div>
-
                                     {/* Twitter (Optional) */}
                                     <div className="flex items-start gap-3">
                                         <FaTwitter className="w-5 h-5 text-blue-400 mt-0.5" />
