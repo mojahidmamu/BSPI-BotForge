@@ -78,7 +78,7 @@
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(formData), // Sends {name, email, subject, message}
+                body: JSON.stringify(formData),  
             });
             
             const data = await response.json();

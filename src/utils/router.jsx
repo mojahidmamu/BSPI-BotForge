@@ -9,6 +9,7 @@ import AllMembers from "../Components/AllMembers/AllMembers";
 import Contact from "../Components/Contact/Contact";
 import Activities from "../Components/Activities/Activities";
 import Executive from "../Components/Executive/Executive";
+import MemberDetails from "../Components/AllMembers/MemberDetails";
 
 export const router = createBrowserRouter([
   {
@@ -44,8 +45,12 @@ export const router = createBrowserRouter([
             element: <AdminDashboard></AdminDashboard>,
         },
         {
-            path: 'all-member', 
+            path: 'members', 
             element: <AllMembers></AllMembers>,
+        },
+        {
+            path: 'member/:id', 
+            element: <MemberDetails></MemberDetails>
         },
     ],
   },

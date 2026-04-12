@@ -167,7 +167,7 @@ const StudentForm = () => {
                             <label className="block text-sm font-medium mb-2">Profile Photo *</label>
                             <input type="file" accept="image/*" onChange={(e) => setPhoto(e.target.files[0])}
                                 className="w-full px-4 py-2 border rounded-lg"/>
-                            <p className="text-xs text-gray-500 mt-1">Max 2MB, JPG/PNG only</p>
+                            <p className="text-xs text-gray-500 mt-1">Max 10MB, JPG/PNG only</p>
                         </div>
                         {/* <input type="file" accept="image/*" onChange={(e) => setPhoto(e.target.files[0])}
                             className="p-2 border rounded-lg" /> */}

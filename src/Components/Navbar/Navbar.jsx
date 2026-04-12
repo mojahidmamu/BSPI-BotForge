@@ -53,7 +53,7 @@
         </li>
         <li>
             <Link
-            to="/all-member"
+            to="/members"
             className="hover:text-purple-400 transition-colors duration-200"
             >
             All Member
