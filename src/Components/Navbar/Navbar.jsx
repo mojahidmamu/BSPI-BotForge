@@ -2,9 +2,12 @@
     import NavLogo from "../../assets/image/logo.png";
     import { useEffect, useState } from "react";
     import { Sun, Moon } from "lucide-react";
+    import { motion } from 'framer-motion';
+    import { useNavigate } from 'react-router-dom';
 
     const NavBar = () => {
     const [theme, setTheme] = useState("light");
+    const navigate = useNavigate();
 
     // Apply theme to <html> so Tailwind dark classes work
     useEffect(() => {
@@ -105,17 +108,52 @@
 
             {/* Left - Logo with Image */}
             <Link to="/" className="flex items-center gap-2 shrink-0">
-                <div className="w-10 h-10 rounded-full overflow-hidden ring-2 ring-purple-400">
+                {/* <div className="w-10 h-10 rounded-full overflow-hidden ring-2 ring-purple-400">
                 <img
                     src={NavLogo}
                     alt="BSPI BotForge"
                     className="w-full h-full object-cover"
                 />
-                </div>
+                </div> */}
 
-                <span className="text-white uppercase font-extrabold text-lg sm:text-xl lg:text-2xl tracking-tight">
+                <motion.div 
+    initial={{ opacity: 0, scale: 0.8 }}
+    animate={{ opacity: 1, scale: 1 }}
+    transition={{ type: "spring", stiffness: 200 }}
+    className="flex items-center gap-3 group cursor-pointer relative"
+    onClick={() => navigate('/')}
+>
+    {/* Animated border box */}
+    <motion.div
+        whileHover={{ rotate: 180 }}
+        transition={{ duration: 0.5 }}
+        className="relative"
+    >
+        <div className="w-10 h-10 sm:w-12 sm:h-12 bg-black rounded-xl flex items-center justify-center border-2 border-purple-500 shadow-[0_0_10px_rgba(168,85,247,0.5)]">
+            <span className="text-purple-500 font-black text-xl sm:text-2xl">B</span>
+        </div>
+    </motion.div>
+
+    {/* Neon text with flicker effect */}
+    <div className="relative">
+        <span className="text-white font-black text-lg sm:text-xl lg:text-2xl tracking-wider relative">
+            <span className="absolute inset-0 text-purple-500 blur-sm animate-pulse">BSPI BotForge</span>
+            <span className="relative bg-gradient-to-r from-purple-400 via-cyan-400 to-purple-400 bg-clip-text text-transparent">
                 BSPI BotForge
-                </span>
+            </span>
+        </span>
+        {/* Underline animation */}
+        <motion.div 
+            initial={{ width: 0 }}
+            animate={{ width: "100%" }}
+            transition={{ delay: 0.5, duration: 0.8 }}
+            className="h-0.5 bg-gradient-to-r from-purple-500 to-cyan-500 rounded-full mt-1"
+        />
+    </div>
+
+    {/* Hover glow effect */}
+    <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-purple-500 to-cyan-500 opacity-0 group-hover:opacity-20 blur-2xl transition-opacity duration-300 -z-10"></div>
+</motion.div>
             </Link>
             </div>
 
