@@ -31,11 +31,34 @@ const AdminDashboard = () => {
         setAnalytics(analyticsRes.data.data);
     };
 
-    const handleAction = async (id, action, reason = '') => {
-        const url = `http://localhost:5000/api/admin/${action}/${id}`;
-        await axios.put(url, { reason });
-        fetchData();
-    };
+    // const handleAction = async (id, action, reason = '') => {
+    //     const url = `http://localhost:5000/api/admin/${action}/${id}`;
+    //     await axios.put(url, { reason });
+    //     fetchData();
+    // };
+
+//     const handleAction = async (id, action, rejectionReason = null) => {
+//     try {
+//         const response = await axios.put(`http://localhost:5000/api/admin/student-action`, {
+//             id,
+//             action,
+//             rejectionReason
+//         });
+        
+//         if (response.data.success) {
+//             // Show success message
+//             alert(response.data.message);
+//             // Refresh the list
+//             fetchPendingRequests();
+//             fetchApprovedStudents();
+//         } else {
+//             alert('Action failed: ' + response.data.error);
+//         }
+//     } catch (error) {
+//         console.error('Error:', error);
+//         alert('Failed to process request. Please try again.');
+//     }
+// };
 
     if (!authenticated) {
         return (
@@ -53,6 +76,31 @@ const AdminDashboard = () => {
             </div>
         );
     }
+
+    const handleAction = async (id, action, rejectionReason = null) => {
+    try {
+        const response = await axios.put('http://localhost:5000/api/admin/student-action', {
+            id,
+            action,
+            rejectionReason
+        });
+        
+        if (response.data.success) {
+            // Show success message with email status
+            const emailStatus = response.data.emailSent ? 'Email notification sent!' : 'Action completed but email notification failed.';
+            alert(`${response.data.message}\n${emailStatus}`);
+            
+            // Refresh the lists
+            fetchPendingRequests();
+            fetchApprovedStudents();
+        } else {
+            alert('Action failed: ' + response.data.error);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Failed to process request. Please try again.');
+    }
+};
 
     const COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#ff7300'];
 
@@ -123,6 +171,7 @@ const AdminDashboard = () => {
                                     <th className="p-3 text-left">Roll</th>
                                     <th className="p-3 text-left">Dept</th>
                                     <th className="p-3 text-left">CGPA</th>
+                                    <th className="p-3 text-left">Session</th>
                                     <th className="p-3 text-left">Actions</th>
                                 </tr>
                             </thead>
@@ -132,6 +181,7 @@ const AdminDashboard = () => {
                                         <td className="p-3">{student.name}</td>
                                         <td className="p-3">{student.roll}</td>
                                         <td className="p-3">{student.department}</td>
+                                        <td className="p-3">{student.session}</td>
                                         <td className="p-3">{student.cgpa}</td>
                                         <td className="p-3 space-x-2">
                                             <button onClick={() => handleAction(student._id, 'approve')}

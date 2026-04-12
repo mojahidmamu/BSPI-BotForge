@@ -7,7 +7,7 @@ const AdminSecurity = () => {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
-    // সিকিউরিটি কোড (ম্যানুয়ালি সেট করা)
+    // 
     const ADMIN_SECURITY_CODE = '884913'; // 6-digit code
 
     const handleSubmit = (e) => {
@@ -15,21 +15,19 @@ const AdminSecurity = () => {
         setLoading(true);
         setError('');
 
-        // চেক করুন কোড 6 ডিজিটের কিনা
+        //  
         if (securityCode.length !== 6) {
             setError('Please enter a 6-digit security code');
             setLoading(false);
             return;
         }
 
-        // কোড ম্যাচ চেক
+        //  
         if (securityCode === ADMIN_SECURITY_CODE) {
-            // সঠিক কোড - অ্যাডমিন প্যানেলে যান
             localStorage.setItem('adminAuthenticated', 'true');
             localStorage.setItem('adminAuthTime', Date.now());
             navigate('/admin-dashboard');
         } else {
-            // ভুল কোড
             setError('Invalid security code! Access denied.');
             setSecurityCode('');
         }
