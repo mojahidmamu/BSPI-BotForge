@@ -181,8 +181,8 @@ const AdminDashboard = () => {
                                         <td className="p-3">{student.name}</td>
                                         <td className="p-3">{student.roll}</td>
                                         <td className="p-3">{student.department}</td>
-                                        <td className="p-3">{student.session}</td>
                                         <td className="p-3">{student.cgpa}</td>
+                                        <td className="p-3">{student.session}</td>
                                         <td className="p-3 space-x-2">
                                             <button onClick={() => handleAction(student._id, 'approve')}
                                                 className="px-3 py-1 bg-green-500 text-white rounded text-sm">Approve</button>

@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { toast } from 'react-hot-toast';
+import { Navigate } from 'react-router-dom';
 
 const StudentForm = () => {
     const [photo, setPhoto] = useState(null);
@@ -46,34 +48,37 @@ const StudentForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-         // Roll validation
+         // Roll validation - check if exactly 6 digits
         if (formData.roll.length !== 6) {
-            setMessage({ type: 'error', text: 'Roll number must be exactly 6 digits!' });
+            toast.error('Roll number must be exactly 6 digits!', {
+                duration: 3000,
+                position: 'top-center',
+                icon: '❌',
+            });
             return;
         }
         
-        // Registration validation
+        // Registration validation - check if exactly 10 digits
         if (formData.registration.length !== 10) {
-            setMessage({ type: 'error', text: 'Registration number must be exactly 10 digits!' });
+            toast.error('Registration number must be exactly 10 digits!', {
+                duration: 3000,
+                position: 'top-center',
+                icon: '❌',
+            });
             return;
         }
         
         // Blood group validation (optional)
         const validBloodGroups = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-', ''];
         if (formData.bloodGroup && !validBloodGroups.includes(formData.bloodGroup)) {
-            setMessage({ type: 'error', text: 'Please select a valid blood group!' });
+            toast.error('Please select a valid blood group!', {
+                duration: 3000,
+                position: 'top-center',
+                icon: '🩸',
+            });
             return;
         }
         
-        // if (formData.roll.length !== 6) {
-        //     setMessage({ type: 'error', text: 'Roll number must be exactly 6 digits!' });
-        //     return;
-        // }
-        
-        // if (formData.registration.length !== 10) {
-        //     setMessage({ type: 'error', text: 'Registration number must be exactly 10 digits!' });
-        //     return;
-        // }
         
         setLoading(true);
         const submitData = new FormData();
@@ -82,12 +87,112 @@ const StudentForm = () => {
         });
         if (photo) submitData.append('photo', photo);
         
-        try {
+            try {
+            // Submit application to backend
             const res = await axios.post('http://localhost:5000/api/students/apply', submitData);
-            setMessage({ type: 'success', text: res.data.message });
-            setTimeout(() => window.location.href = '/status', 2000);
+            
+            // ✅ Success Toast with detailed information
+            toast.success(
+                (t) => (
+                    <div className="flex flex-col gap-2">
+                        <div className="font-bold text-green-700">🎉 আবেদন সফলভাবে জমা হয়েছে!</div>
+                        <div className="text-sm text-green-600">
+                            আপনার আবেদন আইডি: <strong className="font-mono">{res.data.data?._id || 'সেভ হয়েছে'}</strong>
+                        </div>
+                        <div className="text-xs text-green-500 mt-1">
+                            অ্যাডমিন এপ্রুভ করলে ইমেইল পাবেন
+                        </div>
+                        <button
+                            onClick={() => {
+                                toast.dismiss(t.id);
+                                Navigate('/status');
+                            }}
+                            className="mt-2 px-3 py-1 bg-green-600 text-white text-xs rounded hover:bg-green-700 transition"
+                        >
+                            স্ট্যাটাস চেক করুন →
+                        </button>
+                    </div>
+                ),
+                {
+                    duration: 5000,
+                    position: 'top-center',
+                    icon: '✅',
+                    style: {
+                        background: '#d1fae5',
+                        color: '#065f46',
+                        border: '1px solid #10b981',
+                    },
+                }
+            );
+            
+            // Reset form after successful submission
+            setFormData({
+                name: '',
+                email: '',
+                phone: '',
+                roll: '',
+                registration: '',
+                department: 'CST',
+                session: '',
+                cgpa: '',
+                district: '',
+                currentJob: '',
+                skills: '',
+                bloodGroup: '',
+                socialLink: '',
+                role: 'student'
+            });
+            setPhoto(null);
+            
+            // Optional: Show a second info toast with next steps
+            setTimeout(() => {
+                toast(
+                    (t) => (
+                        <div className="flex flex-col gap-1">
+                            <div className="font-semibold">📌 পরবর্তী ধাপ:</div>
+                            <div className="text-sm">১. অ্যাডমিন আপনার আবেদন রিভিউ করবে</div>
+                            <div className="text-sm">২. ২-৩ কার্যদিবসের মধ্যে ইমেইল পাবেন</div>
+                            <div className="text-sm">৩. এপ্রুভ হলে আপনি মেম্বার হতে পারবেন</div>
+                        </div>
+                    ),
+                    {
+                        duration: 8000,
+                        position: 'bottom-right',
+                        icon: 'ℹ️',
+                        style: {
+                            background: '#eff6ff',
+                            color: '#1e40af',
+                            border: '1px solid #3b82f6',
+                        },
+                    }
+                );
+            }, 1000);
+            
         } catch (error) {
-            setMessage({ type: 'error', text: error.response?.data?.message || 'Submission failed' });
+            // Error handling with toast
+            const errorMessage = error.response?.data?.message || 'Submission failed! Please try again.';
+            
+            toast.error(errorMessage, {
+                duration: 4000,
+                position: 'top-center',
+                icon: '⚠️',
+                style: {
+                    background: '#fee2e2',
+                    color: '#991b1b',
+                    border: '1px solid #ef4444',
+                },
+            });
+            
+            // Show additional error details if available
+            if (error.response?.data?.errors) {
+                error.response.data.errors.forEach(err => {
+                    toast.error(err.msg || err.message, {
+                        duration: 3000,
+                        position: 'top-center',
+                        icon: '❌',
+                    });
+                });
+            }
         } finally {
             setLoading(false);
         }
