@@ -31,6 +31,7 @@ const MemberDetails = () => {
     const [member, setMember] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [downloading, setDownloading] = useState(false);
 
     useEffect(() => {
         if (id) {
@@ -161,6 +162,263 @@ const MemberDetails = () => {
         );
     }
 
+    // Add this function before the return statement in your MemberDetails component
+const handleDownloadProfile = async () => {
+    try {
+        setDownloading(true);
+        
+        // Create a beautiful HTML template for the profile
+        const profileHTML = `
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="UTF-8">
+                <title>${member.name} - BSPI Robotics Club Profile</title>
+                <style>
+                    * {
+                        margin: 0;
+                        padding: 0;
+                        box-sizing: border-box;
+                    }
+                    body {
+                        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                        padding: 40px;
+                        min-height: 100vh;
+                    }
+                    .profile-container {
+                        max-width: 900px;
+                        margin: 0 auto;
+                        background: white;
+                        border-radius: 20px;
+                        overflow: hidden;
+                        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+                    }
+                    .header {
+                        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                        color: white;
+                        padding: 40px;
+                        text-align: center;
+                    }
+                    .profile-img {
+                        width: 150px;
+                        height: 150px;
+                        border-radius: 50%;
+                        border: 4px solid white;
+                        margin-bottom: 20px;
+                        object-fit: cover;
+                    }
+                    .name {
+                        font-size: 32px;
+                        margin-bottom: 10px;
+                    }
+                    .badge {
+                        display: inline-block;
+                        padding: 5px 15px;
+                        background: rgba(255,255,255,0.2);
+                        border-radius: 20px;
+                        font-size: 14px;
+                        margin: 5px;
+                    }
+                    .content {
+                        padding: 40px;
+                    }
+                    .section {
+                        margin-bottom: 30px;
+                    }
+                    .section-title {
+                        font-size: 24px;
+                        color: #667eea;
+                        margin-bottom: 20px;
+                        border-bottom: 2px solid #667eea;
+                        padding-bottom: 10px;
+                    }
+                    .info-grid {
+                        display: grid;
+                        grid-template-columns: repeat(2, 1fr);
+                        gap: 20px;
+                    }
+                    .info-item {
+                        margin-bottom: 15px;
+                    }
+                    .info-label {
+                        font-weight: bold;
+                        color: #666;
+                        font-size: 12px;
+                        text-transform: uppercase;
+                        margin-bottom: 5px;
+                    }
+                    .info-value {
+                        color: #333;
+                        font-size: 16px;
+                    }
+                    .skills {
+                        display: flex;
+                        flex-wrap: wrap;
+                        gap: 10px;
+                    }
+                    .skill-tag {
+                        background: #f0f0f0;
+                        padding: 5px 15px;
+                        border-radius: 20px;
+                        font-size: 14px;
+                    }
+                    .footer {
+                        background: #f8f9fa;
+                        padding: 20px;
+                        text-align: center;
+                        color: #666;
+                        font-size: 12px;
+                    }
+                    @media print {
+                        body {
+                            background: white;
+                            padding: 0;
+                        }
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="profile-container">
+                    <div class="header">
+                        <img src="${member.photo || 'https://via.placeholder.com/150'}" alt="${member.name}" class="profile-img" onerror="this.src='https://via.placeholder.com/150'">
+                        <h1 class="name">${member.name}</h1>
+                        <div>
+                            <span class="badge">${member.department}</span>
+                            <span class="badge">${member.role === 'executive' ? 'Executive Member' : member.role === 'teacher' ? 'Teacher' : 'Student'}</span>
+                            ${member.status === 'approved' ? '<span class="badge">Active Member</span>' : ''}
+                        </div>
+                    </div>
+                    
+                    <div class="content">
+                        <div class="section">
+                            <h2 class="section-title">Personal Information</h2>
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <div class="info-label">Full Name</div>
+                                    <div class="info-value">${member.name}</div>
+                                </div>
+                                <div class="info-item">
+                                    <div class="info-label">Email Address</div>
+                                    <div class="info-value">${member.email}</div>
+                                </div>
+                                <div class="info-item">
+                                    <div class="info-label">Phone Number</div>
+                                    <div class="info-value">${member.phone}</div>
+                                </div>
+                                <div class="info-item">
+                                    <div class="info-label">District</div>
+                                    <div class="info-value">${member.district || 'Not specified'}</div>
+                                </div>
+                                <div class="info-item">
+                                    <div class="info-label">Blood Group</div>
+                                    <div class="info-value">${member.bloodGroup || 'Not specified'}</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="section">
+                            <h2 class="section-title">Academic Information</h2>
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <div class="info-label">Roll Number</div>
+                                    <div class="info-value">${member.roll}</div>
+                                </div>
+                                <div class="info-item">
+                                    <div class="info-label">Registration Number</div>
+                                    <div class="info-value">${member.registration}</div>
+                                </div>
+                                <div class="info-item">
+                                    <div class="info-label">Department</div>
+                                    <div class="info-value">${member.department}</div>
+                                </div>
+                                <div class="info-item">
+                                    <div class="info-label">Session</div>
+                                    <div class="info-value">${member.session}</div>
+                                </div>
+                                <div class="info-item">
+                                    <div class="info-label">CGPA</div>
+                                    <div class="info-value">${member.cgpa}</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        ${member.currentJob ? `
+                        <div class="section">
+                            <h2 class="section-title">Professional Information</h2>
+                            <div class="info-item">
+                                <div class="info-label">Current Job/Organization</div>
+                                <div class="info-value">${member.currentJob}</div>
+                            </div>
+                            ${member.socialLink ? `
+                            <div class="info-item">
+                                <div class="info-label">Social/Portfolio Link</div>
+                                <div class="info-value">${member.socialLink}</div>
+                            </div>
+                            ` : ''}
+                        </div>
+                        ` : ''}
+                        
+                        <div class="section">
+                            <h2 class="section-title">Skills & Expertise</h2>
+                            <div class="skills">
+                                ${member.skills ? member.skills.split(',').map(skill => 
+                                    `<span class="skill-tag">${skill.trim()}</span>`
+                                ).join('') : '<p>No skills listed</p>'}
+                            </div>
+                        </div>
+                        
+                        <div class="section">
+                            <h2 class="section-title">Additional Information</h2>
+                            <div class="info-item">
+                                <div class="info-label">Member Since</div>
+                                <div class="info-value">${new Date(member.appliedAt).toLocaleDateString('en-US', {
+                                    year: 'numeric',
+                                    month: 'long',
+                                    day: 'numeric'
+                                })}</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="footer">
+                        <p>BSPI Robotics Club - Official Member Profile</p>
+                        <p>Generated on ${new Date().toLocaleDateString()}</p>
+                        <p>© ${new Date().getFullYear()} BSPI Robotics Club. All rights reserved.</p>
+                    </div>
+                </div>
+            </body>
+            </html>
+        `;
+        
+        // Create a Blob with the HTML content
+        const blob = new Blob([profileHTML], { type: 'text/html' });
+        
+        // Create a download link
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `${member.name.replace(/\s+/g, '_')}_Profile.html`;
+        
+        // Trigger download
+        document.body.appendChild(link);
+        link.click();
+        
+        // Clean up
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+        
+        // Show success message
+        alert('Profile downloaded successfully!');
+        
+    } catch (error) {
+        console.error('Error downloading profile:', error);
+        alert('Failed to download profile. Please try again.');
+    } finally {
+        setDownloading(false);
+    }
+};
+
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 py-8 px-4 md:px-8">
             <div className="max-w-5xl mx-auto">
@@ -237,10 +495,23 @@ const MemberDetails = () => {
                                 </div>
                             </div>
                             
-                            {/* Download Button */}
-                            <button className="mt-4 md:mt-0 px-6 py-2 bg-gradient-to-r from-purple-500 to-indigo-500 text-white rounded-xl hover:shadow-lg transition-all flex items-center gap-2">
-                                <Download className="w-4 h-4" />
-                                Download Profile
+                           {/* Download Button */}
+                            <button 
+                                onClick={handleDownloadProfile}
+                                disabled={downloading}
+                                className="mt-4 md:mt-0 px-6 py-2 bg-gradient-to-r from-purple-500 to-indigo-500 text-white rounded-xl hover:shadow-lg transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                {downloading ? (
+                                    <>
+                                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                                        Downloading...
+                                    </>
+                                ) : (
+                                    <>
+                                        <Download className="w-4 h-4" />
+                                        Download Profile
+                                    </>
+                                )}
                             </button>
                         </div>
 
