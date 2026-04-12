@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import axios from 'axios';
+import axios from 'axios'; 
 import {
     ArrowLeft,
     Mail,
@@ -22,7 +22,16 @@ import {
     AlertCircle,
     Briefcase,
     Link as LinkIcon,
-    Clock
+    Clock,
+    Edit2,
+    Save,
+    X,
+    Facebook,
+    Linkedin,
+    Github,
+    Globe,
+    Twitter,
+    Instagram
 } from 'lucide-react';
 
 const MemberDetails = () => {
@@ -33,6 +42,78 @@ const MemberDetails = () => {
     const [error, setError] = useState(null);
     const [downloading, setDownloading] = useState(false);
     const [showEmailModal, setShowEmailModal] = useState(false);
+    const [isEditing, setIsEditing] = useState(false);
+    const [saving, setSaving] = useState(false);
+    const [editedSocialLinks, setEditedSocialLinks] = useState({
+        facebook: '',
+        linkedin: '',
+        github: '',
+        portfolio: '',
+        twitter: '',
+        instagram: ''
+    });
+
+
+    const [socialLinks, setSocialLinks] = useState({
+        facebook: member.facebookLink || '',
+        portfolio: member.portfolioLink || '',
+        github: member.githubLink || '',
+        linkedin: member.linkedinLink || ''
+    });
+
+    const handleEdit = () => {
+        setIsEditing(true);
+    };
+
+    const handleCancel = () => {
+        // Reset to original values
+        setSocialLinks({
+        facebook: member.facebookLink || '',
+        portfolio: member.portfolioLink || '',
+        github: member.githubLink || '',
+        linkedin: member.linkedinLink || ''
+        });
+        setIsEditing(false);
+    };
+
+    const handleSave = async () => {
+        try {
+        // Prepare update data (only include non-empty links)
+        const updateData = {};
+        if (socialLinks.facebook) updateData.facebookLink = socialLinks.facebook;
+        if (socialLinks.portfolio) updateData.portfolioLink = socialLinks.portfolio;
+        if (socialLinks.github) updateData.githubLink = socialLinks.github;
+        if (socialLinks.linkedin) updateData.linkedinLink = socialLinks.linkedin;
+
+        // Call API to update database
+        const response = await fetch(`/api/members/${member.id}`, {
+            method: 'PATCH',
+            headers: {
+            'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(updateData),
+        });
+
+        if (response.ok) {
+            const updatedMember = await response.json();
+            onUpdateProfile(updatedMember);
+            setIsEditing(false);
+        } else {
+            console.error('Failed to update profile');
+        }
+        } catch (error) {
+        console.error('Error updating profile:', error);
+        }
+    };
+
+    const handleInputChange = (field, value) => {
+        setSocialLinks(prev => ({
+            ...prev,
+            [field]: value
+        }));
+    };
+
+    //////
 
     useEffect(() => {
         if (id) {
@@ -111,6 +192,93 @@ const MemberDetails = () => {
         }
     };
 
+    const handleEditClick = () => {
+        setIsEditing(true);
+    };
+
+    const handleCancelEdit = () => {
+        setIsEditing(false);
+        // Reset to original values
+        const socialLinks = member.socialLinks || {};
+        setEditedSocialLinks({
+            facebook: socialLinks.facebook || '',
+            linkedin: socialLinks.linkedin || '',
+            github: socialLinks.github || '',
+            portfolio: socialLinks.portfolio || '',
+            twitter: socialLinks.twitter || '',
+            instagram: socialLinks.instagram || ''
+        });
+    };
+
+    const handleSocialLinkChange = (platform, value) => {
+        setEditedSocialLinks(prev => ({
+            ...prev,
+            [platform]: value
+        }));
+    };
+
+    const handleSaveSocialLinks = async () => {
+        setSaving(true);
+        try {
+            const API_URL = 'http://localhost:5000';
+            const response = await axios.put(`${API_URL}/api/students/${id}/social-links`, {
+                socialLinks: editedSocialLinks
+            });
+            
+            if (response.data.success) {
+                setMember(prev => ({
+                    ...prev,
+                    socialLinks: editedSocialLinks
+                }));
+                setIsEditing(false);
+                alert('Social links updated successfully!');
+            } else {
+                alert('Failed to update social links');
+            }
+        } catch (error) {
+            console.error('Error saving social links:', error);
+            alert('Error saving social links. Please try again.');
+        } finally {
+            setSaving(false);
+        }
+    };
+
+    const getSocialLinkIcon = (platform) => {
+        switch(platform) {
+            case 'facebook': return <Facebook className="w-4 h-4" />;
+            case 'linkedin': return <Linkedin className="w-4 h-4" />;
+            case 'github': return <Github className="w-4 h-4" />;
+            case 'portfolio': return <Globe className="w-4 h-4" />;
+            case 'twitter': return <Twitter className="w-4 h-4" />;
+            case 'instagram': return <Instagram className="w-4 h-4" />;
+            default: return <LinkIcon className="w-4 h-4" />;
+        }
+    };
+
+    const getSocialLinkColor = (platform) => {
+        switch(platform) {
+            case 'facebook': return 'hover:text-blue-600';
+            case 'linkedin': return 'hover:text-blue-700';
+            case 'github': return 'hover:text-gray-900 dark:hover:text-white';
+            case 'portfolio': return 'hover:text-purple-600';
+            case 'twitter': return 'hover:text-blue-400';
+            case 'instagram': return 'hover:text-pink-600';
+            default: return 'hover:text-purple-600';
+        }
+    };
+
+    const getPlatformLabel = (platform) => {
+        switch(platform) {
+            case 'facebook': return 'Facebook';
+            case 'linkedin': return 'LinkedIn';
+            case 'github': return 'GitHub';
+            case 'portfolio': return 'Portfolio';
+            case 'twitter': return 'Twitter';
+            case 'instagram': return 'Instagram';
+            default: return platform;
+        }
+    };
+
     if (loading) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
@@ -164,261 +332,261 @@ const MemberDetails = () => {
     }
 
     // Add this function before the return statement in your MemberDetails component
-const handleDownloadProfile = async () => {
-    try {
-        setDownloading(true);
-        
-        // Create a beautiful HTML template for the profile
-        const profileHTML = `
-            <!DOCTYPE html>
-            <html>
-            <head>
-                <meta charset="UTF-8">
-                <title>${member.name} - BSPI Robotics Club Profile</title>
-                <style>
-                    * {
-                        margin: 0;
-                        padding: 0;
-                        box-sizing: border-box;
-                    }
-                    body {
-                        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                        padding: 40px;
-                        min-height: 100vh;
-                    }
-                    .profile-container {
-                        max-width: 900px;
-                        margin: 0 auto;
-                        background: white;
-                        border-radius: 20px;
-                        overflow: hidden;
-                        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-                    }
-                    .header {
-                        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                        color: white;
-                        padding: 40px;
-                        text-align: center;
-                    }
-                    .profile-img {
-                        width: 150px;
-                        height: 150px;
-                        border-radius: 50%;
-                        border: 4px solid white;
-                        margin-bottom: 20px;
-                        object-fit: cover;
-                    }
-                    .name {
-                        font-size: 32px;
-                        margin-bottom: 10px;
-                    }
-                    .badge {
-                        display: inline-block;
-                        padding: 5px 15px;
-                        background: rgba(255,255,255,0.2);
-                        border-radius: 20px;
-                        font-size: 14px;
-                        margin: 5px;
-                    }
-                    .content {
-                        padding: 40px;
-                    }
-                    .section {
-                        margin-bottom: 30px;
-                    }
-                    .section-title {
-                        font-size: 24px;
-                        color: #667eea;
-                        margin-bottom: 20px;
-                        border-bottom: 2px solid #667eea;
-                        padding-bottom: 10px;
-                    }
-                    .info-grid {
-                        display: grid;
-                        grid-template-columns: repeat(2, 1fr);
-                        gap: 20px;
-                    }
-                    .info-item {
-                        margin-bottom: 15px;
-                    }
-                    .info-label {
-                        font-weight: bold;
-                        color: #666;
-                        font-size: 12px;
-                        text-transform: uppercase;
-                        margin-bottom: 5px;
-                    }
-                    .info-value {
-                        color: #333;
-                        font-size: 16px;
-                    }
-                    .skills {
-                        display: flex;
-                        flex-wrap: wrap;
-                        gap: 10px;
-                    }
-                    .skill-tag {
-                        background: #f0f0f0;
-                        padding: 5px 15px;
-                        border-radius: 20px;
-                        font-size: 14px;
-                    }
-                    .footer {
-                        background: #f8f9fa;
-                        padding: 20px;
-                        text-align: center;
-                        color: #666;
-                        font-size: 12px;
-                    }
-                    @media print {
-                        body {
-                            background: white;
+    const handleDownloadProfile = async () => {
+        try {
+            setDownloading(true);
+            
+            // Create a beautiful HTML template for the profile
+            const profileHTML = `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <meta charset="UTF-8">
+                    <title>${member.name} - BSPI Robotics Club Profile</title>
+                    <style>
+                        * {
+                            margin: 0;
                             padding: 0;
+                            box-sizing: border-box;
                         }
-                    }
-                </style>
-            </head>
-            <body>
-                <div class="profile-container">
-                    <div class="header">
-                        <img src="${member.photo || 'https://via.placeholder.com/150'}" alt="${member.name}" class="profile-img" onerror="this.src='https://via.placeholder.com/150'">
-                        <h1 class="name">${member.name}</h1>
-                        <div>
-                            <span class="badge">${member.department}</span>
-                            <span class="badge">${member.role === 'executive' ? 'Executive Member' : member.role === 'teacher' ? 'Teacher' : 'Student'}</span>
-                            ${member.status === 'approved' ? '<span class="badge">Active Member</span>' : ''}
-                        </div>
-                    </div>
-                    
-                    <div class="content">
-                        <div class="section">
-                            <h2 class="section-title">Personal Information</h2>
-                            <div class="info-grid">
-                                <div class="info-item">
-                                    <div class="info-label">Full Name</div>
-                                    <div class="info-value">${member.name}</div>
-                                </div>
-                                <div class="info-item">
-                                    <div class="info-label">Email Address</div>
-                                    <div class="info-value">${member.email}</div>
-                                </div>
-                                <div class="info-item">
-                                    <div class="info-label">Phone Number</div>
-                                    <div class="info-value">${member.phone}</div>
-                                </div>
-                                <div class="info-item">
-                                    <div class="info-label">District</div>
-                                    <div class="info-value">${member.district || 'Not specified'}</div>
-                                </div>
-                                <div class="info-item">
-                                    <div class="info-label">Blood Group</div>
-                                    <div class="info-value">${member.bloodGroup || 'Not specified'}</div>
-                                </div>
+                        body {
+                            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                            padding: 40px;
+                            min-height: 100vh;
+                        }
+                        .profile-container {
+                            max-width: 900px;
+                            margin: 0 auto;
+                            background: white;
+                            border-radius: 20px;
+                            overflow: hidden;
+                            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+                        }
+                        .header {
+                            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                            color: white;
+                            padding: 40px;
+                            text-align: center;
+                        }
+                        .profile-img {
+                            width: 150px;
+                            height: 150px;
+                            border-radius: 50%;
+                            border: 4px solid white;
+                            margin-bottom: 20px;
+                            object-fit: cover;
+                        }
+                        .name {
+                            font-size: 32px;
+                            margin-bottom: 10px;
+                        }
+                        .badge {
+                            display: inline-block;
+                            padding: 5px 15px;
+                            background: rgba(255,255,255,0.2);
+                            border-radius: 20px;
+                            font-size: 14px;
+                            margin: 5px;
+                        }
+                        .content {
+                            padding: 40px;
+                        }
+                        .section {
+                            margin-bottom: 30px;
+                        }
+                        .section-title {
+                            font-size: 24px;
+                            color: #667eea;
+                            margin-bottom: 20px;
+                            border-bottom: 2px solid #667eea;
+                            padding-bottom: 10px;
+                        }
+                        .info-grid {
+                            display: grid;
+                            grid-template-columns: repeat(2, 1fr);
+                            gap: 20px;
+                        }
+                        .info-item {
+                            margin-bottom: 15px;
+                        }
+                        .info-label {
+                            font-weight: bold;
+                            color: #666;
+                            font-size: 12px;
+                            text-transform: uppercase;
+                            margin-bottom: 5px;
+                        }
+                        .info-value {
+                            color: #333;
+                            font-size: 16px;
+                        }
+                        .skills {
+                            display: flex;
+                            flex-wrap: wrap;
+                            gap: 10px;
+                        }
+                        .skill-tag {
+                            background: #f0f0f0;
+                            padding: 5px 15px;
+                            border-radius: 20px;
+                            font-size: 14px;
+                        }
+                        .footer {
+                            background: #f8f9fa;
+                            padding: 20px;
+                            text-align: center;
+                            color: #666;
+                            font-size: 12px;
+                        }
+                        @media print {
+                            body {
+                                background: white;
+                                padding: 0;
+                            }
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="profile-container">
+                        <div class="header">
+                            <img src="${member.photo || 'https://via.placeholder.com/150'}" alt="${member.name}" class="profile-img" onerror="this.src='https://via.placeholder.com/150'">
+                            <h1 class="name">${member.name}</h1>
+                            <div>
+                                <span class="badge">${member.department}</span>
+                                <span class="badge">${member.role === 'executive' ? 'Executive Member' : member.role === 'teacher' ? 'Teacher' : 'Student'}</span>
+                                ${member.status === 'approved' ? '<span class="badge">Active Member</span>' : ''}
                             </div>
                         </div>
                         
-                        <div class="section">
-                            <h2 class="section-title">Academic Information</h2>
-                            <div class="info-grid">
-                                <div class="info-item">
-                                    <div class="info-label">Roll Number</div>
-                                    <div class="info-value">${member.roll}</div>
-                                </div>
-                                <div class="info-item">
-                                    <div class="info-label">Registration Number</div>
-                                    <div class="info-value">${member.registration}</div>
-                                </div>
-                                <div class="info-item">
-                                    <div class="info-label">Department</div>
-                                    <div class="info-value">${member.department}</div>
-                                </div>
-                                <div class="info-item">
-                                    <div class="info-label">Session</div>
-                                    <div class="info-value">${member.session}</div>
-                                </div>
-                                <div class="info-item">
-                                    <div class="info-label">CGPA</div>
-                                    <div class="info-value">${member.cgpa}</div>
+                        <div class="content">
+                            <div class="section">
+                                <h2 class="section-title">Personal Information</h2>
+                                <div class="info-grid">
+                                    <div class="info-item">
+                                        <div class="info-label">Full Name</div>
+                                        <div class="info-value">${member.name}</div>
+                                    </div>
+                                    <div class="info-item">
+                                        <div class="info-label">Email Address</div>
+                                        <div class="info-value">${member.email}</div>
+                                    </div>
+                                    <div class="info-item">
+                                        <div class="info-label">Phone Number</div>
+                                        <div class="info-value">${member.phone}</div>
+                                    </div>
+                                    <div class="info-item">
+                                        <div class="info-label">District</div>
+                                        <div class="info-value">${member.district || 'Not specified'}</div>
+                                    </div>
+                                    <div class="info-item">
+                                        <div class="info-label">Blood Group</div>
+                                        <div class="info-value">${member.bloodGroup || 'Not specified'}</div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        
-                        ${member.currentJob ? `
-                        <div class="section">
-                            <h2 class="section-title">Professional Information</h2>
-                            <div class="info-item">
-                                <div class="info-label">Current Job/Organization</div>
-                                <div class="info-value">${member.currentJob}</div>
+                            
+                            <div class="section">
+                                <h2 class="section-title">Academic Information</h2>
+                                <div class="info-grid">
+                                    <div class="info-item">
+                                        <div class="info-label">Roll Number</div>
+                                        <div class="info-value">${member.roll}</div>
+                                    </div>
+                                    <div class="info-item">
+                                        <div class="info-label">Registration Number</div>
+                                        <div class="info-value">${member.registration}</div>
+                                    </div>
+                                    <div class="info-item">
+                                        <div class="info-label">Department</div>
+                                        <div class="info-value">${member.department}</div>
+                                    </div>
+                                    <div class="info-item">
+                                        <div class="info-label">Session</div>
+                                        <div class="info-value">${member.session}</div>
+                                    </div>
+                                    <div class="info-item">
+                                        <div class="info-label">CGPA</div>
+                                        <div class="info-value">${member.cgpa}</div>
+                                    </div>
+                                </div>
                             </div>
-                            ${member.socialLink ? `
-                            <div class="info-item">
-                                <div class="info-label">Social/Portfolio Link</div>
-                                <div class="info-value">${member.socialLink}</div>
+                            
+                            ${member.currentJob ? `
+                            <div class="section">
+                                <h2 class="section-title">Professional Information</h2>
+                                <div class="info-item">
+                                    <div class="info-label">Current Job/Organization</div>
+                                    <div class="info-value">${member.currentJob}</div>
+                                </div>
+                                ${member.socialLink ? `
+                                <div class="info-item">
+                                    <div class="info-label">Social/Portfolio Link</div>
+                                    <div class="info-value">${member.socialLink}</div>
+                                </div>
+                                ` : ''}
                             </div>
                             ` : ''}
-                        </div>
-                        ` : ''}
-                        
-                        <div class="section">
-                            <h2 class="section-title">Skills & Expertise</h2>
-                            <div class="skills">
-                                ${member.skills ? member.skills.split(',').map(skill => 
-                                    `<span class="skill-tag">${skill.trim()}</span>`
-                                ).join('') : '<p>No skills listed</p>'}
+                            
+                            <div class="section">
+                                <h2 class="section-title">Skills & Expertise</h2>
+                                <div class="skills">
+                                    ${member.skills ? member.skills.split(',').map(skill => 
+                                        `<span class="skill-tag">${skill.trim()}</span>`
+                                    ).join('') : '<p>No skills listed</p>'}
+                                </div>
+                            </div>
+                            
+                            <div class="section">
+                                <h2 class="section-title">Additional Information</h2>
+                                <div class="info-item">
+                                    <div class="info-label">Member Since</div>
+                                    <div class="info-value">${new Date(member.appliedAt).toLocaleDateString('en-US', {
+                                        year: 'numeric',
+                                        month: 'long',
+                                        day: 'numeric'
+                                    })}</div>
+                                </div>
                             </div>
                         </div>
                         
-                        <div class="section">
-                            <h2 class="section-title">Additional Information</h2>
-                            <div class="info-item">
-                                <div class="info-label">Member Since</div>
-                                <div class="info-value">${new Date(member.appliedAt).toLocaleDateString('en-US', {
-                                    year: 'numeric',
-                                    month: 'long',
-                                    day: 'numeric'
-                                })}</div>
-                            </div>
+                        <div class="footer">
+                            <p>BSPI Robotics Club - Official Member Profile</p>
+                            <p>Generated on ${new Date().toLocaleDateString()}</p>
+                            <p>© ${new Date().getFullYear()} BSPI Robotics Club. All rights reserved.</p>
                         </div>
                     </div>
-                    
-                    <div class="footer">
-                        <p>BSPI Robotics Club - Official Member Profile</p>
-                        <p>Generated on ${new Date().toLocaleDateString()}</p>
-                        <p>© ${new Date().getFullYear()} BSPI Robotics Club. All rights reserved.</p>
-                    </div>
-                </div>
-            </body>
-            </html>
-        `;
-        
-        // Create a Blob with the HTML content
-        const blob = new Blob([profileHTML], { type: 'text/html' });
-        
-        // Create a download link
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = `${member.name.replace(/\s+/g, '_')}_Profile.html`;
-        
-        // Trigger download
-        document.body.appendChild(link);
-        link.click();
-        
-        // Clean up
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
-        
-        // Show success message
-        alert('Profile downloaded successfully!');
-        
-    } catch (error) {
-        console.error('Error downloading profile:', error);
-        alert('Failed to download profile. Please try again.');
-    } finally {
-        setDownloading(false);
-    }
-};
+                </body>
+                </html>
+            `;
+            
+            // Create a Blob with the HTML content
+            const blob = new Blob([profileHTML], { type: 'text/html' });
+            
+            // Create a download link
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `${member.name.replace(/\s+/g, '_')}_Profile.html`;
+            
+            // Trigger download
+            document.body.appendChild(link);
+            link.click();
+            
+            // Clean up
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            
+            // Show success message
+            alert('Profile downloaded successfully!');
+            
+        } catch (error) {
+            console.error('Error downloading profile:', error);
+            alert('Failed to download profile. Please try again.');
+        } finally {
+            setDownloading(false);
+        }
+    };
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 py-8 px-4 md:px-8">
@@ -614,44 +782,151 @@ const handleDownloadProfile = async () => {
 
                             {/* Professional Information */}
                             <div className="bg-gray-50 dark:bg-gray-900/50 rounded-2xl p-6">
-                                <h2 className="text-xl font-bold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
+                                <div className="flex justify-between items-center mb-4">
+                                    <h2 className="text-xl font-bold text-gray-800 dark:text-white flex items-center gap-2">
                                     <Briefcase className="w-5 h-5 text-purple-500" />
                                     Professional Information
-                                </h2>
+                                    </h2>
+                                    {!isEditing ? (
+                                    <button
+                                        onClick={handleEdit}
+                                        className="flex items-center gap-2 px-3 py-1.5 text-sm bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 rounded-lg hover:bg-purple-200 dark:hover:bg-purple-900/50 transition-colors"
+                                    >
+                                        <Edit2 className="w-4 h-4" />
+                                        Edit Social Links
+                                    </button>
+                                    ) : (
+                                    <div className="flex gap-2">
+                                        <button
+                                        onClick={handleSave}
+                                        className="flex items-center gap-2 px-3 py-1.5 text-sm bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
+                                        >
+                                        <Save className="w-4 h-4" />
+                                        Save
+                                        </button>
+                                        <button
+                                        onClick={handleCancel}
+                                        className="flex items-center gap-2 px-3 py-1.5 text-sm bg-gray-300 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-400 dark:hover:bg-gray-600 transition-colors"
+                                        >
+                                        <X className="w-4 h-4" />
+                                        Cancel
+                                        </button>
+                                    </div>
+                                    )}
+                                </div>
+
                                 <div className="space-y-4">
+                                    {/* Current Job - Read Only */}
                                     <div className="flex items-start gap-3">
-                                        <Briefcase className="w-5 h-5 text-purple-500 mt-0.5" />
-                                        <div>
-                                            <p className="text-xs text-gray-500 dark:text-gray-400 uppercase">Current Job/Organization</p>
-                                            <p className="text-gray-800 dark:text-white font-medium">{member.currentJob || 'Not specified'}</p>
-                                        </div>
+                                    <Briefcase className="w-5 h-5 text-purple-500 mt-0.5" />
+                                    <div className="flex-1">
+                                        <p className="text-xs text-gray-500 dark:text-gray-400 uppercase">Current Job/Organization</p>
+                                        <p className="text-gray-800 dark:text-white font-medium">{member.currentJob || 'Not specified'}</p>
                                     </div>
-                                    <div className="flex items-start gap-3">
-                                        <LinkIcon className="w-5 h-5 text-purple-500 mt-0.5" />
-                                        <div>
-                                            <p className="text-xs text-gray-500 dark:text-gray-400 uppercase">Social/Portfolio Link</p>
-                                            {member.socialLink ? (
-                                                <a href={member.socialLink} target="_blank" rel="noopener noreferrer" 
-                                                   className="text-purple-600 dark:text-purple-400 font-medium hover:underline break-all">
-                                                    {member.socialLink}
-                                                </a>
-                                            ) : (
-                                                <p className="text-gray-800 dark:text-white font-medium">Not specified</p>
-                                            )}
-                                        </div>
                                     </div>
+
+                                    {/* Facebook Link */}
                                     <div className="flex items-start gap-3">
-                                        <Clock className="w-5 h-5 text-purple-500 mt-0.5" />
-                                        <div>
-                                            <p className="text-xs text-gray-500 dark:text-gray-400 uppercase">Member Since</p>
-                                            <p className="text-gray-800 dark:text-white font-medium">
-                                                {new Date(member.appliedAt).toLocaleDateString('en-US', {
-                                                    year: 'numeric',
-                                                    month: 'long',
-                                                    day: 'numeric'
-                                                })}
-                                            </p>
-                                        </div>
+                                    <LinkIcon className="w-5 h-5 text-purple-500 mt-0.5" />
+                                    <div className="flex-1">
+                                        <p className="text-xs text-gray-500 dark:text-gray-400 uppercase">Facebook Link</p>
+                                        {isEditing ? (
+                                        <input
+                                            type="url"
+                                            value={socialLinks.facebook}
+                                            onChange={(e) => handleInputChange('facebook', e.target.value)}
+                                            placeholder="https://facebook.com/username"
+                                            className="w-full mt-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-800 dark:text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                        />
+                                        ) : (
+                                        member.facebookLink ? (
+                                            <a href={member.facebookLink} target="_blank" rel="noopener noreferrer" 
+                                            className="text-purple-600 dark:text-purple-400 font-medium hover:underline break-all">
+                                            {member.facebookLink}
+                                            </a>
+                                        ) : (
+                                            <p className="text-gray-800 dark:text-white font-medium">Not specified</p>
+                                        )
+                                        )}
+                                    </div>
+                                    </div>
+
+                                    {/* Portfolio Link */}
+                                    <div className="flex items-start gap-3">
+                                    <LinkIcon className="w-5 h-5 text-purple-500 mt-0.5" />
+                                    <div className="flex-1">
+                                        <p className="text-xs text-gray-500 dark:text-gray-400 uppercase">Portfolio Link</p>
+                                        {isEditing ? (
+                                        <input
+                                            type="url"
+                                            value={socialLinks.portfolio}
+                                            onChange={(e) => handleInputChange('portfolio', e.target.value)}
+                                            placeholder="https://yourportfolio.com"
+                                            className="w-full mt-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-800 dark:text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                        />
+                                        ) : (
+                                        member.portfolioLink ? (
+                                            <a href={member.portfolioLink} target="_blank" rel="noopener noreferrer" 
+                                            className="text-purple-600 dark:text-purple-400 font-medium hover:underline break-all">
+                                            {member.portfolioLink}
+                                            </a>
+                                        ) : (
+                                            <p className="text-gray-800 dark:text-white font-medium">Not specified</p>
+                                        )
+                                        )}
+                                    </div>
+                                    </div>
+
+                                    {/* Github Link */}
+                                    <div className="flex items-start gap-3">
+                                    <LinkIcon className="w-5 h-5 text-purple-500 mt-0.5" />
+                                    <div className="flex-1">
+                                        <p className="text-xs text-gray-500 dark:text-gray-400 uppercase">Github Link</p>
+                                        {isEditing ? (
+                                        <input
+                                            type="url"
+                                            value={socialLinks.github}
+                                            onChange={(e) => handleInputChange('github', e.target.value)}
+                                            placeholder="https://github.com/username"
+                                            className="w-full mt-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-800 dark:text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                        />
+                                        ) : (
+                                        member.githubLink ? (
+                                            <a href={member.githubLink} target="_blank" rel="noopener noreferrer" 
+                                            className="text-purple-600 dark:text-purple-400 font-medium hover:underline break-all">
+                                            {member.githubLink}
+                                            </a>
+                                        ) : (
+                                            <p className="text-gray-800 dark:text-white font-medium">Not specified</p>
+                                        )
+                                        )}
+                                    </div>
+                                    </div>
+
+                                    {/* LinkedIn Link */}
+                                    <div className="flex items-start gap-3">
+                                    <LinkIcon className="w-5 h-5 text-purple-500 mt-0.5" />
+                                    <div className="flex-1">
+                                        <p className="text-xs text-gray-500 dark:text-gray-400 uppercase">LinkedIn Link</p>
+                                        {isEditing ? (
+                                        <input
+                                            type="url"
+                                            value={socialLinks.linkedin}
+                                            onChange={(e) => handleInputChange('linkedin', e.target.value)}
+                                            placeholder="https://linkedin.com/in/username"
+                                            className="w-full mt-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-800 dark:text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                        />
+                                        ) : (
+                                        member.linkedinLink ? (
+                                            <a href={member.linkedinLink} target="_blank" rel="noopener noreferrer" 
+                                            className="text-purple-600 dark:text-purple-400 font-medium hover:underline break-all">
+                                            {member.linkedinLink}
+                                            </a>
+                                        ) : (
+                                            <p className="text-gray-800 dark:text-white font-medium">Not specified</p>
+                                        )
+                                        )}
+                                    </div>
                                     </div>
                                 </div>
                             </div>
@@ -679,6 +954,148 @@ const handleDownloadProfile = async () => {
                             </div>
                         </div>
 
+                         {/* Professional Information with Edit Mode */}
+                        <div className="mt-8">
+                            <div className="bg-gray-50 dark:bg-gray-900/50 rounded-2xl p-6">
+                                <div className="flex justify-between items-center mb-4">
+                                    <h2 className="text-xl font-bold text-gray-800 dark:text-white flex items-center gap-2">
+                                        <Briefcase className="w-5 h-5 text-purple-500" />
+                                        Professional Information
+                                    </h2>
+                                    {isEditing && (
+                                        <div className="flex gap-2">
+                                            <button
+                                                onClick={handleSaveSocialLinks}
+                                                disabled={saving}
+                                                className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-all flex items-center gap-2 disabled:opacity-50"
+                                            >
+                                                {saving ? (
+                                                    <>
+                                                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                                                        Saving...
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <Save className="w-4 h-4" />
+                                                        Save
+                                                    </>
+                                                )}
+                                            </button>
+                                            <button
+                                                onClick={handleCancelEdit}
+                                                className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-all flex items-center gap-2"
+                                            >
+                                                <X className="w-4 h-4" />
+                                                Cancel
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+                                
+                                <div className="space-y-4">
+                                    {/* Current Job */}
+                                    <div className="flex items-start gap-3">
+                                        <Briefcase className="w-5 h-5 text-purple-500 mt-0.5" />
+                                        <div className="flex-1">
+                                            <p className="text-xs text-gray-500 dark:text-gray-400 uppercase">Current Job/Organization</p>
+                                            <p className="text-gray-800 dark:text-white font-medium">{member.currentJob || 'Not specified'}</p>
+                                        </div>
+                                    </div>
+
+                                    {/* Social Links - Edit Mode */}
+                                    {isEditing ? (
+                                        <>
+                                            {/* Facebook */}
+                                            <div className="flex items-start gap-3">
+                                                <Facebook className="w-5 h-5 text-blue-600 mt-0.5" />
+                                                <div className="flex-1">
+                                                    <p className="text-xs text-gray-500 dark:text-gray-400 uppercase">Facebook Profile</p>
+                                                    <input
+                                                        type="url"
+                                                        value={editedSocialLinks.facebook}
+                                                        onChange={(e) => handleSocialLinkChange('facebook', e.target.value)}
+                                                        placeholder="https://facebook.com/username"
+                                                        className="w-full mt-1 p-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            {/* LinkedIn */}
+                                            <div className="flex items-start gap-3">
+                                                <Linkedin className="w-5 h-5 text-blue-700 mt-0.5" />
+                                                <div className="flex-1">
+                                                    <p className="text-xs text-gray-500 dark:text-gray-400 uppercase">LinkedIn Profile</p>
+                                                    <input
+                                                        type="url"
+                                                        value={editedSocialLinks.linkedin}
+                                                        onChange={(e) => handleSocialLinkChange('linkedin', e.target.value)}
+                                                        placeholder="https://linkedin.com/in/username"
+                                                        className="w-full mt-1 p-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            {/* GitHub */}
+                                            <div className="flex items-start gap-3">
+                                                <Github className="w-5 h-5 text-gray-900 dark:text-white mt-0.5" />
+                                                <div className="flex-1">
+                                                    <p className="text-xs text-gray-500 dark:text-gray-400 uppercase">GitHub Profile</p>
+                                                    <input
+                                                        type="url"
+                                                        value={editedSocialLinks.github}
+                                                        onChange={(e) => handleSocialLinkChange('github', e.target.value)}
+                                                        placeholder="https://github.com/username"
+                                                        className="w-full mt-1 p-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            {/* Portfolio */}
+                                            <div className="flex items-start gap-3">
+                                                <Globe className="w-5 h-5 text-purple-500 mt-0.5" />
+                                                <div className="flex-1">
+                                                    <p className="text-xs text-gray-500 dark:text-gray-400 uppercase">Portfolio Website</p>
+                                                    <input
+                                                        type="url"
+                                                        value={editedSocialLinks.portfolio}
+                                                        onChange={(e) => handleSocialLinkChange('portfolio', e.target.value)}
+                                                        placeholder="https://yourportfolio.com"
+                                                        className="w-full mt-1 p-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                                    />
+                                                </div>
+                                            </div>
+                                        </>
+                                    ) : (
+                                        // View Mode - Display Social Links
+                                        <>
+                                            {Object.entries(member.socialLinks || {}).map(([platform, link]) => (
+                                                link && (
+                                                    <div key={platform} className="flex items-start gap-3">
+                                                        {getSocialLinkIcon(platform)}
+                                                        <div className="flex-1">
+                                                            <p className="text-xs text-gray-500 dark:text-gray-400 uppercase">{getPlatformLabel(platform)}</p>
+                                                            <a 
+                                                                href={link} 
+                                                                target="_blank" 
+                                                                rel="noopener noreferrer" 
+                                                                className={`text-purple-600 dark:text-purple-400 font-medium hover:underline break-all ${getSocialLinkColor(platform)} transition-colors`}
+                                                            >
+                                                                {link}
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                )
+                                            ))}
+                                            {(!member.socialLinks || Object.values(member.socialLinks).every(link => !link)) && (
+                                                <div className="text-center text-gray-500 dark:text-gray-400 py-4">
+                                                    No social links added yet
+                                                </div>
+                                            )}
+                                        </>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
                         
                         {/* Connect Section */}
                         <div className="mt-8 text-center flex flex-col sm:flex-row gap-4 justify-center">
