@@ -13,40 +13,44 @@ import J from "../../assets/image/Executive2025/J.jpeg";
 import K from "../../assets/image/Executive2025/K.jpeg";
 import L from "../../assets/image/Executive2025/L.jpeg";
 // 
-// import president2 from "../../assets/image/Executive2026/";
-// import a from "../../assets/image/Executive2025/B.jpeg";
-// import b from "../../assets/image/Executive2025/C.jpeg";
-// import c from "../../assets/image/Executive2025/D.jpeg";
-// import d from "../../assets/image/Executive2025/E.jpeg";
-// import e from "../../assets/image/Executive2025/F.jpeg";
-// import f from "../../assets/image/Executive2025/G.jpeg";
-// import g from "../../assets/image/Executive2025/H.jpeg";
-// import h from "../../assets/image/Executive2025/I.jpeg";
-// import i from "../../assets/image/Executive2025/J.jpeg";
-// import j from "../../assets/image/Executive2025/K.jpeg";
-// import k from "../../assets/image/Executive2025/L.jpeg";
+import president2 from "../../assets/image/Executive2026/President.jpeg";
+import a from "../../assets/image/Executive2026/A.jpeg";
+import b from "../../assets/image/Executive2026/B.jpeg";
+import c from "../../assets/image/Executive2026/C.jpeg";
+import d from "../../assets/image/Executive2026/D.jpeg";
+import e from "../../assets/image/Executive2026/E.jpeg";
+import f from "../../assets/image/Executive2026/F.jpeg";
+import g from "../../assets/image/Executive2026/G.jpeg"; 
+import i from "../../assets/image/Executive2026/I.jpeg";
+import j from "../../assets/image/Executive2026/J.jpeg";
+import k from "../../assets/image/Executive2026/K.jpeg";
+import l from "../../assets/image/Executive2026/L.jpeg";
+import m from "../../assets/image/Executive2026/M.jpeg";
+import n from "../../assets/image/Executive2026/N.jpeg";
+import o from "../../assets/image/Executive2026/O.jpeg";
+import p from "../../assets/image/Executive2026/P.jpeg";
 
 const data = {
     "2024-2025": [
             {
             name: "Tarek Hossain",
             role: "President",
-            img: {president},
+            img: {president2},
             },
             {
             name: "Saiful Islam",
             role: "Vice President",
-            img: {C},
+            img: {a},
             },
             {
             name: "Tasin Kabir Ratul",
             role: "Joint Secretary",
-            img: {B},
+            img: {b},
             },
             {
             name: "Md. Tarek",
             role: "Joint Secretary",
-            img: {D}, 
+            img: {c}, 
             },
             {
             name: "Md. Maruful Islam",
@@ -56,38 +60,64 @@ const data = {
             {
             name: "Md. Rayan",
             role: "Finance Secretary",
-            img: {F},
+            img: {d},
             },
             {
             name: "Md. Shahidullah Kaisar",
             role: "Event Planing & Management",
-            img: {G},
+            img: {e},
             },
             {
             name: "Md. Sayed Sabbir",
             role: "Event Planing & Management",
-            img: {H},
+            img: {f},
             },
             {
             name: "Md. Sohel",
             role: "Joint Secretary",
-            img: {I},
-            },
-            {
-            name: "Rodra Biswas",
-            role: "Secretary Technical Dept. ",
-            img: {J},
+            img: {g},
             },
             {
             name: "Arafat Uddin Rafit",
             role: "PR of Socail Department",
-            img: {K},
+            img: {i},
             },
             {
             name: "Emon Datta",
             role: "Secretary Technical Dept. ",
-            img: {L},
+            img: {j},
             },
+            {
+            name: "Emon Datta",
+            role: "Secretary Technical Dept. ",
+            img: {k},
+            },
+            {
+            name: "Emon Datta",
+            role: "Secretary Technical Dept. ",
+            img: {l},
+            },
+            {
+            name: "Emon Datta",
+            role: "Secretary Technical Dept. ",
+            img: {m},
+            },
+            {
+            name: "Emon Datta",
+            role: "Secretary Technical Dept. ",
+            img: {n},
+            },
+            {
+            name: "Emon Datta",
+            role: "Secretary Technical Dept. ",
+            img: {o},
+            },
+            {
+            name: "Emon Datta",
+            role: "Secretary Technical Dept. ",
+            img: {p},
+            },
+
     ],
 
     "2025-2026": [
