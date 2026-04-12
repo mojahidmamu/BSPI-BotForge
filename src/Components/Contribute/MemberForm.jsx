@@ -151,7 +151,7 @@ const StudentForm = () => {
                         <div className="flex flex-col gap-1">
                             <div className="font-semibold">📌 পরবর্তী ধাপ:</div>
                             <div className="text-sm">১. অ্যাডমিন আপনার আবেদন রিভিউ করবে</div>
-                            <div className="text-sm">২. ২-৩ কার্যদিবসের মধ্যে ইমেইল পাবেন</div>
+                            <div className="text-sm">২. (২-৩) কার্যদিবসের মধ্যে ইমেইল পাবেন</div>
                             <div className="text-sm">৩. এপ্রুভ হলে আপনি মেম্বার হতে পারবেন</div>
                         </div>
                     ),
