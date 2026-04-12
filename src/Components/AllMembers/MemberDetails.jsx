@@ -32,6 +32,7 @@ const MemberDetails = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [downloading, setDownloading] = useState(false);
+    const [showEmailModal, setShowEmailModal] = useState(false);
 
     useEffect(() => {
         if (id) {
@@ -682,13 +683,61 @@ const handleDownloadProfile = async () => {
                         {/* Connect Section */}
                         <div className="mt-8 text-center flex flex-col sm:flex-row gap-4 justify-center">
                             {/* Email Button */}
-                            <a
-                                href={`mailto:${member.email}`}
+                            <button
+                                onClick={() => setShowEmailModal(true)}
                                 className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-500 to-indigo-500 text-white rounded-xl hover:shadow-lg transition-all hover:scale-105"
                             >
                                 <Mail className="w-4 h-4" />
                                 Send Email
-                            </a>
+                            </button>
+
+                            {/* Email Modal */}
+                            {showEmailModal && (
+                                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={() => setShowEmailModal(false)}>
+                                    <div className="bg-white dark:bg-gray-800 rounded-2xl max-w-md w-full p-6" onClick={(e) => e.stopPropagation()}>
+                                        <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-4">Send Email to {member.name}</h3>
+                                        
+                                        <div className="space-y-4">
+                                            <div>
+                                                <label className="text-sm text-gray-600 dark:text-gray-400 mb-1 block">Email Address</label>
+                                                <div className="flex gap-2">
+                                                    <input 
+                                                        type="text" 
+                                                        value={member.email} 
+                                                        readOnly 
+                                                        className="flex-1 p-2 border rounded-lg bg-gray-50 dark:bg-gray-700"
+                                                    />
+                                                    <button
+                                                        onClick={() => {
+                                                            navigator.clipboard.writeText(member.email);
+                                                            alert('Email copied!');
+                                                        }}
+                                                        className="px-3 py-2 bg-gray-200 dark:bg-gray-700 rounded-lg"
+                                                    >
+                                                        Copy
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            
+                                            <div className="flex gap-3 pt-4">
+                                                <a
+                                                    href={`mailto:${member.email}`}
+                                                    className="flex-1 px-4 py-2 bg-gradient-to-r from-purple-500 to-indigo-500 text-white rounded-lg text-center hover:shadow-lg transition-all"
+                                                    onClick={() => setShowEmailModal(false)}
+                                                >
+                                                    Open Email Client
+                                                </a>
+                                                <button
+                                                    onClick={() => setShowEmailModal(false)}
+                                                    className="flex-1 px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg"
+                                                >
+                                                    Cancel
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
                             
                             {/* WhatsApp Button */}
                             <button
