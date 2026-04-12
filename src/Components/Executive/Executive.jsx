@@ -30,6 +30,13 @@ import m from "../../assets/image/Executive2026/M.jpeg";
 import n from "../../assets/image/Executive2026/N.jpeg";
 import o from "../../assets/image/Executive2026/O.jpeg";
 import p from "../../assets/image/Executive2026/P.jpeg";
+// 
+import Alumnai1 from "../../assets/image/Alumnai/A.jpeg";
+import Alumnai2 from "../../assets/image/Alumnai/B.jpeg";
+import Alumnai3 from "../../assets/image/Alumnai/C.jpeg";
+import Alumnai4 from "../../assets/image/Alumnai/D.jpeg";
+import Alumnai5 from "../../assets/image/Alumnai/E.jpeg";
+import Alumnai6 from "../../assets/image/Alumnai/F.jpeg";
 
 const data = {
 
@@ -268,7 +275,7 @@ const Executive = () => {
             )}
 
             {/* Other Members Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-2">
                 {others.map((member, index) => (
                 <div key={index} className="card bg-base-100 shadow-md">
                     <figure className="px-6 pt-6">
@@ -284,6 +291,125 @@ const Executive = () => {
                     </div>
                 </div>
                 ))}
+            </div>
+
+
+            {/* Alumnai */}
+            <div>
+                {/* Header & Title  */}
+                <div className="max-w-4xl mx-auto pt-20 text-center space-y-4 mb-8">
+                    <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight">
+                        <span className="text-slate-900 dark:text-white">Our </span>
+                        <span className="bg-gradient-to-r from-purple-500 via-indigo-500 to-teal-400 bg-clip-text text-transparent">
+                            Hero
+                        </span>
+                    </h2>
+
+                    {/* Gradient Underline */}
+                    <div className="flex justify-center ">
+                        <span className="h-1 w-32 md:w-40 rounded-full bg-gradient-to-r from-purple-500 via-indigo-500 to-teal-400 animate-pulse"></span>
+                    </div>
+                </div>
+
+                <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-2">
+                    {/* Card 1*/}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-2">
+                    <div  className="card bg-base-100 shadow-md">
+                        <figure className="px-6 pt-6">
+                        <img
+                            src={Alumnai1}
+                            alt="Sukanta Sharma"
+                            className="rounded-xl w-24 h-24 object-cover"
+                        />
+                        </figure>
+                        <div className="card-body items-center text-center">
+                        <h2 className="card-title">Sukanta Sharma</h2>
+                        <p className="text-sm opacity-70">Advisor</p>
+                        </div>
+                    </div>
+                    </div>
+                    {/* Card 2 */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-2">
+                        <div  className="card bg-base-100 shadow-md">
+                            <figure className="px-6 pt-6">
+                            <img
+                                src={Alumnai2}
+                                alt="Pial Barua"
+                                className="rounded-xl w-24 h-24 object-cover"
+                            />
+                            </figure>
+                            <div className="card-body items-center text-center">
+                            <h2 className="card-title">Pial Barua</h2>
+                            <p className="text-sm opacity-70">Advisor</p>
+                            </div>
+                        </div>
+                    </div>
+                    {/* Card 3 */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-2">
+                        <div  className="card bg-base-100 shadow-md">
+                            <figure className="px-6 pt-6">
+                            <img
+                                src={Alumnai3}
+                                alt="Abdullah all Kibria"
+                                className="rounded-xl w-24 h-24 object-cover"
+                            />
+                            </figure>
+                            <div className="card-body items-center text-center">
+                            <h2 className="card-title">Abdullah all Kibria</h2>
+                            <p className="text-sm opacity-70">Advisor</p>
+                            </div>
+                        </div>
+                    </div>
+                    {/* Card 4 */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-2">
+                        <div  className="card bg-base-100 shadow-md">
+                            <figure className="px-6 pt-6">
+                            <img
+                                src={Alumnai4}
+                                alt="Eng. Md. Abu Huraira"
+                                className="rounded-xl w-24 h-24 object-cover"
+                            />
+                            </figure>
+                            <div className="card-body items-center text-center">
+                            <h2 className="card-title">Eng. Md. Abu Huraira</h2>
+                            <p className="text-sm opacity-70">Advisor</p>
+                            </div>
+                        </div>
+                    </div>
+                    {/* Card 5 */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-2">
+                        <div  className="card bg-base-100 shadow-md">
+                            <figure className="px-6 pt-6">
+                            <img
+                                src={Alumnai5}
+                                alt="Noyon Chowdhory"
+                                className="rounded-xl w-24 h-24 object-cover"
+                            />
+                            </figure>
+                            <div className="card-body items-center text-center">
+                            <h2 className="card-title">Noyon Chowdhory</h2>
+                            <p className="text-sm opacity-70">Advisor</p>
+                            </div>
+                        </div>
+                    </div>
+                    {/* Card 6 */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-2">
+                        <div  className="card bg-base-100 shadow-md">
+                            <figure className="px-6 pt-6">
+                            <img
+                                src={Alumnai1}
+                                alt="Md. Faisal Ahmed"
+                                className="rounded-xl w-24 h-24 object-cover"
+                            />
+                            </figure>
+                            <div className="card-body items-center text-center">
+                            <h2 className="card-title">Md. Faisal Ahmed</h2>
+                            <p className="text-sm opacity-70">Advisor</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     );
