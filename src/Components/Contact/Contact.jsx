@@ -60,6 +60,7 @@
     
     const [sent, setSent] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [error, setError] = useState('');
     
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -68,23 +69,44 @@
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsSubmitting(true);
+        setError(""); 
         
-        // Simulate API call
-        await new Promise(resolve => setTimeout(resolve, 1500));
-        
-        console.log(formData);
-        setSent(true);
-        
-        setFormData({
-        name: "",
-        email: "",
-        subject: "",
-        message: "",
-        });
-        
-        setIsSubmitting(false);
-        
-        setTimeout(() => setSent(false), 4000);
+        try {
+            // Make actual API call to your backend
+            const response = await fetch('http://localhost:5000/api/send-email', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData), // Sends {name, email, subject, message}
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                // Show success message
+                setSent(true);
+                
+                // Reset form fields
+                setFormData({
+                    name: "",
+                    email: "",
+                    subject: "",
+                    message: "",
+                });
+                
+                // Auto hide success message after 4 seconds
+                setTimeout(() => setSent(false), 4000);
+            } else {
+                // Show error message from server
+                setError(data.error || "Failed to send message. Please try again.");
+            }
+        } catch (error) {
+            console.error("Network error:", error);
+            setError("Network error. Please check if the server is running and try again.");
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     // Animation variants
@@ -221,6 +243,13 @@
                 onSubmit={handleSubmit}
                 className="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8 md:p-10 flex flex-col gap-5 backdrop-blur-sm border border-gray-100 dark:border-gray-700"
             >
+                {/* Error message display */}
+                {error && (
+                    <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-3 mb-4">
+                        <p className="text-red-600 dark:text-red-400 text-sm">{error}</p>
+                    </div>
+                )}
+
                 <div className="text-center mb-2">
                 <h3 className="text-2xl font-bold text-gray-900 dark:text-white">Send a Message</h3>
                 <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">I'll get back to you as soon as possible</p>
