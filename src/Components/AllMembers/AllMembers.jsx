@@ -1,7 +1,9 @@
+import { Shield } from 'lucide-react';  
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { toast } from 'react-hot-toast';
 import { 
   Search, 
   Filter, 
@@ -17,7 +19,10 @@ import {
   MapPin,
   Droplet,
   Code,
-  Eye
+  Eye,
+  X,
+  CheckCircle,
+  AlertCircle
 } from 'lucide-react';
 
 const AllMembers = () => {
@@ -31,6 +36,13 @@ const AllMembers = () => {
     });
     const [loading, setLoading] = useState(true);
     const [showFilters, setShowFilters] = useState(false);
+    
+    // Email validation modal state
+    const [showEmailModal, setShowEmailModal] = useState(false);
+    const [selectedMemberId, setSelectedMemberId] = useState(null);
+    const [selectedMemberName, setSelectedMemberName] = useState('');
+    const [emailInput, setEmailInput] = useState('');
+    const [verifying, setVerifying] = useState(false);
 
     const departments = ['all', 'CST', 'MT', 'ET', 'AT', 'CWT', 'CONT'];
 
@@ -52,13 +64,97 @@ const AllMembers = () => {
             setMembers(res.data.data);
         } catch (error) {
             console.error('Error fetching members:', error);
+            toast.error('মেম্বার লোড করতে সমস্যা হয়েছে');
         } finally {
             setLoading(false);
         }
     };
 
-    const handleCardClick = (memberId) => {
-        navigate(`/member/${memberId}`);
+    // Handle card click - open email validation modal
+    const handleCardClick = (memberId, memberName) => {
+        setSelectedMemberId(memberId);
+        setSelectedMemberName(memberName);
+        setShowEmailModal(true);
+        setEmailInput('');
+    };
+
+    // Verify email before accessing details
+    const verifyEmailAndProceed = async () => {
+        if (!emailInput) {
+            toast.error('আপনার ইমেইল এড্রেস দিন', {
+                icon: '📧',
+                duration: 3000,
+            });
+            return;
+        }
+
+        setVerifying(true);
+        
+        try {
+            // Check if email exists in approved members
+            const response = await axios.post('http://localhost:5000/api/students/verify-email', {
+                email: emailInput
+            });
+            
+            if (response.data.success) {
+                // Email verified - navigate to member details
+                toast.success('স্বাগতম! প্রোফাইল দেখতে পারবেন', {
+                    icon: '✅',
+                    duration: 2000,
+                });
+                setShowEmailModal(false);
+                navigate(`/member/${selectedMemberId}`);
+            } else {
+                // Email not found - show error with suggestion
+                toast.error(
+                    (t) => (
+                        <div className="flex flex-col gap-2 min-w-[280px]">
+                            <div className="flex items-center gap-2">
+                                <AlertCircle className="w-5 h-5 text-red-500" />
+                                <span className="font-bold text-red-700">ইমেইল ভ্যালিড নয়!</span>
+                            </div>
+                            <div className="text-sm text-red-600">
+                                এই ইমেইলটি আমাদের ডাটাবেসে নেই।
+                            </div>
+                            <div className="text-xs text-gray-600 mt-1">
+                                আপনি কি সদস্য হননি? প্রথমে মেম্বারশিপ অ্যাপ্লাই করুন।
+                            </div>
+                            <div className="flex gap-2 mt-2">
+                                <button
+                                    onClick={() => {
+                                        toast.dismiss(t.id);
+                                        navigate('/contribute/member');
+                                    }}
+                                    className="px-3 py-1.5 bg-purple-600 text-white text-sm rounded-lg hover:bg-purple-700"
+                                >
+                                    অ্যাপ্লাই করুন
+                                </button>
+                                <button
+                                    onClick={() => toast.dismiss(t.id)}
+                                    className="px-3 py-1.5 bg-gray-200 text-gray-700 text-sm rounded-lg"
+                                >
+                                    বন্ধ করুন
+                                </button>
+                            </div>
+                        </div>
+                    ),
+                    {
+                        duration: 8000,
+                        position: 'top-center',
+                        style: {
+                            background: '#fee2e2',
+                            border: '1px solid #ef4444',
+                            padding: '16px',
+                        },
+                    }
+                );
+            }
+        } catch (error) {
+            console.error('Email verification error:', error);
+            toast.error('ভেরিফিকেশন করতে সমস্যা হয়েছে। আবার চেষ্টা করুন।');
+        } finally {
+            setVerifying(false);
+        }
     };
 
     // Animation variants
@@ -112,6 +208,9 @@ const AllMembers = () => {
                     <p className="text-gray-600 dark:text-gray-300 mt-3 text-sm md:text-base">
                         Meet the talented individuals driving innovation at BSPI Robotics Club
                     </p>
+                    <div className="mt-3 text-sm text-gray-500">
+                        ⚠️ শুধুমাত্র রেজিস্টার্ড মেম্বাররা প্রোফাইল দেখতে পারবেন
+                    </div>
                 </motion.div>
 
                 {/* Search & Filters Section */}
@@ -223,7 +322,7 @@ const AllMembers = () => {
                                     key={member._id}
                                     variants={cardVariants}
                                     whileHover="hover"
-                                    onClick={() => handleCardClick(member._id)}
+                                    onClick={() => handleCardClick(member._id, member.name)}
                                     className="group cursor-pointer bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 dark:border-gray-700"
                                 >
                                     {/* Image Section */}
@@ -275,6 +374,121 @@ const AllMembers = () => {
                     </motion.div>
                 )}
             </div>
+
+            {/* Email Validation Modal */}
+            <AnimatePresence>
+                {showEmailModal && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+                        onClick={() => setShowEmailModal(false)}
+                    >
+                        <motion.div
+                            initial={{ scale: 0.9, opacity: 0, y: 20 }}
+                            animate={{ scale: 1, opacity: 1, y: 0 }}
+                            exit={{ scale: 0.9, opacity: 0, y: 20 }}
+                            className="bg-white dark:bg-gray-800 rounded-2xl max-w-md w-full p-6 shadow-2xl"
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            {/* Modal Header */}
+                            <div className="flex justify-between items-center mb-4">
+                                <div className="flex items-center gap-2">
+                                    <div className="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center">
+                                        <Shield className="w-5 h-5 text-purple-600" />
+                                    </div>
+                                    <h3 className="text-xl font-bold text-gray-800 dark:text-white">
+                                        ইমেইল ভেরিফিকেশন প্রয়োজন
+                                    </h3>
+                                </div>
+                                <button
+                                    onClick={() => setShowEmailModal(false)}
+                                    className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition"
+                                >
+                                    <X className="w-5 h-5 text-gray-500" />
+                                </button>
+                            </div>
+
+                            {/* Modal Content */}
+                            <div className="space-y-4">
+                                <div className="bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg">
+                                    <p className="text-sm text-blue-800 dark:text-blue-300">
+                                        <strong>{selectedMemberName}</strong> এর প্রোফাইল দেখতে আপনার 
+                                        রেজিস্টার্ড ইমেইল এড্রেস দিন।
+                                    </p>
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                        আপনার ইমেইল এড্রেস
+                                    </label>
+                                    <div className="relative">
+                                        <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                                        <input
+                                            type="email"
+                                            value={emailInput}
+                                            onChange={(e) => setEmailInput(e.target.value)}
+                                            placeholder="youremail@example.com"
+                                            className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                            autoFocus
+                                            onKeyPress={(e) => {
+                                                if (e.key === 'Enter') verifyEmailAndProceed();
+                                            }}
+                                        />
+                                    </div>
+                                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                                        ⚠️ শুধুমাত্র BSPI Robotics Club এর রেজিস্টার্ড মেম্বাররা দেখতে পারবেন
+                                    </p>
+                                </div>
+
+                                {/* Action Buttons */}
+                                <div className="flex gap-3 pt-4">
+                                    <button
+                                        onClick={verifyEmailAndProceed}
+                                        disabled={verifying}
+                                        className="flex-1 bg-gradient-to-r from-purple-500 to-indigo-500 text-white py-3 rounded-xl font-semibold hover:shadow-lg transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                                    >
+                                        {verifying ? (
+                                            <>
+                                                <Loader2 className="w-4 h-4 animate-spin" />
+                                                ভেরিফাই করা হচ্ছে...
+                                            </>
+                                        ) : (
+                                            <>
+                                                <CheckCircle className="w-4 h-4" />
+                                                ভেরিফাই করুন
+                                            </>
+                                        )}
+                                    </button>
+                                    <button
+                                        onClick={() => setShowEmailModal(false)}
+                                        className="flex-1 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 py-3 rounded-xl font-semibold hover:bg-gray-300 dark:hover:bg-gray-600 transition-all"
+                                    >
+                                        বন্ধ করুন
+                                    </button>
+                                </div>
+
+                                {/* Link to Apply */}
+                                <div className="text-center pt-2">
+                                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                                        সদস্য নন?{' '}
+                                        <button
+                                            onClick={() => {
+                                                setShowEmailModal(false);
+                                                navigate('/contribute/member');
+                                            }}
+                                            className="text-purple-600 hover:text-purple-700 font-medium"
+                                        >
+                                            এখনই মেম্বারশিপ অ্যাপ্লাই করুন →
+                                        </button>
+                                    </p>
+                                </div>
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     );
 };
