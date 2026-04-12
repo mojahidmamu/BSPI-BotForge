@@ -18,9 +18,9 @@ const Activities = () => {
                 </div>
 
                 {/* Optional Subtext */}
-                {/* <p className="text-gray-500 dark:text-gray-300 mt-2 text-sm md:text-base">
-                    Here’s a summary of my academic journey and milestones.
-                </p> */}
+                <p className="text-gray-500 dark:text-gray-300 mt-2 text-sm md:text-base">
+                    Our important event date with details incoming & upcoming & completed
+                </p>
             </div>
         </div>
     );

@@ -309,105 +309,110 @@ const Executive = () => {
                     <div className="flex justify-center ">
                         <span className="h-1 w-32 md:w-40 rounded-full bg-gradient-to-r from-purple-500 via-indigo-500 to-teal-400 animate-pulse"></span>
                     </div>
+
+                    {/* Optional Subtext */}
+                    <p className="text-gray-500 dark:text-gray-300 font-bold mt-2 text-sm md:text-base">
+                        Our Alumnai who support and advice our BSPI Robotics Club
+                    </p>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-2">
-    {/* Card 1 */}
-    <div className="card bg-base-100 shadow-md hover:shadow-xl transition-all duration-300">
-        <figure className="px-6 pt-6">
-            <img
-                src="https://randomuser.me/api/portraits/men/1.jpg"
-                alt="Sukanta Sharma"
-                className="rounded-full w-32 h-32 object-cover border-4 border-purple-500"
-            />
-        </figure>
-        <div className="card-body items-center text-center">
-            <h2 className="card-title text-xl font-bold">Sukanta Sharma</h2>
-            <p className="text-sm text-purple-600 font-semibold">Advisor</p>
-            <p className="text-xs text-gray-500">Robotics & Automation Expert</p>
-        </div>
-    </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-4">
+                    {/* Card 1 */}
+                    <div className="card bg-base-100 shadow-md hover:shadow-xl transition-all duration-300">
+                        <figure className="px-6 pt-6">
+                            <img
+                                src={Alumnai1}
+                                alt="Sukanta Sharma"
+                                className="rounded-full w-32 h-32 object-cover border-4 border-purple-500"
+                            />
+                        </figure>
+                        <div className="card-body items-center text-center">
+                            <h2 className="card-title text-xl font-bold">Sukanta Sharma</h2>
+                            <p className="text-sm text-purple-600 font-semibold">Advisor</p>
+                            <p className="text-xs text-gray-500">Robotics & Automation Expert</p>
+                        </div>
+                    </div>
 
-    {/* Card 2 */}
-    <div className="card bg-base-100 shadow-md hover:shadow-xl transition-all duration-300">
-        <figure className="px-6 pt-6">
-            <img
-                src="https://randomuser.me/api/portraits/men/2.jpg"
-                alt="Pial Barua"
-                className="rounded-full w-32 h-32 object-cover border-4 border-purple-500"
-            />
-        </figure>
-        <div className="card-body items-center text-center">
-            <h2 className="card-title text-xl font-bold">Pial Barua</h2>
-            <p className="text-sm text-purple-600 font-semibold">Advisor</p>
-            <p className="text-xs text-gray-500">AI & Machine Learning Specialist</p>
-        </div>
-    </div>
+                    {/* Card 2 */}
+                    <div className="card bg-base-100 shadow-md hover:shadow-xl transition-all duration-300">
+                        <figure className="px-6 pt-6">
+                            <img
+                                src={Alumnai2}
+                                alt="Pial Barua"
+                                className="rounded-full w-32 h-32 object-cover border-4 border-purple-500"
+                            />
+                        </figure>
+                        <div className="card-body items-center text-center">
+                            <h2 className="card-title text-xl font-bold">Pial Barua</h2>
+                            <p className="text-sm text-purple-600 font-semibold">Advisor</p>
+                            <p className="text-xs text-gray-500">AI & Machine Learning Specialist</p>
+                        </div>
+                    </div>
 
-    {/* Card 3 */}
-    <div className="card bg-base-100 shadow-md hover:shadow-xl transition-all duration-300">
-        <figure className="px-6 pt-6">
-            <img
-                src="https://randomuser.me/api/portraits/men/3.jpg"
-                alt="Abdullah all Kibria"
-                className="rounded-full w-32 h-32 object-cover border-4 border-purple-500"
-            />
-        </figure>
-        <div className="card-body items-center text-center">
-            <h2 className="card-title text-xl font-bold">Abdullah all Kibria</h2>
-            <p className="text-sm text-purple-600 font-semibold">Advisor</p>
-            <p className="text-xs text-gray-500">Embedded Systems Engineer</p>
-        </div>
-    </div>
+                    {/* Card 3 */}
+                    <div className="card bg-base-100 shadow-md hover:shadow-xl transition-all duration-300">
+                        <figure className="px-6 pt-6">
+                            <img
+                                src={Alumnai3}
+                                alt="Abdullah all Kibria"
+                                className="rounded-full w-32 h-32 object-cover border-4 border-purple-500"
+                            />
+                        </figure>
+                        <div className="card-body items-center text-center">
+                            <h2 className="card-title text-xl font-bold">Abdullah all Kibria</h2>
+                            <p className="text-sm text-purple-600 font-semibold">Advisor</p>
+                            <p className="text-xs text-gray-500">Embedded Systems Engineer</p>
+                        </div>
+                    </div>
 
-    {/* Card 4 */}
-    <div className="card bg-base-100 shadow-md hover:shadow-xl transition-all duration-300">
-        <figure className="px-6 pt-6">
-            <img
-                src="https://randomuser.me/api/portraits/men/4.jpg"
-                alt="Eng. Md. Abu Huraira"
-                className="rounded-full w-32 h-32 object-cover border-4 border-purple-500"
-            />
-        </figure>
-        <div className="card-body items-center text-center">
-            <h2 className="card-title text-xl font-bold">Eng. Md. Abu Huraira</h2>
-            <p className="text-sm text-purple-600 font-semibold">Advisor</p>
-            <p className="text-xs text-gray-500">IoT & Smart Systems Expert</p>
-        </div>
-    </div>
+                    {/* Card 4 */}
+                    <div className="card bg-base-100 shadow-md hover:shadow-xl transition-all duration-300">
+                        <figure className="px-6 pt-6">
+                            <img
+                                src={Alumnai4}
+                                alt="Eng. Md. Abu Huraira"
+                                className="rounded-full w-32 h-32 object-cover border-4 border-purple-500"
+                            />
+                        </figure>
+                        <div className="card-body items-center text-center">
+                            <h2 className="card-title text-xl font-bold">Eng. Md. Abu Huraira</h2>
+                            <p className="text-sm text-purple-600 font-semibold">Advisor</p>
+                            <p className="text-xs text-gray-500">IoT & Smart Systems Expert</p>
+                        </div>
+                    </div>
 
-    {/* Card 5 */}
-    <div className="card bg-base-100 shadow-md hover:shadow-xl transition-all duration-300">
-        <figure className="px-6 pt-6">
-            <img
-                src="https://randomuser.me/api/portraits/men/5.jpg"
-                alt="Noyon Chowdhory"
-                className="rounded-full w-32 h-32 object-cover border-4 border-purple-500"
-            />
-        </figure>
-        <div className="card-body items-center text-center">
-            <h2 className="card-title text-xl font-bold">Noyon Chowdhory</h2>
-            <p className="text-sm text-purple-600 font-semibold">Advisor</p>
-            <p className="text-xs text-gray-500">Computer Vision Researcher</p>
-        </div>
-    </div>
+                    {/* Card 5 */}
+                    <div className="card bg-base-100 shadow-md hover:shadow-xl transition-all duration-300">
+                        <figure className="px-6 pt-6">
+                            <img
+                                src={Alumnai5}
+                                alt="Noyon Chowdhory"
+                                className="rounded-full w-32 h-32 object-cover border-4 border-purple-500"
+                            />
+                        </figure>
+                        <div className="card-body items-center text-center">
+                            <h2 className="card-title text-xl font-bold">Noyon Chowdhory</h2>
+                            <p className="text-sm text-purple-600 font-semibold">Advisor</p>
+                            <p className="text-xs text-gray-500">Computer Vision Researcher</p>
+                        </div>
+                    </div>
 
-    {/* Card 6 */}
-    <div className="card bg-base-100 shadow-md hover:shadow-xl transition-all duration-300">
-        <figure className="px-6 pt-6">
-            <img
-                src="https://randomuser.me/api/portraits/men/6.jpg"
-                alt="Md. Faisal Ahmed"
-                className="rounded-full w-32 h-32 object-cover border-4 border-purple-500"
-            />
-        </figure>
-        <div className="card-body items-center text-center">
-            <h2 className="card-title text-xl font-bold">Md. Faisal Ahmed</h2>
-            <p className="text-sm text-purple-600 font-semibold">Advisor</p>
-            <p className="text-xs text-gray-500">Robotics Engineering Lead</p>
-        </div>
-    </div>
-</div>
+                    {/* Card 6 */}
+                    <div className="card bg-base-100 shadow-md hover:shadow-xl transition-all duration-300">
+                        <figure className="px-6 pt-6">
+                            <img
+                                src={Alumnai6}
+                                alt="Md. Faisal Ahmed"
+                                className="rounded-full w-32 h-32 object-cover border-4 border-purple-500"
+                            />
+                        </figure>
+                        <div className="card-body items-center text-center">
+                            <h2 className="card-title text-xl font-bold">Md. Faisal Ahmed</h2>
+                            <p className="text-sm text-purple-600 font-semibold">Advisor</p>
+                            <p className="text-xs text-gray-500">Robotics Engineering Lead</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     );
