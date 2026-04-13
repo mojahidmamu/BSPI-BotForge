@@ -1,5 +1,4 @@
-    import { Link } from "react-router-dom";
-    import NavLogo from "../../assets/image/logo.png";
+    import { Link } from "react-router-dom"; 
     import { useEffect, useState } from "react";
     import { Sun, Moon } from "lucide-react";
     import { motion } from 'framer-motion';
