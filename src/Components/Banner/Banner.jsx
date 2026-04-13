@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ChevronRight, Sparkles, Rocket, Zap, Cpu, CircuitBoard } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import logo from "../../assets/image/Logo.jpg";
+import logo from "../../assets/image/Logo2.jpeg";
 
 const Banner = () => {
     const navigate = useNavigate();

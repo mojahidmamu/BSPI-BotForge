@@ -3,6 +3,7 @@
     import { Sun, Moon } from "lucide-react";
     import { motion } from 'framer-motion';
     import { useNavigate } from 'react-router-dom';
+    import logo from "../../assets/image/Logo.jpg";
 
     const NavBar = () => {
     const [theme, setTheme] = useState("light");
@@ -109,7 +110,7 @@
             <Link to="/" className="flex items-center gap-2 shrink-0">
                 {/* <div className="w-10 h-10 rounded-full overflow-hidden ring-2 ring-purple-400">
                 <img
-                    src={NavLogo}
+                    src={logo}
                     alt="BSPI BotForge"
                     className="w-full h-full object-cover"
                 />
@@ -129,7 +130,9 @@
         className="relative"
     >
         <div className="w-10 h-10 sm:w-12 sm:h-12 bg-black rounded-xl flex items-center justify-center border-2 border-purple-500 shadow-[0_0_10px_rgba(168,85,247,0.5)]">
-            <span className="text-purple-500 font-black text-xl sm:text-2xl">B</span>
+            <span className="text-purple-500 font-black text-xl sm:text-2xl">
+                <img src={logo} alt="Logo" />
+            </span>
         </div>
     </motion.div>
 
@@ -152,7 +155,8 @@
 
     {/* Hover glow effect */}
     <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-purple-500 to-cyan-500 opacity-0 group-hover:opacity-20 blur-2xl transition-opacity duration-300 -z-10"></div>
-</motion.div>
+                </motion.div>
+                
             </Link>
             </div>
 
