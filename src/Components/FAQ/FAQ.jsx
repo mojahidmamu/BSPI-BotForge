@@ -43,7 +43,7 @@ const FAQ = () => {
     };
 
     return (
-        <section className="py-20 bg-gray-50 dark:bg-gray-900">
+        <section className="pb-6 bg-gray-50 dark:bg-gray-900">
             <div className="max-w-4xl mx-auto px-4">
 
                 {/* Title */}
