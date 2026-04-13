@@ -12,20 +12,27 @@ const Activities = () => {
     const events = [
         {
             id: 1,
-            title: "National Robotics Competition 2024",
-            date: "December 15-17, 2024",
-            venue: "BSPI Auditorium",
+            title: "Intra Club Competition 2026",
+            date: "April 20-25, 2026",
+            venue: "Robotics Lab",
             type: "Competition"
         },
         {
             id: 2,
+            title: "National Robotics Competition 2024",
+            date: "May 15-17, 2024",
+            venue: "BSPI Auditorium",
+            type: "Competition"
+        },
+        {
+            id: 3,
             title: "Workshop on Arduino Programming",
-            date: "November 25, 2024",
+            date: "Jyly 25, 2024",
             venue: "Robotics Lab",
             type: "Workshop"
         },
         {
-            id: 3,
+            id: 4,
             title: "AI & Robotics Seminar",
             date: "December 5, 2024",
             venue: "Conference Hall",
@@ -34,29 +41,36 @@ const Activities = () => {
     ];
 
     // Completed Events
-const completedEvents = [
-    {
-        id: 1,
-        title: "Line Following Robot Workshop",
-        date: "October 10, 2024",
-        venue: "Robotics Lab",
-        type: "Workshop"
-    },
-    {
-        id: 2,
-        title: "Inter Department Robotics Contest",
-        date: "September 18-19, 2024",
-        venue: "BSPI Auditorium",
-        type: "Competition"
-    },
-    {
-        id: 3,
-        title: "Intro to Machine Learning Seminar",
-        date: "August 28, 2024",
-        venue: "Conference Hall",
-        type: "Seminar"
-    }
-];
+    const completedEvents = [
+        {
+            id: 1,
+            title: "Line Following Robot Workshop",
+            date: "October 10, 2025",
+            venue: "Robotics Lab",
+            type: "Workshop"
+        },
+        {
+            id: 2,
+            title: "Inter Department Robotics Contest",
+            date: "September 18-19, 2025",
+            venue: "BSPI Auditorium",
+            type: "Competition"
+        },
+        {
+            id: 3,
+            title: "Intro to Machine Learning Seminar",
+            date: "August  28, 2025",
+            venue: "Conference Hall",
+            type: "Seminar"
+        },
+        {
+            id: 4,
+            title: "Opening Ceremony",
+            date: "February 25, 2025",
+            venue: "BSPI Auditorium",
+            type: "Seminar"
+        }
+    ];
 
 
     return (
@@ -77,8 +91,8 @@ const completedEvents = [
 
                 {/* Optional Subtext */}
                 <p className="text-gray-500 dark:text-gray-300 mt-2 text-sm md:text-base">
-                    Our important event date with details incoming & upcoming & completed
-                </p>
+                        Explore our upcoming and completed events with detailed insights and highlights.
+                    </p>
             </div>
 
             {/* Event */}
@@ -88,73 +102,121 @@ const completedEvents = [
                     <div className="grid lg:grid-cols-2 gap-12">
                         {/* Left - Events */}
                         <motion.div
-                            initial={{ opacity: 0, x: -30 }}
-                            whileInView={{ opacity: 1, x: 0 }}
-                            transition={{ duration: 0.5 }}
-                        >
-                            <h2 className="text-2xl md:text-3xl font-bold mb-6 flex items-center gap-2">
-                                <Calendar className="w-6 h-6 text-purple-600" />
-                                Upcoming Events
-                            </h2>
-                            <div className="space-y-4">
-                                {events.map((event) => (
-                                    <div key={event.id} className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-md hover:shadow-lg transition-all">
-                                        <div className="flex items-start gap-4">
-                                            <div className="bg-purple-100 dark:bg-purple-900/30 rounded-lg p-3 text-center min-w-[80px]">
-                                                <div className="text-purple-600 dark:text-purple-400 font-bold">
-                                                    {event.date.split(',')[0].split(' ')[0]}
-                                                </div>
-                                                <div className="text-xs text-gray-600 dark:text-gray-400">
-                                                    {event.date.split(',')[0].split(' ')[1]}
-                                                </div>
-                                            </div>
-                                            <div className="flex-1">
-                                                <h3 className="font-bold text-gray-900 dark:text-white mb-1">{event.title}</h3>
-                                                <p className="text-sm text-gray-600 dark:text-gray-400 flex items-center gap-2">
-                                                    <MapPin className="w-3 h-3" />
-                                                    {event.venue}
-                                                </p>
-                                                <span className="inline-block mt-2 px-2 py-1 bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 text-xs rounded-full">
-                                                    {event.type}
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </motion.div>
+    initial={{ opacity: 0, x: -30 }}
+    whileInView={{ opacity: 1, x: 0 }}
+    transition={{ duration: 0.6 }}
+>
+    {/* Title */}
+    <h2 className="text-2xl md:text-3xl font-bold mb-6 flex items-center gap-2">
+        <Calendar className="w-6 h-6 text-purple-600 animate-pulse" />
+        Upcoming Events in 2026
+    </h2>
+
+    {/* Cards */}
+    <div className="space-y-5">
+        {events.map((event, index) => (
+            <motion.div
+                key={event.id}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: index * 0.1 }}
+                whileHover={{ scale: 1.03 }}
+                className="group bg-gradient-to-r from-white via-purple-50 to-indigo-50 
+                dark:from-gray-800 dark:via-gray-800 dark:to-gray-900 
+                border border-purple-100 dark:border-gray-700
+                rounded-2xl p-5 shadow-md hover:shadow-xl 
+                transition-all duration-300"
+            >
+                <div className="flex items-start gap-4">
+
+                    {/* Date Box */}
+                    <div className="bg-gradient-to-br from-purple-500 to-indigo-500 
+                        text-white rounded-xl p-3 text-center min-w-[80px] shadow-md">
+                        <div className="font-bold text-lg">
+                            {event.date.split(',')[0].split(' ')[0]}
+                        </div>
+                        <div className="text-xs opacity-90">
+                            {event.date.split(',')[0].split(' ')[1]}
+                        </div>
+                    </div>
+
+                    {/* Content */}
+                    <div className="flex-1">
+                        <h3 className="font-bold text-gray-900 dark:text-white mb-1 text-lg group-hover:text-purple-600 transition">
+                            {event.title}
+                        </h3>
+
+                        <p className="text-sm text-gray-600 dark:text-gray-400 flex items-center gap-2">
+                            <MapPin className="w-4 h-4 text-purple-500" />
+                            {event.venue}
+                        </p>
+
+                        {/* Badge */}
+                        <span className="inline-block mt-3 px-3 py-1 
+                            bg-purple-100 dark:bg-purple-900/30 
+                            text-purple-600 dark:text-purple-400 
+                            text-xs rounded-full font-medium tracking-wide">
+                            {event.type}
+                        </span>
+                    </div>
+                </div>
+
+                {/* Bottom Glow Line */}
+                <div className="h-1 mt-4 w-0 group-hover:w-full bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full transition-all duration-300"></div>
+            </motion.div>
+        ))}
+    </div>
+</motion.div>
 
                         {/* Completed Event */}
-                         {/* Right - Events */}
+                        {/* Right - Events */}
                         <motion.div
                             initial={{ opacity: 0, x: -30 }}
                             whileInView={{ opacity: 1, x: 0 }}
                             transition={{ duration: 0.5 }}
                         >
                             <h2 className="text-2xl md:text-3xl font-bold mb-6 flex items-center gap-2">
-                                <Calendar className="w-6 h-6 text-purple-600" />
-                                Completed Events
+                                <Calendar className="w-6 h-6 text-green-600" />
+                                Completed Events in 2025
                             </h2>
+
                             <div className="space-y-4">
                                 {completedEvents.map((event) => (
-                                    <div key={event.id} className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-md hover:shadow-lg transition-all">
+                                    <div
+                                        key={event.id}
+                                        className="bg-green-50 dark:bg-green-900/20 border border-green-100 dark:border-green-800 rounded-xl p-4 shadow-md hover:shadow-lg transition-all"
+                                    >
                                         <div className="flex items-start gap-4">
-                                            <div className="bg-purple-100 dark:bg-purple-900/30 rounded-lg p-3 text-center min-w-[80px]">
-                                                <div className="text-purple-600 dark:text-purple-400 font-bold">
+
+                                            {/* Date Box */}
+                                            <div className="bg-green-100 dark:bg-green-900/40 rounded-lg p-3 text-center min-w-[80px]">
+                                                <div className="text-green-600 dark:text-green-400 font-bold">
                                                     {event.date.split(',')[0].split(' ')[0]}
                                                 </div>
                                                 <div className="text-xs text-gray-600 dark:text-gray-400">
                                                     {event.date.split(',')[0].split(' ')[1]}
                                                 </div>
                                             </div>
+
+                                            {/* Content */}
                                             <div className="flex-1">
-                                                <h3 className="font-bold text-gray-900 dark:text-white mb-1">{event.title}</h3>
+                                                <h3 className="font-bold text-gray-900 dark:text-white mb-1">
+                                                    {event.title}
+                                                </h3>
+
                                                 <p className="text-sm text-gray-600 dark:text-gray-400 flex items-center gap-2">
                                                     <MapPin className="w-3 h-3" />
                                                     {event.venue}
                                                 </p>
-                                                <span className="inline-block mt-2 px-2 py-1 bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 text-xs rounded-full">
+
+                                                {/* Type Badge */}
+                                                <span className="inline-block mt-2 px-2 py-1 bg-green-100 dark:bg-green-900/40 text-green-600 dark:text-green-400 text-xs rounded-full">
                                                     {event.type}
+                                                </span>
+
+                                                {/* Completed Badge (Optional 🔥) */}
+                                                <span className="ml-2 inline-block mt-2 px-2 py-1 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-xs rounded-full">
+                                                    Completed
                                                 </span>
                                             </div>
                                         </div>
