@@ -293,8 +293,7 @@ LinkedIn	    https://www.linkedin.com/in/abdullah-all-mojahid-a8a57b329/
 
 ⭐ Show Your Support
 If you found this project helpful, please give it a ⭐ on GitHub!
-
-<div align="center">
+ 
 Built with ❤️ by BSPI Robotics Club Team
 
 Empowering the next generation of robotics innovators
