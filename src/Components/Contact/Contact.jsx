@@ -33,14 +33,14 @@
     },
     {
         icon: <FaEnvelope />,
-        text: "principal.bspi@yahoo.com",
+        text: " bspiroboticsclub@gmail.com",
         label: "Email here",
         email: true,
     },
     { 
         icon: <FaPhone />, 
-        text: "+880 234461404", 
-        label: "Call her-(Principal)",
+        text: "+880 1834-822958", 
+        label: "Call her-(President)",
         phone: true,
     },
     {

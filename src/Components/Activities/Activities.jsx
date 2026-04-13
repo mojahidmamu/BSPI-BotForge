@@ -44,6 +44,13 @@ const Activities = () => {
     const completedEvents = [
         {
             id: 1,
+            title: "Innovation Inventra",
+            date: "November 26-29, 2025",
+            venue: "BSPI Auditorium",
+            type: "Seminer"
+        },
+        {
+            id: 1,
             title: "Line Following Robot Workshop",
             date: "October 10, 2025",
             venue: "Robotics Lab",
@@ -58,14 +65,14 @@ const Activities = () => {
         },
         {
             id: 3,
-            title: "Intro to Machine Learning Seminar",
-            date: "August  28, 2025",
-            venue: "Conference Hall",
-            type: "Seminar"
+            title: "Intra Club Project Competition",
+            date: "April 28, 2025",
+            venue:"Robotics Lab",
+            type: "Competetion"
         },
         {
             id: 4,
-            title: "Opening Ceremony",
+            title: "Grand Opening Ceremony and Freshers Reception",
             date: "February 25, 2025",
             venue: "BSPI Auditorium",
             type: "Seminar"

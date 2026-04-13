@@ -39,12 +39,12 @@
                 </li>
                 <li className="flex items-center gap-2">
                     <FaPhone className="text-purple-400" />
-                    <a href="tel:+880234461404" className="text-gray-400 hover:text-purple-400">+880 234461404</a>
+                    <a href="tel:+880234461404" className="text-gray-400 hover:text-purple-400">+880 1834-822958</a>
                 </li>
                 <li className="flex items-center gap-2">
                     <FaEnvelope className="text-purple-400" />
                     <a href="mailto:principal.bspi@yahoo.com" className="text-gray-400 hover:text-purple-400 text-sm break-all">
-                    principal.bspi@yahoo.com
+                   bspiroboticsclub@gmail.com
                     </a>
                 </li>
                 </ul>
