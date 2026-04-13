@@ -12,23 +12,23 @@ import image8 from "../../assets/image/Moderator/H.jpeg";
 
 const Moderator = () => {
 
-    // 👉 Principal (from your image)
+    //  Principal (from your image)
     const principal = {
         name: "Ropak Kanti Biswas",
         role: "Principal of BSPI",
-        image: {Head}
+        image: Head,
     };
 
-    // 👉 Teachers (replace with your real data)
+    //  Teachers (replace with your real data)
     const teachers = [
-        { id: 1, name: "Teacher 1", role: "Instructor", image: {image1} },
-        { id: 2, name: "Teacher 2", role: "Instructor", image: {image2} },
-        { id: 3, name: "Teacher 3", role: "Instructor", image: {image3} },
-        { id: 4, name: "Teacher 4", role: "Instructor", image: {image4} },
-        { id: 5, name: "Teacher 5", role: "Instructor", image: {image5} },
-        { id: 6, name: "Teacher 6", role: "Instructor", image: {image6} },
-        { id: 7, name: "Teacher 7", role: "Instructor", image: {image7} },
-        { id: 8, name: "Teacher 8", role: "Instructor", image: {image8} },
+        { id: 1, name: "Teacher 1", role: "Instructor", image: image1 },
+        { id: 2, name: "Teacher 2", role: "Instructor", image: image2 },
+        { id: 3, name: "Teacher 3", role: "Instructor", image: image3 },
+        { id: 4, name: "Teacher 4", role: "Instructor", image: image4 },
+        { id: 5, name: "Teacher 5", role: "Instructor", image: image5 },
+        { id: 6, name: "Teacher 6", role: "Instructor", image: image6 },
+        { id: 7, name: "Teacher 7", role: "Instructor", image: image7 },
+        { id: 8, name: "Teacher 8", role: "Instructor", image: image8 },
     ];
 
      // Animation variants
@@ -191,7 +191,7 @@ const Moderator = () => {
                     initial={{ opacity: 0 }}
                     whileInView={{ opacity: 1 }}
                     transition={{ delay: 0.5 }}
-                    className="text-center mt-12"
+                    className="text-center mt-8"
                 >
                     <div className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-100 to-indigo-100 dark:from-purple-900/30 dark:to-indigo-900/30 px-6 py-3 rounded-full">
                         <svg className="w-4 h-4 text-purple-600" fill="currentColor" viewBox="0 0 24 24">

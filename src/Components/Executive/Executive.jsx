@@ -1,4 +1,6 @@
 import React from 'react';
+
+import { motion } from "framer-motion";
 import { useState } from "react";
 import president from "../../assets/image/Executive2025/precident.jpeg";
 import A from "../../assets/image/Executive2025/A.jpeg";
@@ -44,67 +46,67 @@ const data = {
             {
             name: "Rishad Mahmud",
             role: "President",
-            img: {president},
+            img: president,
             },
             {
             name: "Rezuan Sajid Nahin",
-            role: "Central Secretar",
-            img: {A},
+            role: "Central Secretary",
+            img: A,
             },
             {
             name: "Tahsin Kabir Ratul",
             role: "Joint Secretary ",
-            img: {B},
+            img: B,
             },
             {
             name: "Saiful Islam",
             role: "Vice President",
-            img: {C},
+            img: C,
             },
             {
             name: "Md. Tarek",
             role: "Joint Secretary",
-            img: {D}, 
+            img: D, 
             },
             {
             name: "Md. Maruful Islam",
             role: "PR of Socail Department",
-            img: {E},
+            img: E,
             },
             {
             name: "Md. Rayan",
             role: "Finance Secretary",
-            img: {F},
+            img: F,
             },
             {
             name: "Md. Shahidullah Kaisar",
             role: "Event Planing & Management",
-            img: {G},
+            img: G,
             },
             {
             name: "Md. Sayed Sabbir",
             role: "Event Planing & Management",
-            img: {H},
+            img: H,
             },
             {
             name: "Md. Sohel",
             role: "Joint Secretary",
-            img: {I},
+            img: I,
             },
             {
             name: "Rodra Biswas",
             role: "Secretary Technical Dept. ",
-            img: {J},
+            img: J,
             },
             {
             name: "Arafat Uddin Rafit",
             role: "PR of Socail Department",
-            img: {K},
+            img: K,
             },
             {
             name: "Emon Datta",
             role: "Secretary Technical Dept. ",
-            img: {L},
+            img: L,
             },
     ],
 
@@ -112,87 +114,87 @@ const data = {
             {
             name: "Tarek Hossain",
             role: "President",
-            img: {president2},
+            img: president2,
             },
             {
             name: "Md. Ansar ",
             role: "Vice President",
-            img: {a},
+            img: a,
             },
             {
             name: "Tsmail Hossain Maruf",
             role: "General Secretary",
-            img: {b},
+            img: b,
             },
             {
             name: "Md. Samiullah Haque Saim",
             role: "Vice President",
-            img: {c}, 
+            img: c, 
             },
             {
             name: "Fazle Rob",
             role: "Finance Secretary",
-            img: {d},
+            img: d,
             },
             {
             name: "Sanbin Shakawat Sahel",
             role: "IT Secretary",
-            img: {e},
+            img: e,
             },
             {
             name: "Md. Misbahul Islam",
             role: "Joint Secretary",
-            img: {f},
+            img: f,
             },
             {
             name: "Sanjida Jannat Saom",
             role: "Assistant Joint IT Secretary",
-            img: {g},
+            img: g,
             },
             {
             name: "Md. Nadim Miah",
             role: "Event Secretary",
-            img: {i},
+            img: i,
             },
             {
             name: "Arafat Uddin Rafit",
             role: "PR of Socail Department",
-            img: {j},
+            img: j,
             },
             {
             name: "Raful Hosun Ratul",
             role: "Joint IT Secretary ",
-            img: {j},
+            img: j,
             },
             {
             name: "Nur Jahan Akter Shimu",
             role: "Joint IT Secretary",
-            img: {k},
+            img: k,
             },
             {
             name: "Atiqul Islam",
             role: "PR of Socail Media",
-            img: {l},
+            img: l,
             },
             {
             name: "Mirhad Hossain Riad",
             role:"PR of Socail Media",
-            img: {m},
+            img: m,
             },
             {
             name: "Joynal Abedin",
             role: "Assistant Joint IT Secretary",
-            img: {n},
+            img: n,
             },
             {
             name: "Emhan Datta",
             role: "Joint Technical Secretary ",
-            img: {o},
+            img: o,
             },
             {
             name: "Abdullah all Zawat",
             role: "Technical Secretary",
-            img: {p},
+            img: p,
             },
 
     ],
@@ -214,6 +216,34 @@ const Executive = () => {
     const president = members.find((m) => m.role === "President");
     const others = members.filter((m) => m.role !== "President");
 
+     // Animation variants
+    const containerVariants = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: {
+                staggerChildren: 0.1,
+                delayChildren: 0.2,
+            },
+        },
+    };
+
+    const cardVariants = {
+        hidden: { y: 50, opacity: 0 },
+        visible: {
+            y: 0,
+            opacity: 1,
+            transition: {
+                type: "spring",
+                stiffness: 100,
+                damping: 12,
+            },
+        },
+    };
+
+    const handleImageError = (e) => {
+    e.target.src = "https://via.placeholder.com/400x300?text=Image+Not+Found";
+};
 
 
     return (
@@ -252,46 +282,130 @@ const Executive = () => {
                 ))}
             </div>
 
-            {/* President Card (Full Row) */}
-            {president && (
-                <div className="mb-10">
-                <div className="card lg:card-side bg-base-100 shadow-xl border border-primary">
-                    <figure className="p-6">
-                    <img
-                        src={president.img}
-                        alt={president.name}
-                        className="w-40 h-40 rounded-xl object-cover"
-                    />
-                    </figure>
-                    <div className="card-body">
-                    <h2 className="card-title text-2xl text-primary">
-                        {president.name}
-                    </h2>
-                    <p className="text-lg font-medium">{president.role}</p>
-                    <p className="opacity-70">Leading BSPIRC with vision 🚀</p>
-                    </div>
-                </div>
-                </div>
-            )}
+           {/* President Card (Full Row - Large & Prominent) */}
+        {president && (
+            <div className="mb-16">
+                <div className="relative group">
+                    {/* Glowing Background Effect */}
+                    <div className="absolute -inset-2 bg-gradient-to-r from-purple-600 to-indigo-600 rounded-3xl blur opacity-30 group-hover:opacity-60 transition duration-500"></div>
+                    
+                    <div className="relative bg-white dark:bg-gray-800 rounded-3xl overflow-hidden shadow-2xl hover:shadow-3xl transition-all duration-500 border-2 border-purple-500/30">
+                        <div className="grid lg:grid-cols-3 gap-0">
+                            {/* Image Section - Larger & Centered */}
+                            <div className="relative lg:col-span-1 bg-gradient-to-br from-purple-600 to-indigo-600 p-8 flex items-center justify-center">
+                                <div className="relative">
+                                    {/* Animated Ring */}
+                                    <div className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-400 to-indigo-400 animate-ping opacity-20"></div>
+                                    <div className="absolute -inset-4 rounded-full bg-gradient-to-r from-purple-500 to-indigo-500 blur-xl opacity-50"></div>
+                                    <img
+                                        src={president.img}
+                                        alt={president.name}
+                                        className="relative w-48 h-48 md:w-56 md:h-56 rounded-full object-cover border-4 border-white shadow-2xl z-10"
+                                        onError={handleImageError}
+                                    />
+                                    {/* Crown/Star Badge */}
+                                    <div className="absolute -top-2 -right-2 bg-yellow-500 rounded-full p-2 z-20 shadow-lg">
+                                        <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                            <path d="M12 2L15 8.5L22 9.5L17 14L18.5 21L12 17.5L5.5 21L7 14L2 9.5L9 8.5L12 2z"/>
+                                        </svg>
+                                    </div>
+                                </div>
+                            </div>
 
-            {/* Other Members Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-2">
-                {others.map((member, index) => (
-                <div key={index} className="card bg-base-100 shadow-md">
-                    <figure className="px-6 pt-6">
-                    <img
-                        src={member.img}
-                        alt={member.name}
-                        className="rounded-xl w-24 h-24 object-cover"
-                    />
-                    </figure>
-                    <div className="card-body items-center text-center">
-                    <h2 className="card-title">{member.name}</h2>
-                    <p className="text-sm opacity-70">{member.role}</p>
+                            {/* Content Section - Larger Text */}
+                            <div className="lg:col-span-2 p-8 md:p-10 flex flex-col justify-center">
+                                {/* Role Badge */}
+                                <div className="inline-flex items-center gap-2 bg-purple-100 dark:bg-purple-900/30 px-4 py-2 rounded-full w-fit mb-4">
+                                    <svg className="w-5 h-5 text-purple-600" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M12 2L15 8.5L22 9.5L17 14L18.5 21L12 17.5L5.5 21L7 14L2 9.5L9 8.5L12 2z"/>
+                                    </svg>
+                                    <span className="text-sm font-semibold text-purple-600 dark:text-purple-400">Executive President</span>
+                                </div>
+                                
+                                <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-3">
+                                    {president.name}
+                                </h2>
+                                
+                                <p className="text-xl md:text-2xl text-purple-600 dark:text-purple-400 font-semibold mb-4">
+                                    {president.role}
+                                </p>
+                                
+                                {/* Quote/Message */}
+                                <div className="bg-purple-50 dark:bg-purple-900/20 rounded-xl p-5 mb-5 border-l-4 border-purple-500">
+                                    <p className="text-gray-700 dark:text-gray-300 text-lg italic">
+                                        "Leading BSPI Robotics Club with innovation, excellence, and a vision to build future tech leaders."
+                                    </p>
+                                </div>
+                                
+                                {/* Stats or Quick Info */}
+                                <div className="grid grid-cols-3 gap-4 pt-4">
+                                    <div className="text-center">
+                                        <div className="text-2xl font-bold text-purple-600">150+</div>
+                                        <div className="text-xs text-gray-500">Active Members</div>
+                                    </div>
+                                    <div className="text-center">
+                                        <div className="text-2xl font-bold text-purple-600">30+</div>
+                                        <div className="text-xs text-gray-500">Projects</div>
+                                    </div>
+                                    <div className="text-center">
+                                        <div className="text-2xl font-bold text-purple-600">15+</div>
+                                        <div className="text-xs text-gray-500">Awards</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                ))}
             </div>
+        )}
+
+
+        {/* Other Members Grid */}
+            <motion.div
+                variants={containerVariants}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, threshold: 0.1 }}
+                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
+            >
+                {others.map((member, index) => (
+                    <motion.div
+                        key={index}
+                        variants={cardVariants}
+                        whileHover={{ y: -8 }}
+                        className="group cursor-pointer"
+                    >
+                        <div className="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 h-full">
+                            {/* Image Section - Full width card image */}
+                            <div className="relative h-64 overflow-hidden">
+                                <img
+                                    src={member.img}  // ✅ FIXED: Changed from member.image to member.img
+                                    alt={member.name}
+                                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                                    onError={handleImageError}
+                                />
+                                {/* Overlay gradient */}
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+                                
+                                {/* Role Badge */}
+                                <div className="absolute top-3 right-3 bg-purple-500 text-white text-xs px-2 py-1 rounded-full z-10">
+                                    {member.role}
+                                </div>
+                            </div>
+
+                            {/* Content Section */}
+                            <div className="p-4 text-center relative">
+                                <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors line-clamp-1">
+                                    {member.name}
+                                </h3>
+                                <p className="text-xs text-purple-600 dark:text-purple-400 font-semibold">
+                                    {member.role}
+                                </p>
+                            </div>
+                        </div>
+                    </motion.div>
+                ))}
+            </motion.div>
 
 
             {/* Alumnai */}
