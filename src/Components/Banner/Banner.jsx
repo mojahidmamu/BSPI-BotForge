@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ChevronRight, Sparkles, Rocket, Zap, Cpu, CircuitBoard } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import logo from "../../assets/image/Logo.jpg";
 
 const Banner = () => {
     const navigate = useNavigate();
@@ -106,11 +107,50 @@ const Banner = () => {
                     </motion.div>
 
                     {/* Right */}
-                    <motion.div className="hidden lg:block">
-                        <div className="bg-white/5 p-8 rounded-2xl text-center">
-                            <CircuitBoard className="w-24 h-24 mx-auto text-purple-400 mb-4" />
-                            <Zap className="w-12 h-12 mx-auto text-yellow-400 animate-spin" />
-                            <p className="text-gray-300 mt-4">Powered by Innovation</p>
+                    <motion.div
+                        className="hidden lg:block"
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.6 }}
+                    >
+                        <div className="relative bg-white/5 backdrop-blur-sm p-12 rounded-3xl text-center border border-purple-500/20 shadow-2xl overflow-hidden">
+
+                            {/* Glow Background */}
+                            <div className="absolute inset-0 bg-gradient-to-r from-purple-600/20 to-indigo-600/20 blur-3xl"></div>
+
+                            {/* BIG Animated Logo */}
+                            <motion.div
+                                animate={{
+                                    y: [0, -20, 0],
+                                    scale: [1, 1.08, 1],
+                                }}
+                                transition={{
+                                    duration: 4,
+                                    repeat: Infinity,
+                                    ease: "easeInOut",
+                                }}
+                                className="relative z-10 flex justify-center"
+                            >
+                                <img
+                                    src={logo}
+                                    alt="BSPI Robotics Club Logo"
+                                    className="w-44 h-44 md:w-52 md:h-52 object-contain drop-shadow-2xl rounded-xl"
+                                />
+                            </motion.div>
+
+                            {/* Animated Icon */}
+                            <motion.div
+                                animate={{ rotate: 360 }}
+                                transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+                                className="mt-6 flex justify-center"
+                            >
+                                <Zap className="w-12 h-12 text-yellow-400" />
+                            </motion.div>
+
+                            {/* Text */}
+                            <p className="text-gray-300 mt-4 text-sm md:text-base tracking-wide relative z-10">
+                                Powered by Innovation & Robotics
+                            </p>
                         </div>
                     </motion.div>
 
