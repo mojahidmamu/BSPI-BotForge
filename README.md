@@ -286,6 +286,10 @@ All Club Members         - For testing and suggestions
 Open Source Community    - For amazing tools and libraries
 
 📞 Contact 
+Platform	    Link  
+Email Support	abdullahallmojahidstudent@gmail.com
+Facebook	    https://www.facebook.com/abdullah.all.mojahid.2024
+LinkedIn	    https://www.linkedin.com/in/abdullah-all-mojahid-a8a57b329/
 
 ⭐ Show Your Support
 If you found this project helpful, please give it a ⭐ on GitHub!
