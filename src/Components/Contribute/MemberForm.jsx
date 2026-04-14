@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
 import { Navigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 
-const StudentForm = () => {
+const MemberForm = () => {
+    
     const [photo, setPhoto] = useState(null);
     const [message, setMessage] = useState('');
     const [loading, setLoading] = useState(false);
@@ -14,7 +16,7 @@ const StudentForm = () => {
     const [formData, setFormData] = useState({
         name: '', email: '', phone: '', roll: '', registration: '',
         department: '', session: '', cgpa: '', district: '', currentJob: '',
-        skills: '', socialLink: '',   bloodGroup: '',
+        skills: '', socialLink: '',   bloodGroup: '', photo: '' 
     });
 
     const handleChange = (e) => {
@@ -200,6 +202,9 @@ const StudentForm = () => {
 
     return (
         <div className="max-w-4xl mx-auto p-6">
+             <Helmet>
+                        <title>BSPI BotForge | Membership</title>
+                    </Helmet>
             <div className="bg-white rounded-xl mt-4 shadow-xl overflow-hidden">
                 {/* Rules & Commitment Section */}
             <div className="bg-gradient-to-r mt-12 from-purple-50 to-blue-50 dark:from-gray-800 dark:to-gray-900 rounded-xl p-6 mb-8 border-2 border-purple-200 dark:border-purple-800">
@@ -415,4 +420,4 @@ const StudentForm = () => {
     );
 };
 
-export default StudentForm;
+export default MemberForm;

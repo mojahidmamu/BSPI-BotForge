@@ -24,6 +24,7 @@ import {
   CheckCircle,
   AlertCircle
 } from 'lucide-react';
+import { Helmet } from 'react-helmet-async';
 
 const AllMembers = () => {
     const navigate = useNavigate();
@@ -192,6 +193,10 @@ const AllMembers = () => {
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 py-8 px-4 md:px-8">
+
+            <Helmet>
+                <title>BSPI BotForge | Member List</title>
+            </Helmet>
             <div className="max-w-7xl mx-auto">
                 {/* Hero Section */}
                 <motion.div 

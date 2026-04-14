@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import BuildTogether from './BuildTogether';
+import { Helmet } from 'react-helmet-async';
 
 const Activities = () => {
     // Upcoming Events
@@ -82,6 +83,9 @@ const Activities = () => {
 
     return (
         <div>
+            <Helmet>
+                        <title>BSPI BotForge | Events</title>
+                    </Helmet>
              {/* Header & Title  */}
             <div className="max-w-4xl mx-auto pt-20 text-center space-y-4 mb-8">
                 <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight">

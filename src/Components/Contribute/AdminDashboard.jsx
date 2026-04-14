@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, PieChart, Pie, Cell } from 'recharts';
+import { Helmet } from 'react-helmet-async';
 
 const AdminDashboard = () => {
     const [pending, setPending] = useState([]);
@@ -106,6 +107,9 @@ const AdminDashboard = () => {
 
     return (
         <div className="min-h-screen bg-gray-100">
+             <Helmet>
+                        <title>BSPI BotForge | Admin</title>
+                    </Helmet>
             <div className="bg-white shadow-lg p-4">
                 <h1 className="text-2xl font-bold text-purple-600">👑 Admin Dashboard</h1>
             </div>

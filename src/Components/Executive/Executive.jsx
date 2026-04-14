@@ -39,6 +39,7 @@ import Alumnai3 from "../../assets/image/Alumnai/C.jpeg";
 import Alumnai4 from "../../assets/image/Alumnai/D.jpeg";
 import Alumnai5 from "../../assets/image/Alumnai/E.jpeg";
 import Alumnai6 from "../../assets/image/Alumnai/F.jpeg";
+import { Helmet } from 'react-helmet-async';
 
 const data = {
 
@@ -248,6 +249,9 @@ const Executive = () => {
 
     return (
         <div max-w-7xl mx-auto px-4 py-10>
+            <Helmet>
+                <title>BSPI BotForge | Our Hero</title>
+            </Helmet>
             {/* Header & Title  */}
             <div className="max-w-4xl mx-auto pt-20 text-center space-y-4 mb-8">
                 <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight">

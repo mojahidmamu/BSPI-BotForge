@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
 
 const AdminSecurity = () => {
@@ -36,6 +37,9 @@ const AdminSecurity = () => {
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-purple-600 to-blue-600 flex items-center justify-center p-4">
+             <Helmet>
+                        <title>BSPI BotForge | Admin Password</title>
+                    </Helmet>
             <div className="max-w-md w-full">
                 {/* Security Card */}
                 <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl overflow-hidden">

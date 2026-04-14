@@ -4,12 +4,16 @@ import AboutUs from '../AboutUs/AboutUs';
 import FAQ from '../FAQ/FAQ';
 import Location from '../Location/Location';
 import Moderator from '../Moderator/Moderator';
+import { Helmet } from 'react-helmet-async';
 
 
 
 const Home = () => {
     return (
         <div>
+             <Helmet>
+                        <title>BSPI BotForge | Home</title>
+                    </Helmet>
             <Banner></Banner>
             <AboutUs></AboutUs>
             <Moderator></Moderator>
