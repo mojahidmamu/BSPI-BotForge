@@ -12,7 +12,7 @@
 
 **A complete digital solution for managing robotics club operations, member applications, and community engagement**
 
-[Live Demo](#) | [Documentation](#) | [Report Issue](#)
+ 
 
 </div>
 
@@ -24,11 +24,8 @@
 - [Technology Stack](#-technology-stack)
 - [Project Impact](#-project-impact)
 - [System Architecture](#-system-architecture)
-- [Installation Guide](#-installation-guide)
-- [API Documentation](#-api-documentation)
-- [Screenshots](#-screenshots)
-- [Future Roadmap](#-future-roadmap)
-- [Contributors](#-contributors)
+- [Installation Guide](#-installation-guide) 
+- [Future Roadmap](#-future-roadmap) 
 - [License](#-license)
 
 ---
