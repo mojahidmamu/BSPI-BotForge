@@ -4,7 +4,7 @@
     import { motion } from 'framer-motion';
     import { useNavigate } from 'react-router-dom';
     import logo from "../../assets/image/Logo.jpg";
-    import { logoutUser } from "../firebase/firebase.config";
+    import { logoutUser } from "../../firebase/firebase.config";
     import { useAuth } from "../context/AuthContext";
 
     import { toast } from 'react-hot-toast';

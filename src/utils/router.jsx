@@ -11,6 +11,7 @@ import Activities from "../Components/Activities/Activities";
 import Executive from "../Components/Executive/Executive";
 import MemberDetails from "../Components/AllMembers/MemberDetails";
 import ProtectedRoute from "../Components/ProtectedRoute";
+import Login from "../pages/Login";
 
 export const router = createBrowserRouter([
   {
@@ -48,6 +49,10 @@ export const router = createBrowserRouter([
         {
             path: 'admin-dashboard', 
             element: <AdminDashboard></AdminDashboard>,
+        },
+        {
+            path: '/login', 
+            element: <Login></Login>,
         },
         {
             path: 'members', 
