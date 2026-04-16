@@ -6,11 +6,13 @@ import { HelmetProvider } from 'react-helmet-async'
 import { RouterProvider } from 'react-router-dom'
 import { router } from './utils/router.jsx'
 import { Toaster } from 'react-hot-toast';
+import { AuthProvider } from './Components/context/AuthContext.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <HelmetProvider>
       <div className="w-full">
+        <AuthProvider>
           <RouterProvider router={router} />
           <Toaster 
             position="top-center" 
@@ -37,6 +39,7 @@ createRoot(document.getElementById('root')).render(
               },
             }}
           />
+        </AuthProvider>
         </div>
     </HelmetProvider>
   </StrictMode>,

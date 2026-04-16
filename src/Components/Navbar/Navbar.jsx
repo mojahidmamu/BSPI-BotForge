@@ -4,21 +4,26 @@
     import { motion } from 'framer-motion';
     import { useNavigate } from 'react-router-dom';
     import logo from "../../assets/image/Logo.jpg";
+    import { logoutUser } from "../firebase/firebase.config";
+    import { useAuth } from "../context/AuthContext";
+
+    import { toast } from 'react-hot-toast';
+    import { LogOut, User, Settings } from 'lucide-react';
 
     const NavBar = () => {
-    const [theme, setTheme] = useState("light");
+    // const [theme, setTheme] = useState("light");
     const navigate = useNavigate();
 
     // Apply theme to <html> so Tailwind dark classes work
-    useEffect(() => {
-        if (theme === "dark") {
-        document.documentElement.classList.add("dark");
-        } else {
-        document.documentElement.classList.remove("dark");
-        }
-    }, [theme]);
+    // useEffect(() => {
+    //     if (theme === "dark") {
+    //     document.documentElement.classList.add("dark");
+    //     } else {
+    //     document.documentElement.classList.remove("dark");
+    //     }
+    // }, [theme]);
 
-    const toggleTheme = () => setTheme(theme === "light" ? "dark" : "light");
+    // const toggleTheme = () => setTheme(theme === "light" ? "dark" : "light");
 
     const NavOptions = (
         <>
@@ -73,9 +78,22 @@
         </>
     );
 
+    const { user, isAuthenticated } = useAuth(); 
+
+    const handleLogout = async () => {
+        const { success, error } = await logoutUser();
+        if (success) {
+            toast.success('Logged out successfully!');
+            navigate('/');
+        } else {
+            toast.error(error);
+        }
+    };
+
     return (
         <>
-        <div className="navbar fixed z-10 bg-black bg-opacity-50 text-gray-100  w-full">
+            <nav>
+                <div className="navbar fixed z-10 bg-black bg-opacity-50 text-gray-100  w-full">
             <div className="navbar-start">
             <div className="dropdown">
                 <div
@@ -165,13 +183,9 @@
             </div>
 
             <div className="navbar-end flex items-center space-x-3">
-            {/* Theme Toggle */}
-            <button
-                onClick={toggleTheme}
-                className="ml-3 relative p-2 rounded-full border border-gray-400 dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors duration-200"
-            >
-                <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0 text-orange-500" />
-                <Moon className="absolute top-2 left-2 h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100 text-purple-400" />
+            {/* Login Button */}
+            <button>
+
             </button>
 
             <div className="relative group">
@@ -218,7 +232,37 @@
             </div>
 </div>
             </div>
-        </div>
+                </div>
+                {/*  */}
+                    <div className="navbar-end flex items-center space-x-3">
+                    {isAuthenticated ? (
+                        <>
+                            {/* User Photo */}
+                            <div className="dropdown dropdown-end">
+                                <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
+                                    <div className="w-10 rounded-full">
+                                        <img 
+                                            src={user?.photoURL || 'https://via.placeholder.com/40'} 
+                                            alt={user?.displayName || 'User'} 
+                                        />
+                                    </div>
+                                </div>
+                                <ul className="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52">
+                                    <li className="menu-title">
+                                        <span>{user?.displayName || user?.email}</span>
+                                    </li>
+                                    <li><Link to="/profile"><User className="w-4 h-4" /> Profile</Link></li>
+                                    <li><button onClick={handleLogout}><LogOut className="w-4 h-4" /> Logout</button></li>
+                                </ul>
+                            </div>
+                        </>
+                    ) : (
+                        <Link to="/login">
+                            <button className="btn btn-primary">Login</button>
+                        </Link>
+                    )}
+                </div>
+            </nav>
         </>
     );
     };

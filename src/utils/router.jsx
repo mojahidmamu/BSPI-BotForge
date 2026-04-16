@@ -10,6 +10,7 @@ import Contact from "../Components/Contact/Contact";
 import Activities from "../Components/Activities/Activities";
 import Executive from "../Components/Executive/Executive";
 import MemberDetails from "../Components/AllMembers/MemberDetails";
+import ProtectedRoute from "../Components/ProtectedRoute";
 
 export const router = createBrowserRouter([
   {
@@ -22,7 +23,11 @@ export const router = createBrowserRouter([
         },
         {
             path: '/contribute/member', 
-            element: <MemberForm></MemberForm>,
+            element: (
+                <ProtectedRoute>
+                    <MemberForm></MemberForm>,
+                </ProtectedRoute>
+            ),
         }, 
         {
             path: '/contribute/admin', 
@@ -46,11 +51,19 @@ export const router = createBrowserRouter([
         },
         {
             path: 'members', 
-            element: <AllMembers></AllMembers>,
+            element: (
+                <ProtectedRoute>
+                    <AllMembers></AllMembers>,
+                </ProtectedRoute>
+            ),
         },
         {
             path: 'member/:id', 
-            element: <MemberDetails></MemberDetails>
+            element: (
+                <ProtectedRoute>
+                    <MemberDetails></MemberDetails>, 
+                </ProtectedRoute>
+            ),
         },
     ],
   },
