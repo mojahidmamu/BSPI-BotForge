@@ -12,6 +12,7 @@ import Executive from "../Components/Executive/Executive";
 import MemberDetails from "../Components/AllMembers/MemberDetails";
 import ProtectedRoute from "../Components/ProtectedRoute";
 import Login from "../pages/Login";
+import Profile from "../Components/Profile/Profile";
 
 export const router = createBrowserRouter([
   {
@@ -70,6 +71,14 @@ export const router = createBrowserRouter([
                 </ProtectedRoute>
             ),
         },
+        {
+            path: '/profile', 
+            element: (
+                <ProtectedRoute>
+                    <Profile></Profile>,
+                </ProtectedRoute>
+            )
+        }
     ],
   },
 ]);

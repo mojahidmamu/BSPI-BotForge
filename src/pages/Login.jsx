@@ -180,16 +180,7 @@ const Login = () => {
                         </span>
                     </button>
 
-                    {/* Sign Up Link */}
-                    <p className="text-center text-sm text-gray-600 dark:text-gray-400 mt-6">
-                        Don't have an account?{' '}
-                        <button
-                            onClick={() => setIsSignUp(!isSignUp)}
-                            className="text-purple-600 hover:text-purple-700 font-semibold"
-                        >
-                            Sign Up
-                        </button>
-                    </p>
+            
                 </div>
             </motion.div>
         </div>
