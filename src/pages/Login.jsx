@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext'; 
+import { useNavigate, useLocation } from 'react-router-dom'; 
 import { motion } from 'framer-motion';
 import { Mail, Lock, LogIn, User, AlertCircle, Eye, EyeOff } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { signInWithEmail, signInWithGoogle } from '../firebase/firebase.config';
+import { useAuth } from '../Components/context/AuthContext';
 
 const Login = () => {
     const navigate = useNavigate();
