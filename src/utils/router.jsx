@@ -24,18 +24,6 @@ export const router = createBrowserRouter([
             element: <Home></Home>,
         },
         {
-            path: '/contribute/member', 
-            element: (
-                <ProtectedRoute>
-                    <MemberForm></MemberForm>,
-                </ProtectedRoute>
-            ),
-        }, 
-        {
-            path: '/contribute/admin', 
-            element:  <AdminSecurity></AdminSecurity>
-        },
-        {
             path: '/contact', 
             element: <Contact></Contact>,
         },
@@ -48,18 +36,30 @@ export const router = createBrowserRouter([
             element: <Executive></Executive>,
         },
         {
-            path: 'admin-dashboard', 
-            element: <AdminDashboard></AdminDashboard>,
-        },
-        {
             path: '/login', 
             element: <Login></Login>,
+        },
+        {
+            path: '/contribute/member', 
+            element: (
+                <ProtectedRoute>
+                    <MemberForm></MemberForm>,
+                </ProtectedRoute>
+            ),
+        }, 
+        {
+            path: '/contribute/admin', 
+            element:  <AdminSecurity></AdminSecurity>
+        },
+        {
+            path: 'admin-dashboard', 
+            element: <AdminDashboard></AdminDashboard>,
         },
         {
             path: 'members', 
             element: (
                 <ProtectedRoute>
-                    <AllMembers></AllMembers>,
+                    <AllMembers></AllMembers>
                 </ProtectedRoute>
             ),
         },
@@ -67,7 +67,7 @@ export const router = createBrowserRouter([
             path: 'member/:id', 
             element: (
                 <ProtectedRoute>
-                    <MemberDetails></MemberDetails>, 
+                    <MemberDetails></MemberDetails> 
                 </ProtectedRoute>
             ),
         },
@@ -75,7 +75,7 @@ export const router = createBrowserRouter([
             path: '/profile', 
             element: (
                 <ProtectedRoute>
-                    <Profile></Profile>,
+                    <Profile></Profile>
                 </ProtectedRoute>
             )
         }

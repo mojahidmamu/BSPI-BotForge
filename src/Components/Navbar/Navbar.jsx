@@ -11,24 +11,9 @@ import { toast } from 'react-hot-toast';
 const NavBar = () => {
     const navigate = useNavigate();
     const { user, isAuthenticated } = useAuth();
-    const [theme, setTheme] = useState(() => {
-        const savedTheme = localStorage.getItem('theme');
-        return savedTheme || 'light';
-    });
+   
 
-    // Apply theme to html element
-    useEffect(() => {
-        if (theme === "dark") {
-            document.documentElement.classList.add("dark");
-            localStorage.setItem("theme", "dark");
-        } else {
-            document.documentElement.classList.remove("dark");
-            localStorage.setItem("theme", "light");
-        }
-    }, [theme]);
-
-    const toggleTheme = () => setTheme(theme === "light" ? "dark" : "light");
-
+    
     const handleLogout = async () => {
         const { success, error } = await logoutUser();
         if (success) {
@@ -48,7 +33,7 @@ const NavBar = () => {
             </li>
             <li>
                 <Link to="/activities" className="hover:text-purple-400 transition-colors duration-200">
-                    Events
+                    Activities
                 </Link>
             </li>
             <li>
@@ -135,39 +120,7 @@ const NavBar = () => {
                 {/* Right Side - Theme Toggle, Contribute, Login/User */}
                 <div className="navbar-end flex items-center space-x-3">
                     
-                    {/* Theme Toggle Button */}
-                    {/* <button
-                        onClick={toggleTheme}
-                        className="relative p-2 rounded-full border border-gray-400 dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-800 transition-all duration-300 w-10 h-10 overflow-hidden"
-                        aria-label="Toggle theme"
-                    >
-                        <div className="relative w-full h-full">
-                            <motion.div
-                                initial={false}
-                                animate={{
-                                    rotate: theme === 'dark' ? 90 : 0,
-                                    scale: theme === 'dark' ? 0 : 1,
-                                    opacity: theme === 'dark' ? 0 : 1,
-                                }}
-                                transition={{ duration: 0.3 }}
-                                className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
-                            >
-                                <Sun className="h-4 w-4 text-orange-500" />
-                            </motion.div>
-                            <motion.div
-                                initial={false}
-                                animate={{
-                                    rotate: theme === 'dark' ? 0 : -90,
-                                    scale: theme === 'dark' ? 1 : 0,
-                                    opacity: theme === 'dark' ? 1 : 0,
-                                }}
-                                transition={{ duration: 0.3 }}
-                                className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
-                            >
-                                <Moon className="h-4 w-4 text-purple-400" />
-                            </motion.div>
-                        </div>
-                    </button> */}
+                    
 
                      {/* Login / User Profile Section */}
                     {isAuthenticated ? (
@@ -220,7 +173,7 @@ const NavBar = () => {
                     {/* Contribute Dropdown */}
                     <div className="relative group">
                         <button className="btn btn-accent rounded-lg font-bold text-white hover:bg-purple-600 inline-flex items-center gap-2 bg-purple-600 px-4 py-2">
-                            Join Us
+                            Contribute
                             <svg className="w-4 h-4 transition-transform duration-200 group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                             </svg>
