@@ -202,7 +202,7 @@ const AllMembers = () => {
                 <motion.div 
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="text-center mb-8 md:mb-12"
+                    className="text-center mb-8 md:mb-4"
                 >
                     <div className="inline-flex items-center justify-center p-2 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full mb-4">
                         <Users className="text-white w-6 h-6" />
@@ -213,7 +213,7 @@ const AllMembers = () => {
                     <p className="text-gray-600 dark:text-gray-300 mt-3 text-sm md:text-base">
                         Meet the talented individuals driving innovation at BSPI Robotics Club
                     </p>
-                    <div className="mt-3 text-sm text-gray-500">
+                    <div className="mt-2 text-sm text-gray-500">
                         ⚠️ শুধুমাত্র রেজিস্টার্ড মেম্বাররা প্রোফাইল দেখতে পারবেন
                     </div>
                 </motion.div>
@@ -222,7 +222,7 @@ const AllMembers = () => {
                 <motion.div 
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden mb-8"
+                    className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden mb-4"
                 >
                     <div className="p-4 md:p-6">
                         <div className="flex flex-col md:flex-row gap-4">
