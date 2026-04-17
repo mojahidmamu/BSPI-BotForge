@@ -48,7 +48,7 @@ const NavBar = () => {
             </li>
             <li>
                 <Link to="/activities" className="hover:text-purple-400 transition-colors duration-200">
-                    Activities
+                    Events
                 </Link>
             </li>
             <li>
@@ -220,7 +220,7 @@ const NavBar = () => {
                     {/* Contribute Dropdown */}
                     <div className="relative group">
                         <button className="btn btn-accent rounded-lg font-bold text-white hover:bg-purple-600 inline-flex items-center gap-2 bg-purple-600 px-4 py-2">
-                            Contribute
+                            Join Us
                             <svg className="w-4 h-4 transition-transform duration-200 group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                             </svg>

@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../Components/context/AuthContext';
 import { motion } from 'framer-motion';
 import axios from 'axios'; 
+import { toast } from 'react-hot-toast';
 import {
-     ArrowLeft,
+    ArrowLeft,
     Mail,
     Phone,
     MapPin,
@@ -21,8 +23,6 @@ import {
     Heart,
     AlertCircle,
     Briefcase,
-    Link as LinkIcon,
-    Clock,
     Edit2,
     Save,
     X
@@ -41,6 +41,7 @@ import {
 const MemberDetails = () => {
     const { id } = useParams();
     const navigate = useNavigate();
+    const { user, isAuthenticated } = useAuth();
     const [member, setMember] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -48,13 +49,24 @@ const MemberDetails = () => {
     const [showEmailModal, setShowEmailModal] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const [saving, setSaving] = useState(false);
-    const [editedSocialLinks, setEditedSocialLinks] = useState({
-        facebook: '',
-        linkedin: '',
-        github: '',
-        portfolio: '',
-        twitter: '',
-        instagram: ''
+    const [isOwnProfile, setIsOwnProfile] = useState(false);
+    
+    // Complete profile edit data
+    const [editedData, setEditedData] = useState({
+        skills: '',
+        currentJob: '',
+        bio: '',
+        phone: '',
+        district: '',
+        bloodGroup: '',
+        socialLinks: {
+            facebook: '',
+            linkedin: '',
+            github: '',
+            portfolio: '',
+            twitter: '',
+            instagram: ''
+        }
     });
 
     useEffect(() => {
@@ -64,7 +76,7 @@ const MemberDetails = () => {
             setError('Invalid member ID');
             setLoading(false);
         }
-    }, [id]);
+    }, [id, user]);
 
     const fetchMemberDetails = async () => {
         try {
@@ -78,17 +90,42 @@ const MemberDetails = () => {
             console.log('API Response:', response.data);
             
             if (response.data.success) {
-                setMember(response.data.data);
-                // Initialize social links after member is loaded
-                const socialLinks = response.data.data.socialLinks || {};
-                setEditedSocialLinks({
-                    facebook: socialLinks.facebook || '',
-                    linkedin: socialLinks.linkedin || '',
-                    github: socialLinks.github || '',
-                    portfolio: socialLinks.portfolio || '',
-                    twitter: socialLinks.twitter || '',
-                    instagram: socialLinks.instagram || ''
+                const memberData = response.data.data;
+                setMember(memberData);
+                
+                // Initialize edit data with member values
+                const socialLinks = memberData.socialLinks || {};
+                setEditedData({
+                    skills: memberData.skills || '',
+                    currentJob: memberData.currentJob || '',
+                    bio: memberData.bio || '',
+                    phone: memberData.phone || '',
+                    district: memberData.district || '',
+                    bloodGroup: memberData.bloodGroup || '',
+                    socialLinks: {
+                        facebook: socialLinks.facebook || '',
+                        linkedin: socialLinks.linkedin || '',
+                        github: socialLinks.github || '',
+                        portfolio: socialLinks.portfolio || '',
+                        twitter: socialLinks.twitter || '',
+                        instagram: socialLinks.instagram || ''
+                    }
                 });
+                
+                // ✅ Check if this is the logged-in user's own profile
+                const userEmail = user?.email?.toLowerCase().trim();
+                const memberEmail = memberData?.email?.toLowerCase().trim();
+                
+                console.log('User Email:', userEmail);
+                console.log('Member Email:', memberEmail);
+                
+                if (user && userEmail === memberEmail) {
+                    setIsOwnProfile(true);
+                    console.log('✅ Own profile - Edit enabled');
+                } else {
+                    setIsOwnProfile(false);
+                    console.log('🔒 View only mode - Cannot edit');
+                }
             } else {
                 setError(response.data.error || 'Failed to load member details');
             }
@@ -141,52 +178,104 @@ const MemberDetails = () => {
         }
     };
 
+    // ✅ Edit handlers - Only for own profile
     const handleEditClick = () => {
+        if (!isOwnProfile) {
+            toast.error('You can only edit your own profile!');
+            return;
+        }
         setIsEditing(true);
     };
 
     const handleCancelEdit = () => {
         setIsEditing(false);
-        // Reset to original values from member
+        // Reset to original values
         const socialLinks = member?.socialLinks || {};
-        setEditedSocialLinks({
-            facebook: socialLinks.facebook || '',
-            linkedin: socialLinks.linkedin || '',
-            github: socialLinks.github || '',
-            portfolio: socialLinks.portfolio || '',
-            twitter: socialLinks.twitter || '',
-            instagram: socialLinks.instagram || ''
+        setEditedData({
+            skills: member?.skills || '',
+            currentJob: member?.currentJob || '',
+            bio: member?.bio || '',
+            phone: member?.phone || '',
+            district: member?.district || '',
+            bloodGroup: member?.bloodGroup || '',
+            socialLinks: {
+                facebook: socialLinks.facebook || '',
+                linkedin: socialLinks.linkedin || '',
+                github: socialLinks.github || '',
+                portfolio: socialLinks.portfolio || '',
+                twitter: socialLinks.twitter || '',
+                instagram: socialLinks.instagram || ''
+            }
         });
     };
 
+    const handleInputChange = (field, value) => {
+        setEditedData(prev => ({ ...prev, [field]: value }));
+    };
+
     const handleSocialLinkChange = (platform, value) => {
-        setEditedSocialLinks(prev => ({
+        setEditedData(prev => ({
             ...prev,
-            [platform]: value
+            socialLinks: { ...prev.socialLinks, [platform]: value }
         }));
     };
 
-    const handleSaveSocialLinks = async () => {
+    // ✅ Save profile updates to database
+    const handleSaveProfile = async () => {
+        if (!isOwnProfile) {
+            toast.error('You can only edit your own profile!');
+            return;
+        }
+        
         setSaving(true);
+        
         try {
             const API_URL = 'http://localhost:5000';
-            const response = await axios.put(`${API_URL}/api/students/${id}/social-links`, {
-                socialLinks: editedSocialLinks
-            });
+            
+            const config = {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-User-Email': user?.email?.toLowerCase().trim()
+                }
+            };
+            
+            const updateData = {
+                skills: editedData.skills,
+                currentJob: editedData.currentJob,
+                bio: editedData.bio,
+                phone: editedData.phone,
+                district: editedData.district,
+                bloodGroup: editedData.bloodGroup,
+                socialLinks: editedData.socialLinks
+            };
+            
+            const response = await axios.put(
+                `${API_URL}/api/students/update-profile/${id}`,
+                updateData,
+                config
+            );
             
             if (response.data.success) {
                 setMember(prev => ({
                     ...prev,
-                    socialLinks: editedSocialLinks
+                    skills: editedData.skills,
+                    currentJob: editedData.currentJob,
+                    bio: editedData.bio,
+                    phone: editedData.phone,
+                    district: editedData.district,
+                    bloodGroup: editedData.bloodGroup,
+                    socialLinks: editedData.socialLinks
                 }));
                 setIsEditing(false);
-                alert('Social links updated successfully!');
-            } else {
-                alert('Failed to update social links');
+                toast.success('Profile updated successfully!');
             }
         } catch (error) {
-            console.error('Error saving social links:', error);
-            alert('Error saving social links. Please try again.');
+            console.error('Error saving profile:', error);
+            if (error.response?.status === 403) {
+                toast.error('You are not authorized to edit this profile!');
+            } else {
+                toast.error(error.response?.data?.error || 'Failed to update profile');
+            }
         } finally {
             setSaving(false);
         }
@@ -256,6 +345,13 @@ const MemberDetails = () => {
                                     <div class="info-item"><div class="info-label">Department</div><div class="info-value">${member.department}</div></div>
                                     <div class="info-item"><div class="info-label">Session</div><div class="info-value">${member.session}</div></div>
                                     <div class="info-item"><div class="info-label">CGPA</div><div class="info-value">${member.cgpa}</div></div>
+                                </div>
+                            </div>
+                            
+                            <div class="section">
+                                <h2 class="section-title">Professional Information</h2>
+                                <div class="info-grid">
+                                    <div class="info-item"><div class="info-label">Current Job</div><div class="info-value">${member.currentJob || 'Not specified'}</div></div>
                                 </div>
                             </div>
                             
@@ -382,9 +478,23 @@ const MemberDetails = () => {
                                 </div>
                             </div>
                             
-                            <button onClick={handleDownloadProfile} disabled={downloading} className="mt-4 md:mt-0 px-6 py-2 bg-gradient-to-r from-purple-500 to-indigo-500 text-white rounded-xl hover:shadow-lg transition-all flex items-center gap-2 disabled:opacity-50">
-                                {downloading ? <><div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>Downloading...</> : <><Download className="w-4 h-4" />Download Profile</>}
-                            </button>
+                            <div className="flex gap-3">
+                                {/* ✅ Edit Button - Only shows for own profile */}
+                                {isOwnProfile && !isEditing && (
+                                    <button
+                                        onClick={handleEditClick}
+                                        className="mt-4 md:mt-0 px-6 py-2 bg-gradient-to-r from-purple-500 to-indigo-500 text-white rounded-xl hover:shadow-lg transition-all flex items-center gap-2"
+                                    >
+                                        <Edit2 className="w-4 h-4" />
+                                        Edit Profile
+                                    </button>
+                                )}
+                                
+                                {/* Download Button - Shows for everyone */}
+                                <button onClick={handleDownloadProfile} disabled={downloading} className="mt-4 md:mt-0 px-6 py-2 bg-gradient-to-r from-purple-500 to-indigo-500 text-white rounded-xl hover:shadow-lg transition-all flex items-center gap-2 disabled:opacity-50">
+                                    {downloading ? <><div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>Downloading...</> : <><Download className="w-4 h-4" />Download Profile</>}
+                                </button>
+                            </div>
                         </div>
 
                         {/* Details Grid */}
@@ -395,7 +505,7 @@ const MemberDetails = () => {
                                 <div className="space-y-4">
                                     <div className="flex items-start gap-3"><User className="w-5 h-5 text-purple-500 mt-0.5" /><div><p className="text-xs text-gray-500 dark:text-gray-400 uppercase">Full Name</p><p className="text-gray-800 dark:text-white font-medium">{member.name}</p></div></div>
                                     <div className="flex items-start gap-3"><Mail className="w-5 h-5 text-purple-500 mt-0.5" /><div><p className="text-xs text-gray-500 dark:text-gray-400 uppercase">Email Address</p><a href={`mailto:${member.email}`} className="text-gray-800 dark:text-white font-medium hover:text-purple-500 transition-colors break-all">{member.email}</a></div></div>
-                                    <div className="flex items-start gap-3"><Phone className="w-5 h-5 text-purple-500 mt-0.5" /><div><p className="text-xs text-gray-500 dark:text-gray-400 uppercase">Phone Number</p><a href={`tel:${member.phone}`} className="text-gray-800 dark:text-white font-medium hover:text-purple-500 transition-colors">{member.phone}</a></div></div>
+                                    <div className="flex items-start gap-3"><Phone className="w-5 h-5 text-purple-500 mt-0.5" /><div><p className="text-xs text-gray-500 dark:text-gray-400 uppercase">Phone Number</p><p className="text-gray-800 dark:text-white font-medium">{member.phone}</p></div></div>
                                     <div className="flex items-start gap-3"><MapPin className="w-5 h-5 text-purple-500 mt-0.5" /><div><p className="text-xs text-gray-500 dark:text-gray-400 uppercase">District</p><p className="text-gray-800 dark:text-white font-medium">{member.district || 'Not specified'}</p></div></div>
                                     <div className="flex items-start gap-3"><Droplet className="w-5 h-5 text-purple-500 mt-0.5" /><div><p className="text-xs text-gray-500 dark:text-gray-400 uppercase">Blood Group</p><p className="text-gray-800 dark:text-white font-medium">{member.bloodGroup || 'Not specified'}</p></div></div>
                                 </div>
@@ -413,33 +523,10 @@ const MemberDetails = () => {
                                 </div>
                             </div>
 
-                            {/* Professional Information with Social Links - UPDATED WORKING VERSION */}
+                            {/* Professional Information */}
                             <div className="bg-gray-50 dark:bg-gray-900/50 rounded-2xl p-6">
-                                <div className="flex justify-between items-center mb-4">
-                                    <h2 className="text-xl font-bold text-gray-800 dark:text-white flex items-center gap-2">
-                                        <Briefcase className="w-5 h-5 text-purple-500" />
-                                        Professional Information
-                                    </h2>
-                                    {!isEditing ? (
-                                        <button onClick={handleEditClick} className="flex items-center gap-2 px-3 py-1.5 text-sm bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 rounded-lg hover:bg-purple-200 dark:hover:bg-purple-900/50 transition-colors">
-                                            <Edit2 className="w-4 h-4" />
-                                            Edit Social Links
-                                        </button>
-                                    ) : (
-                                        <div className="flex gap-2">
-                                            <button onClick={handleSaveSocialLinks} disabled={saving} className="flex items-center gap-2 px-3 py-1.5 text-sm bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors disabled:opacity-50">
-                                                {saving ? <><div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>Saving...</> : <><Save className="w-4 h-4" />Save</>}
-                                            </button>
-                                            <button onClick={handleCancelEdit} className="flex items-center gap-2 px-3 py-1.5 text-sm bg-gray-300 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-400 dark:hover:bg-gray-600 transition-colors">
-                                                <X className="w-4 h-4" />
-                                                Cancel
-                                            </button>
-                                        </div>
-                                    )}
-                                </div>
-
+                                <h2 className="text-xl font-bold text-gray-800 dark:text-white mb-4 flex items-center gap-2"><Briefcase className="w-5 h-5 text-purple-500" />Professional Information</h2>
                                 <div className="space-y-4">
-                                    {/* Current Job */}
                                     <div className="flex items-start gap-3">
                                         <Briefcase className="w-5 h-5 text-purple-500 mt-0.5" />
                                         <div className="flex-1">
@@ -453,11 +540,11 @@ const MemberDetails = () => {
                                         <FaFacebook className="w-5 h-5 text-blue-600 mt-0.5" />
                                         <div className="flex-1">
                                             <p className="text-xs text-gray-500 dark:text-gray-400 uppercase">Facebook</p>
-                                            {isEditing ? (
-                                                <input type="url" value={editedSocialLinks.facebook} onChange={(e) => handleSocialLinkChange('facebook', e.target.value)} placeholder="https://facebook.com/username" className="w-full mt-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-800 dark:text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent" />
-                                            ) : (
-                                                member.socialLinks?.facebook ? <a href={member.socialLinks.facebook} target="_blank" rel="noopener noreferrer" className="text-purple-600 dark:text-purple-400 font-medium hover:underline break-all">{member.socialLinks.facebook}</a> : <p className="text-gray-800 dark:text-white font-medium">Not specified</p>
-                                            )}
+                                            <p className="text-gray-800 dark:text-white font-medium">
+                                                {member.socialLinks?.facebook ? (
+                                                    <a href={member.socialLinks.facebook} target="_blank" rel="noopener noreferrer" className="text-purple-600 dark:text-purple-400 font-medium hover:underline break-all">{member.socialLinks.facebook}</a>
+                                                ) : 'Not specified'}
+                                            </p>
                                         </div>
                                     </div>
 
@@ -466,11 +553,11 @@ const MemberDetails = () => {
                                         <FaLinkedin className="w-5 h-5 text-blue-700 mt-0.5" />
                                         <div className="flex-1">
                                             <p className="text-xs text-gray-500 dark:text-gray-400 uppercase">LinkedIn</p>
-                                            {isEditing ? (
-                                                <input type="url" value={editedSocialLinks.linkedin} onChange={(e) => handleSocialLinkChange('linkedin', e.target.value)} placeholder="https://linkedin.com/in/username" className="w-full mt-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-800 dark:text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent" />
-                                            ) : (
-                                                member.socialLinks?.linkedin ? <a href={member.socialLinks.linkedin} target="_blank" rel="noopener noreferrer" className="text-purple-600 dark:text-purple-400 font-medium hover:underline break-all">{member.socialLinks.linkedin}</a> : <p className="text-gray-800 dark:text-white font-medium">Not specified</p>
-                                            )}
+                                            <p className="text-gray-800 dark:text-white font-medium">
+                                                {member.socialLinks?.linkedin ? (
+                                                    <a href={member.socialLinks.linkedin} target="_blank" rel="noopener noreferrer" className="text-purple-600 dark:text-purple-400 font-medium hover:underline break-all">{member.socialLinks.linkedin}</a>
+                                                ) : 'Not specified'}
+                                            </p>
                                         </div>
                                     </div>
 
@@ -479,11 +566,11 @@ const MemberDetails = () => {
                                         <FaGithub className="w-5 h-5 text-gray-900 dark:text-white mt-0.5" />
                                         <div className="flex-1">
                                             <p className="text-xs text-gray-500 dark:text-gray-400 uppercase">GitHub</p>
-                                            {isEditing ? (
-                                                <input type="url" value={editedSocialLinks.github} onChange={(e) => handleSocialLinkChange('github', e.target.value)} placeholder="https://github.com/username" className="w-full mt-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-800 dark:text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent" />
-                                            ) : (
-                                                member.socialLinks?.github ? <a href={member.socialLinks.github} target="_blank" rel="noopener noreferrer" className="text-purple-600 dark:text-purple-400 font-medium hover:underline break-all">{member.socialLinks.github}</a> : <p className="text-gray-800 dark:text-white font-medium">Not specified</p>
-                                            )}
+                                            <p className="text-gray-800 dark:text-white font-medium">
+                                                {member.socialLinks?.github ? (
+                                                    <a href={member.socialLinks.github} target="_blank" rel="noopener noreferrer" className="text-purple-600 dark:text-purple-400 font-medium hover:underline break-all">{member.socialLinks.github}</a>
+                                                ) : 'Not specified'}
+                                            </p>
                                         </div>
                                     </div>
 
@@ -492,36 +579,37 @@ const MemberDetails = () => {
                                         <FaGlobe className="w-5 h-5 text-purple-500 mt-0.5" />
                                         <div className="flex-1">
                                             <p className="text-xs text-gray-500 dark:text-gray-400 uppercase">Portfolio</p>
-                                            {isEditing ? (
-                                                <input type="url" value={editedSocialLinks.portfolio} onChange={(e) => handleSocialLinkChange('portfolio', e.target.value)} placeholder="https://yourportfolio.com" className="w-full mt-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-800 dark:text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent" />
-                                            ) : (
-                                                member.socialLinks?.portfolio ? <a href={member.socialLinks.portfolio} target="_blank" rel="noopener noreferrer" className="text-purple-600 dark:text-purple-400 font-medium hover:underline break-all">{member.socialLinks.portfolio}</a> : <p className="text-gray-800 dark:text-white font-medium">Not specified</p>
-                                            )}
+                                            <p className="text-gray-800 dark:text-white font-medium">
+                                                {member.socialLinks?.portfolio ? (
+                                                    <a href={member.socialLinks.portfolio} target="_blank" rel="noopener noreferrer" className="text-purple-600 dark:text-purple-400 font-medium hover:underline break-all">{member.socialLinks.portfolio}</a>
+                                                ) : 'Not specified'}
+                                            </p>
                                         </div>
                                     </div>
-                                    {/* Twitter (Optional) */}
+
+                                    {/* Twitter */}
                                     <div className="flex items-start gap-3">
                                         <FaTwitter className="w-5 h-5 text-blue-400 mt-0.5" />
                                         <div className="flex-1">
                                             <p className="text-xs text-gray-500 dark:text-gray-400 uppercase">Twitter/X</p>
-                                            {isEditing ? (
-                                                <input type="url" value={editedSocialLinks.twitter} onChange={(e) => handleSocialLinkChange('twitter', e.target.value)} placeholder="https://twitter.com/username" className="w-full mt-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-800 dark:text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent" />
-                                            ) : (
-                                                member.socialLinks?.twitter ? <a href={member.socialLinks.twitter} target="_blank" rel="noopener noreferrer" className="text-purple-600 dark:text-purple-400 font-medium hover:underline break-all">{member.socialLinks.twitter}</a> : <p className="text-gray-800 dark:text-white font-medium">Not specified</p>
-                                            )}
+                                            <p className="text-gray-800 dark:text-white font-medium">
+                                                {member.socialLinks?.twitter ? (
+                                                    <a href={member.socialLinks.twitter} target="_blank" rel="noopener noreferrer" className="text-purple-600 dark:text-purple-400 font-medium hover:underline break-all">{member.socialLinks.twitter}</a>
+                                                ) : 'Not specified'}
+                                            </p>
                                         </div>
                                     </div>
 
-                                    {/* Instagram (Optional) */}
+                                    {/* Instagram */}
                                     <div className="flex items-start gap-3">
                                         <FaInstagram className="w-5 h-5 text-pink-600 mt-0.5" />
                                         <div className="flex-1">
                                             <p className="text-xs text-gray-500 dark:text-gray-400 uppercase">Instagram</p>
-                                            {isEditing ? (
-                                                <input type="url" value={editedSocialLinks.instagram} onChange={(e) => handleSocialLinkChange('instagram', e.target.value)} placeholder="https://instagram.com/username" className="w-full mt-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-800 dark:text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent" />
-                                            ) : (
-                                                member.socialLinks?.instagram ? <a href={member.socialLinks.instagram} target="_blank" rel="noopener noreferrer" className="text-purple-600 dark:text-purple-400 font-medium hover:underline break-all">{member.socialLinks.instagram}</a> : <p className="text-gray-800 dark:text-white font-medium">Not specified</p>
-                                            )}
+                                            <p className="text-gray-800 dark:text-white font-medium">
+                                                {member.socialLinks?.instagram ? (
+                                                    <a href={member.socialLinks.instagram} target="_blank" rel="noopener noreferrer" className="text-purple-600 dark:text-purple-400 font-medium hover:underline break-all">{member.socialLinks.instagram}</a>
+                                                ) : 'Not specified'}
+                                            </p>
                                         </div>
                                     </div>
                                 </div>
@@ -531,7 +619,9 @@ const MemberDetails = () => {
                             <div className="bg-gray-50 dark:bg-gray-900/50 rounded-2xl p-6">
                                 <h2 className="text-xl font-bold text-gray-800 dark:text-white mb-4 flex items-center gap-2"><Code className="w-5 h-5 text-purple-500" />Skills & Expertise</h2>
                                 <div className="flex flex-wrap gap-2">
-                                    {member.skills ? member.skills.split(',').map((skill, index) => (<span key={index} className="px-3 py-1 bg-gradient-to-r from-purple-100 to-indigo-100 dark:from-purple-900/30 dark:to-indigo-900/30 text-purple-700 dark:text-purple-300 rounded-full text-sm font-medium hover:scale-105 transition-transform cursor-pointer">{skill.trim()}</span>)) : <p className="text-gray-500 dark:text-gray-400">No skills listed</p>}
+                                    {member.skills ? member.skills.split(',').map((skill, index) => (
+                                        <span key={index} className="px-3 py-1 bg-gradient-to-r from-purple-100 to-indigo-100 dark:from-purple-900/30 dark:to-indigo-900/30 text-purple-700 dark:text-purple-300 rounded-full text-sm font-medium">{skill.trim()}</span>
+                                    )) : <p className="text-gray-500 dark:text-gray-400">No skills listed</p>}
                                 </div>
                             </div>
                         </div>
@@ -566,7 +656,185 @@ const MemberDetails = () => {
                     </div>
                 </motion.div>
 
-                <div className="text-center mt-8 text-sm text-gray-500 dark:text-gray-400"><Heart className="inline w-3 h-3 text-red-500" /> BSPI Robotics Club Family</div>
+                {/* ✅ Edit Modal - Only for own profile */}
+                {isEditing && isOwnProfile && (
+                    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={() => setIsEditing(false)}>
+                        <div className="bg-white dark:bg-gray-800 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6" onClick={(e) => e.stopPropagation()}>
+                            <h3 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">Edit Your Profile</h3>
+                            
+                            <div className="space-y-4">
+                                {/* Skills */}
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Skills (comma separated)</label>
+                                    <input
+                                        type="text"
+                                        value={editedData.skills}
+                                        onChange={(e) => handleInputChange('skills', e.target.value)}
+                                        className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-purple-500"
+                                        placeholder="React, Node.js, Python, Robotics"
+                                    />
+                                </div>
+                                
+                                {/* Current Job */}
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Current Job/Organization</label>
+                                    <input
+                                        type="text"
+                                        value={editedData.currentJob}
+                                        onChange={(e) => handleInputChange('currentJob', e.target.value)}
+                                        className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-purple-500"
+                                        placeholder="Software Engineer at Google"
+                                    />
+                                </div>
+
+                                {/* Phone */}
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Phone Number</label>
+                                    <input
+                                        type="tel"
+                                        value={editedData.phone}
+                                        onChange={(e) => handleInputChange('phone', e.target.value)}
+                                        className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-purple-500"
+                                        placeholder="01XXXXXXXXX"
+                                    />
+                                </div>
+
+                                {/* District */}
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">District</label>
+                                    <input
+                                        type="text"
+                                        value={editedData.district}
+                                        onChange={(e) => handleInputChange('district', e.target.value)}
+                                        className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-purple-500"
+                                        placeholder="Your District"
+                                    />
+                                </div>
+
+                                {/* Blood Group */}
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Blood Group</label>
+                                    <select
+                                        value={editedData.bloodGroup}
+                                        onChange={(e) => handleInputChange('bloodGroup', e.target.value)}
+                                        className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-purple-500"
+                                    >
+                                        <option value="">Select Blood Group</option>
+                                        <option value="A+">A+</option>
+                                        <option value="A-">A-</option>
+                                        <option value="B+">B+</option>
+                                        <option value="B-">B-</option>
+                                        <option value="O+">O+</option>
+                                        <option value="O-">O-</option>
+                                        <option value="AB+">AB+</option>
+                                        <option value="AB-">AB-</option>
+                                    </select>
+                                </div>
+
+                                {/* Bio */}
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Bio</label>
+                                    <textarea
+                                        value={editedData.bio}
+                                        onChange={(e) => handleInputChange('bio', e.target.value)}
+                                        rows="3"
+                                        className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-purple-500"
+                                        placeholder="Tell us about yourself..."
+                                    />
+                                </div>
+
+                                {/* Social Links Section */}
+                                <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
+                                    <h4 className="font-semibold text-gray-800 dark:text-white mb-3">Social Links</h4>
+                                    
+                                    <div className="space-y-3">
+                                        <div>
+                                            <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Facebook</label>
+                                            <input
+                                                type="url"
+                                                value={editedData.socialLinks.facebook}
+                                                onChange={(e) => handleSocialLinkChange('facebook', e.target.value)}
+                                                className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-purple-500 text-sm"
+                                                placeholder="https://facebook.com/username"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">LinkedIn</label>
+                                            <input
+                                                type="url"
+                                                value={editedData.socialLinks.linkedin}
+                                                onChange={(e) => handleSocialLinkChange('linkedin', e.target.value)}
+                                                className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-purple-500 text-sm"
+                                                placeholder="https://linkedin.com/in/username"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">GitHub</label>
+                                            <input
+                                                type="url"
+                                                value={editedData.socialLinks.github}
+                                                onChange={(e) => handleSocialLinkChange('github', e.target.value)}
+                                                className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-purple-500 text-sm"
+                                                placeholder="https://github.com/username"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Portfolio</label>
+                                            <input
+                                                type="url"
+                                                value={editedData.socialLinks.portfolio}
+                                                onChange={(e) => handleSocialLinkChange('portfolio', e.target.value)}
+                                                className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-purple-500 text-sm"
+                                                placeholder="https://yourportfolio.com"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Twitter/X</label>
+                                            <input
+                                                type="url"
+                                                value={editedData.socialLinks.twitter}
+                                                onChange={(e) => handleSocialLinkChange('twitter', e.target.value)}
+                                                className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-purple-500 text-sm"
+                                                placeholder="https://twitter.com/username"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Instagram</label>
+                                            <input
+                                                type="url"
+                                                value={editedData.socialLinks.instagram}
+                                                onChange={(e) => handleSocialLinkChange('instagram', e.target.value)}
+                                                className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-purple-500 text-sm"
+                                                placeholder="https://instagram.com/username"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                {/* Action Buttons */}
+                                <div className="flex gap-3 pt-4 border-t border-gray-200 dark:border-gray-700 mt-4">
+                                    <button
+                                        onClick={handleSaveProfile}
+                                        disabled={saving}
+                                        className="flex-1 bg-green-500 text-white py-2 rounded-lg hover:bg-green-600 transition disabled:opacity-50"
+                                    >
+                                        {saving ? 'Saving...' : 'Save Changes'}
+                                    </button>
+                                    <button
+                                        onClick={handleCancelEdit}
+                                        className="flex-1 bg-gray-500 text-white py-2 rounded-lg hover:bg-gray-600 transition"
+                                    >
+                                        Cancel
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                <div className="text-center mt-8 text-sm text-gray-500 dark:text-gray-400">
+                    <Heart className="inline w-3 h-3 text-red-500" /> BSPI Robotics Club Family
+                </div>
             </div>
         </div>
     );

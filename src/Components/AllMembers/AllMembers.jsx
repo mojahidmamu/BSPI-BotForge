@@ -208,7 +208,7 @@ const AllMembers = () => {
                         <Users className="text-white w-6 h-6" />
                     </div>
                     <h1 className="text-3xl md:text-5xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
-                        Our Team Members
+                        Our  Members
                     </h1>
                     <p className="text-gray-600 dark:text-gray-300 mt-3 text-sm md:text-base">
                         Meet the talented individuals driving innovation at BSPI Robotics Club
