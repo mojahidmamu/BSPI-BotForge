@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import AdminSidebar from './AdminSidebar';
 import { Menu } from 'lucide-react';
+import AdminDashboard from './Contribute/AdminDashboard';
 
 const AdminLayout = () => {
     const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -29,6 +30,7 @@ const AdminLayout = () => {
                 {/* Page Content */}
                 <div className="p-6">
                     <Outlet />
+                    {/* <AdminDashboard></AdminDashboard> */}
                 </div>
             </div>
         </div>

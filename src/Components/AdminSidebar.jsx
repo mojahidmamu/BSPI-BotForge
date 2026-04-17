@@ -17,7 +17,7 @@ const AdminSidebar = ({ isOpen, setIsOpen }) => {
         {
             section: "Users",
             items: [
-                { path: "/admin/users", icon: <Users size={18} />, label: "All Users", roles: ['admin', 'super_admin'] },
+                { path: "/users", icon: <Users size={18} />, label: "All Users", roles: ['admin', 'super_admin'] },
                 { path: "/admin/pending", icon: <UserCheck size={18} />, label: "Pending Approval", roles: ['admin', 'super_admin'] },
                 { path: "/admin/suspended", icon: <UserX size={18} />, label: "Suspended Accounts", roles: ['admin', 'super_admin'] },
                 { path: "/admin/roles", icon: <Shield size={18} />, label: "Roles & Permissions", roles: ['super_admin'] }
