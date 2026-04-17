@@ -288,7 +288,7 @@ const MemberForm = () => {
                                 placeholder="example@gmail.com" />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium mb-2">Phone Number *</label>
+                            <label className="block text-sm font-medium mb-2">Phone Number * [WhatsApp Only]</label>
                             <input type="tel" name="phone" required onChange={handleChange}
                                 className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500"
                                 placeholder="01XXX XXXXXX" />
