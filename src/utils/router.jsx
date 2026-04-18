@@ -15,6 +15,12 @@ import Login from "../pages/Login";
 import Profile from "../Components/Profile/Profile";
 import AdminLayout from "../Components/AdminLayout";
 import AllUsers from "../pages/Users/AllUsers";
+import Pending from "../Components/Pending";
+import Transactions from "../Components/Transactions";
+import AuditLogs from "../Components/AuditLogs";
+import Suspended from "../Components/Suspended";
+import Role from "../Components/Role";
+import AddAdmin from "../Components/AddAdmin";
 
 export const router = createBrowserRouter([
   {
@@ -54,7 +60,7 @@ export const router = createBrowserRouter([
             element:  <AdminSecurity></AdminSecurity>
         },
         {
-            path: 'members', 
+            path: '/members', 
             element: (
                 <ProtectedRoute>
                     <AllMembers></AllMembers>
@@ -62,7 +68,7 @@ export const router = createBrowserRouter([
             ),
         },
         {
-            path: 'member/:id', 
+            path: '/member/:id', 
             element: (
                 <ProtectedRoute>
                     <MemberDetails></MemberDetails> 
@@ -81,14 +87,15 @@ export const router = createBrowserRouter([
             path: 'admin-dashboard', 
             element:<AdminLayout></AdminLayout>,
             children: [
-                // { path: 'users', element: <AllUsers /> },
-                // { path: 'pending', element: <AdminDashboard></AdminDashboard> },
-                // { path: 'suspended', element: <SuspendedUsers /> },
-                // { path: 'roles', element: <Roles /> },
-
-                // { path: 'moderation', element: <Moderation /> },
-                // { path: 'reported', element: <Reported /> },
-                // { path: 'blocked-keywords', element: <BlockedKeywords /> },
+                { index: true, element: <AdminDashboard /> },
+                { path: 'dashboard', element: <AdminDashboard /> },
+                { path: 'users', element: <AllUsers></AllUsers> },
+                 { path: 'pending', element: <Pending /> },
+                 { path: 'transactions', element: <Transactions /> },
+                 { path: 'audit-logs', element: <AuditLogs /> },
+                 { path: 'suspended', element: <Suspended /> },
+                 { path: 'roles', element: <Role/> },
+                 { path: 'add-admin', element: <AddAdmin/> },
 
                 // { path: 'transactions', element: <Transactions /> },
                 // { path: 'refunds', element: <Refunds /> },
