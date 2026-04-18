@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
-    LayoutDashboard, Users, UserCheck, UserX, Shield, 
+    LayoutDashboard, Users, UserCheck,CreditCard, UserX, Shield, 
     FileText, Settings, Activity, PlusCircle 
 } from 'lucide-react';
 
@@ -13,7 +13,7 @@ const AdminSidebar = ({ isOpen, setIsOpen }) => {
         { path: '/admin-dashboard/users', icon: <Users size={18} />, label: 'All Users' },
         { path: '/admin-dashboard/pending', icon: <UserCheck size={18} />, label: 'Pending Approval' },
         { path: '/admin-dashboard/suspended', icon: <UserX size={18} />, label: 'Suspended Accounts' },
-        { path: '/admin-dashboard/transactions', icon: <UserX size={18} />, label: 'Transactions' },
+        { path: '/admin-dashboard/transactions', icon: <CreditCard size={18}/>, label: 'Transactions' },
         { path: '/admin-dashboard/roles', icon: <Shield size={18} />, label: 'Roles & Permissions' },
         { path: '/admin-dashboard/audit-logs', icon: <FileText size={18} />, label: 'Audit Logs' },
         { path: '/admin-dashboard/add-admin', icon: <PlusCircle size={18} />, label: 'Add Admin' },

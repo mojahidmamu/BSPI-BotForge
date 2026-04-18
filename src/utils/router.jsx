@@ -91,9 +91,9 @@ export const router = createBrowserRouter([
                     { path: 'dashboard', element: <AdminDashboard /> },
                     { path: 'users', element: <AllUsers></AllUsers> },
                     { path: 'pending', element: <Pending /> },
+                    { path: 'suspended', element: <Suspended /> },
                     { path: 'transactions', element: <Transactions /> },
                     { path: 'audit-logs', element: <AuditLogs /> },
-                    { path: 'suspended', element: <Suspended /> },
                     { path: 'roles', element: <Role/> },
                     { path: 'add-admin', element: <AddAdmin/> },
 

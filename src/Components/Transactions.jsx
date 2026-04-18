@@ -1,7 +1,538 @@
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { 
+    Search, 
+    Download, 
+    Eye, 
+    Filter, 
+    ChevronLeft, 
+    ChevronRight,
+    TrendingUp,
+    TrendingDown,
+    DollarSign,
+    CreditCard,
+    Banknote,
+    Calendar,
+    RefreshCw
+} from 'lucide-react';
+import { toast } from 'react-hot-toast';
+
 const Transactions = () => {
+    const [transactions, setTransactions] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [search, setSearch] = useState('');
+    const [typeFilter, setTypeFilter] = useState('all');
+    const [statusFilter, setStatusFilter] = useState('all');
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [totalTransactions, setTotalTransactions] = useState(0);
+    const [stats, setStats] = useState({
+        totalIncome: 0,
+        totalExpense: 0,
+        totalPending: 0,
+        totalCompleted: 0
+    });
+    const [selectedTransaction, setSelectedTransaction] = useState(null);
+    const [showModal, setShowModal] = useState(false);
+
+    // ডামি ট্রানজেকশন ডাটা (ব্যাকেন্ড তৈরি না হওয়া পর্যন্ত)
+    const dummyTransactions = [
+        {
+            id: 1,
+            transactionId: 'TRX-2024-001',
+            date: '2024-04-15',
+            type: 'income',
+            category: 'Membership Fee',
+            amount: 500,
+            status: 'completed',
+            user: {
+                name: 'Rahim Uddin',
+                email: 'rahim@example.com',
+                roll: 'CST-001'
+            },
+            paymentMethod: 'bKash',
+            description: 'Annual membership fee 2024-25'
+        },
+        {
+            id: 2,
+            transactionId: 'TRX-2024-002',
+            date: '2024-04-14',
+            type: 'income',
+            category: 'Workshop Registration',
+            amount: 300,
+            status: 'completed',
+            user: {
+                name: 'Karim Khan',
+                email: 'karim@example.com',
+                roll: 'CST-002'
+            },
+            paymentMethod: 'Nagad',
+            description: 'Robotics Workshop 2024'
+        },
+        {
+            id: 3,
+            transactionId: 'TRX-2024-003',
+            date: '2024-04-13',
+            type: 'expense',
+            category: 'Equipment Purchase',
+            amount: 2500,
+            status: 'completed',
+            user: {
+                name: 'Admin',
+                email: 'admin@bspi.edu.bd',
+                roll: 'ADMIN'
+            },
+            paymentMethod: 'Bank Transfer',
+            description: 'Arduino kits and sensors'
+        },
+        {
+            id: 4,
+            transactionId: 'TRX-2024-004',
+            date: '2024-04-12',
+            type: 'income',
+            category: 'Donation',
+            amount: 1000,
+            status: 'pending',
+            user: {
+                name: 'Fatema Begum',
+                email: 'fatema@example.com',
+                roll: 'CST-003'
+            },
+            paymentMethod: 'Rocket',
+            description: 'Club donation'
+        },
+        {
+            id: 5,
+            transactionId: 'TRX-2024-005',
+            date: '2024-04-11',
+            type: 'expense',
+            category: 'Event Cost',
+            amount: 1500,
+            status: 'pending',
+            user: {
+                name: 'Jamal Hossain',
+                email: 'jamal@example.com',
+                roll: 'CST-004'
+            },
+            paymentMethod: 'Cash',
+            description: 'Annual event expenses'
+        },
+        {
+            id: 6,
+            transactionId: 'TRX-2024-006',
+            date: '2024-04-10',
+            type: 'income',
+            category: 'Competition Fee',
+            amount: 200,
+            status: 'completed',
+            user: {
+                name: 'Sultana Begum',
+                email: 'sultana@example.com',
+                roll: 'CST-005'
+            },
+            paymentMethod: 'bKash',
+            description: 'National Robotics Competition'
+        },
+        {
+            id: 7,
+            transactionId: 'TRX-2024-007',
+            date: '2024-04-09',
+            type: 'expense',
+            category: 'Travel Allowance',
+            amount: 800,
+            status: 'cancelled',
+            user: {
+                name: 'Hasan Mahmud',
+                email: 'hasan@example.com',
+                roll: 'CST-006'
+            },
+            paymentMethod: 'Cash',
+            description: 'Competition travel cost'
+        },
+        {
+            id: 8,
+            transactionId: 'TRX-2024-008',
+            date: '2024-04-08',
+            type: 'income',
+            category: 'Project Funding',
+            amount: 5000,
+            status: 'completed',
+            user: {
+                name: 'Dr. Rahman',
+                email: 'rahman@bspi.edu.bd',
+                roll: 'TEACHER'
+            },
+            paymentMethod: 'Bank Transfer',
+            description: 'Robotics project grant'
+        }
+    ];
+
+    useEffect(() => {
+        fetchTransactions();
+        calculateStats();
+    }, [typeFilter, statusFilter, search]);
+
+    const fetchTransactions = async () => {
+        setLoading(true);
+        try {
+            // ব্যাকেন্ড তৈরি হলে এখানে API কল করবেন
+            // const response = await axios.get('http://localhost:5000/api/admin/transactions');
+            // setTransactions(response.data.data);
+            
+            // ডামি ডাটা ব্যবহার (পরবর্তীতে ব্যাকেন্ড দিয়ে Replace করবেন)
+            setTimeout(() => {
+                let filtered = [...dummyTransactions];
+                
+                if (typeFilter !== 'all') {
+                    filtered = filtered.filter(t => t.type === typeFilter);
+                }
+                if (statusFilter !== 'all') {
+                    filtered = filtered.filter(t => t.status === statusFilter);
+                }
+                if (search) {
+                    filtered = filtered.filter(t => 
+                        t.transactionId.toLowerCase().includes(search.toLowerCase()) ||
+                        t.user.name.toLowerCase().includes(search.toLowerCase()) ||
+                        t.user.email.toLowerCase().includes(search.toLowerCase())
+                    );
+                }
+                
+                setTransactions(filtered);
+                setTotalTransactions(filtered.length);
+                setTotalPages(Math.ceil(filtered.length / 10));
+                setLoading(false);
+            }, 500);
+        } catch (error) {
+            console.error('Error fetching transactions:', error);
+            toast.error('Failed to fetch transactions');
+            setLoading(false);
+        }
+    };
+
+    const calculateStats = () => {
+        const totalIncome = dummyTransactions
+            .filter(t => t.type === 'income' && t.status === 'completed')
+            .reduce((sum, t) => sum + t.amount, 0);
+        
+        const totalExpense = dummyTransactions
+            .filter(t => t.type === 'expense' && t.status === 'completed')
+            .reduce((sum, t) => sum + t.amount, 0);
+        
+        const totalPending = dummyTransactions
+            .filter(t => t.status === 'pending')
+            .reduce((sum, t) => sum + t.amount, 0);
+        
+        const totalCompleted = dummyTransactions
+            .filter(t => t.status === 'completed')
+            .reduce((sum, t) => sum + t.amount, 0);
+        
+        setStats({ totalIncome, totalExpense, totalPending, totalCompleted });
+    };
+
+    const exportToCSV = () => {
+        const headers = ['ID', 'Transaction ID', 'Date', 'Type', 'Category', 'Amount', 'Status', 'User', 'Email', 'Payment Method', 'Description'];
+        const csvData = transactions.map(t => [
+            t.id,
+            t.transactionId,
+            t.date,
+            t.type,
+            t.category,
+            t.amount,
+            t.status,
+            t.user.name,
+            t.user.email,
+            t.paymentMethod,
+            t.description
+        ]);
+        
+        const csvContent = [headers, ...csvData].map(row => row.join(',')).join('\n');
+        const blob = new Blob([csvContent], { type: 'text/csv' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `transactions_${new Date().toISOString().split('T')[0]}.csv`;
+        a.click();
+        URL.revokeObjectURL(url);
+        toast.success('Exported successfully!');
+    };
+
+    const getStatusColor = (status) => {
+        switch(status) {
+            case 'completed': return 'bg-green-100 text-green-700';
+            case 'pending': return 'bg-yellow-100 text-yellow-700';
+            case 'cancelled': return 'bg-red-100 text-red-700';
+            default: return 'bg-gray-100 text-gray-700';
+        }
+    };
+
+    const getTypeColor = (type) => {
+        return type === 'income' ? 'text-green-600' : 'text-red-600';
+    };
+
     return (
-        <div>
-            <h1 className="text-xl font-bold">Transactions</h1>
+        <div className="space-y-6">
+            {/* Header */}
+            <div className="flex justify-between items-center">
+                <div>
+                    <h1 className="text-2xl font-bold text-gray-800 dark:text-white">💰 Transactions</h1>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                        Manage and track all financial transactions
+                    </p>
+                </div>
+                <button
+                    onClick={exportToCSV}
+                    className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition flex items-center gap-2"
+                >
+                    <Download className="w-4 h-4" />
+                    Export CSV
+                </button>
+            </div>
+
+            {/* Stats Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow">
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <p className="text-sm text-gray-500">Total Income</p>
+                            <p className="text-2xl font-bold text-green-600">৳{stats.totalIncome}</p>
+                        </div>
+                        <div className="p-3 bg-green-100 rounded-full">
+                            <TrendingUp className="w-6 h-6 text-green-600" />
+                        </div>
+                    </div>
+                </div>
+                
+                <div className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow">
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <p className="text-sm text-gray-500">Total Expense</p>
+                            <p className="text-2xl font-bold text-red-600">৳{stats.totalExpense}</p>
+                        </div>
+                        <div className="p-3 bg-red-100 rounded-full">
+                            <TrendingDown className="w-6 h-6 text-red-600" />
+                        </div>
+                    </div>
+                </div>
+                
+                <div className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow">
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <p className="text-sm text-gray-500">Pending Amount</p>
+                            <p className="text-2xl font-bold text-yellow-600">৳{stats.totalPending}</p>
+                        </div>
+                        <div className="p-3 bg-yellow-100 rounded-full">
+                            <DollarSign className="w-6 h-6 text-yellow-600" />
+                        </div>
+                    </div>
+                </div>
+                
+                <div className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow">
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <p className="text-sm text-gray-500">Net Balance</p>
+                            <p className={`text-2xl font-bold ${stats.totalIncome - stats.totalExpense >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                                ৳{stats.totalIncome - stats.totalExpense}
+                            </p>
+                        </div>
+                        <div className="p-3 bg-purple-100 rounded-full">
+                            <Banknote className="w-6 h-6 text-purple-600" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Filters */}
+            <div className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow">
+                <div className="flex flex-wrap gap-4">
+                    <div className="flex-1 min-w-[200px]">
+                        <div className="relative">
+                            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                            <input
+                                type="text"
+                                placeholder="Search by transaction ID, name or email..."
+                                value={search}
+                                onChange={(e) => setSearch(e.target.value)}
+                                className="w-full pl-10 pr-4 py-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600"
+                            />
+                        </div>
+                    </div>
+                    
+                    <select
+                        value={typeFilter}
+                        onChange={(e) => setTypeFilter(e.target.value)}
+                        className="px-4 py-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600"
+                    >
+                        <option value="all">All Types</option>
+                        <option value="income">Income</option>
+                        <option value="expense">Expense</option>
+                    </select>
+                    
+                    <select
+                        value={statusFilter}
+                        onChange={(e) => setStatusFilter(e.target.value)}
+                        className="px-4 py-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600"
+                    >
+                        <option value="all">All Status</option>
+                        <option value="completed">Completed</option>
+                        <option value="pending">Pending</option>
+                        <option value="cancelled">Cancelled</option>
+                    </select>
+                    
+                    <button
+                        onClick={fetchTransactions}
+                        className="px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition flex items-center gap-2"
+                    >
+                        <RefreshCw className="w-4 h-4" />
+                        Refresh
+                    </button>
+                </div>
+            </div>
+
+            {/* Transactions Table */}
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow overflow-hidden">
+                <div className="p-4 border-b dark:border-gray-700">
+                    <h3 className="font-bold text-gray-800 dark:text-white">
+                        All Transactions ({totalTransactions})
+                    </h3>
+                </div>
+                
+                <div className="overflow-x-auto">
+                    {loading ? (
+                        <div className="text-center py-12">
+                            <div className="w-12 h-12 border-4 border-purple-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                            <p className="text-gray-500">Loading transactions...</p>
+                        </div>
+                    ) : transactions.length === 0 ? (
+                        <div className="text-center py-12">
+                            <p className="text-gray-500">No transactions found</p>
+                        </div>
+                    ) : (
+                        <table className="w-full">
+                            <thead className="bg-gray-50 dark:bg-gray-700">
+                                <tr>
+                                    <th className="p-3 text-left">Transaction ID</th>
+                                    <th className="p-3 text-left">Date</th>
+                                    <th className="p-3 text-left">Type</th>
+                                    <th className="p-3 text-left">Category</th>
+                                    <th className="p-3 text-left">User</th>
+                                    <th className="p-3 text-left">Amount</th>
+                                    <th className="p-3 text-left">Status</th>
+                                    <th className="p-3 text-left">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {transactions.map((transaction) => (
+                                    <tr key={transaction.id} className="border-t dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                                        <td className="p-3 font-mono text-sm">
+                                            {transaction.transactionId}
+                                        </td>
+                                        <td className="p-3 text-sm">
+                                            {new Date(transaction.date).toLocaleDateString()}
+                                        </td>
+                                        <td className="p-3">
+                                            <span className={`font-semibold ${getTypeColor(transaction.type)}`}>
+                                                {transaction.type === 'income' ? 'Income' : 'Expense'}
+                                            </span>
+                                        </td>
+                                        <td className="p-3 text-sm">{transaction.category}</td>
+                                        <td className="p-3">
+                                            <div>
+                                                <p className="font-medium">{transaction.user.name}</p>
+                                                <p className="text-xs text-gray-500">{transaction.user.roll}</p>
+                                            </div>
+                                        </td>
+                                        <td className="p-3">
+                                            <span className={`font-bold ${getTypeColor(transaction.type)}`}>
+                                                ৳{transaction.amount}
+                                            </span>
+                                        </td>
+                                        <td className="p-3">
+                                            <span className={`px-2 py-1 rounded-full text-xs ${getStatusColor(transaction.status)}`}>
+                                                {transaction.status.charAt(0).toUpperCase() + transaction.status.slice(1)}
+                                            </span>
+                                        </td>
+                                        <td className="p-3">
+                                            <button
+                                                onClick={() => {
+                                                    setSelectedTransaction(transaction);
+                                                    setShowModal(true);
+                                                }}
+                                                className="p-1 text-blue-500 hover:text-blue-700"
+                                            >
+                                                <Eye className="w-4 h-4" />
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    )}
+                </div>
+            </div>
+
+            {/* Transaction Details Modal */}
+            {showModal && selectedTransaction && (
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+                    <div className="bg-white dark:bg-gray-800 rounded-2xl max-w-md w-full p-6">
+                        <div className="flex justify-between items-center mb-4">
+                            <h3 className="text-xl font-bold">Transaction Details</h3>
+                            <button
+                                onClick={() => setShowModal(false)}
+                                className="text-gray-500 hover:text-gray-700"
+                            >
+                                ✕
+                            </button>
+                        </div>
+                        
+                        <div className="space-y-3">
+                            <div className="flex justify-between">
+                                <span className="text-gray-500">Transaction ID:</span>
+                                <span className="font-mono">{selectedTransaction.transactionId}</span>
+                            </div>
+                            <div className="flex justify-between">
+                                <span className="text-gray-500">Date:</span>
+                                <span>{new Date(selectedTransaction.date).toLocaleDateString()}</span>
+                            </div>
+                            <div className="flex justify-between">
+                                <span className="text-gray-500">Type:</span>
+                                <span className={getTypeColor(selectedTransaction.type)}>
+                                    {selectedTransaction.type === 'income' ? 'Income' : 'Expense'}
+                                </span>
+                            </div>
+                            <div className="flex justify-between">
+                                <span className="text-gray-500">Category:</span>
+                                <span>{selectedTransaction.category}</span>
+                            </div>
+                            <div className="flex justify-between">
+                                <span className="text-gray-500">Amount:</span>
+                                <span className={`font-bold ${getTypeColor(selectedTransaction.type)}`}>
+                                    ৳{selectedTransaction.amount}
+                                </span>
+                            </div>
+                            <div className="flex justify-between">
+                                <span className="text-gray-500">Status:</span>
+                                <span className={`px-2 py-1 rounded-full text-xs ${getStatusColor(selectedTransaction.status)}`}>
+                                    {selectedTransaction.status}
+                                </span>
+                            </div>
+                            <div className="flex justify-between">
+                                <span className="text-gray-500">Payment Method:</span>
+                                <span>{selectedTransaction.paymentMethod}</span>
+                            </div>
+                            <div className="border-t pt-3">
+                                <p className="text-gray-500 text-sm">User Information:</p>
+                                <p className="font-medium">{selectedTransaction.user.name}</p>
+                                <p className="text-sm text-gray-500">{selectedTransaction.user.email}</p>
+                                <p className="text-sm text-gray-500">Roll: {selectedTransaction.user.roll}</p>
+                            </div>
+                            <div className="border-t pt-3">
+                                <p className="text-gray-500 text-sm">Description:</p>
+                                <p className="text-sm">{selectedTransaction.description}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
