@@ -87,39 +87,27 @@ export const router = createBrowserRouter([
             path: 'admin-dashboard', 
             element:<AdminLayout></AdminLayout>,
             children: [
-                { index: true, element: <AdminDashboard /> },
-                { path: 'dashboard', element: <AdminDashboard /> },
-                { path: 'users', element: <AllUsers></AllUsers> },
-                 { path: 'pending', element: <Pending /> },
-                 { path: 'transactions', element: <Transactions /> },
-                 { path: 'audit-logs', element: <AuditLogs /> },
-                 { path: 'suspended', element: <Suspended /> },
-                 { path: 'roles', element: <Role/> },
-                 { path: 'add-admin', element: <AddAdmin/> },
+                    { index: true, element: <AdminDashboard /> },
+                    { path: 'dashboard', element: <AdminDashboard /> },
+                    { path: 'users', element: <AllUsers></AllUsers> },
+                    { path: 'pending', element: <Pending /> },
+                    { path: 'transactions', element: <Transactions /> },
+                    { path: 'audit-logs', element: <AuditLogs /> },
+                    { path: 'suspended', element: <Suspended /> },
+                    { path: 'roles', element: <Role/> },
+                    { path: 'add-admin', element: <AddAdmin/> },
 
-                // { path: 'transactions', element: <Transactions /> },
+                
                 // { path: 'refunds', element: <Refunds /> },
                 // { path: 'subscriptions', element: <Subscriptions /> },
-
                 // { path: 'feature-flags', element: <FeatureFlags /> },
                 // { path: 'env-variables', element: <EnvVariables /> },
                 // { path: 'background-jobs', element: <BackgroundJobs /> },
                 // { path: 'maintenance', element: <Maintenance /> },
-
-                // { path: 'audit-logs', element: <AuditLogs /> },
-
                 // { path: 'user-lookup', element: <UserLookup /> },
                 // { path: 'bulk-actions', element: <BulkActions /> },
             ]
         },
-        // {
-        //     path: '/admin/users', 
-        //     element: <AllUsers></AllUsers>
-        // }, 
-        // {
-        //     path: '/admin/pending', 
-        //     element: <AdminDashboard></AdminDashboard>,
-        // }
     ],
   },
 ]);
