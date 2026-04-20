@@ -2,10 +2,10 @@ import { FaGithub, FaLinkedin, FaFacebook } from "react-icons/fa";
 import { SiCodeforces } from "react-icons/si";
 
 export default function Second() {
-  const currentYear = new Date().getFullYear();
+  // const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="w-full bg-gray-950 text-gray-300 pt-12 pb-8">
+    <footer className="w-full bg-gray-950 text-gray-300 pt-6 pb-6">
       {/* Container */}
       <div className="max-w-7xl mx-auto px-6 sm:px-8 md:px-12 lg:px-20 xl:px-28">
         {/* Top Content */}
@@ -61,17 +61,7 @@ export default function Second() {
           </div>
         </div>
 
-        {/* Divider */}
-        <div className="border-t border-gray-800 my-6"></div>
-
-        {/* Bottom Text */}
-        <div className="flex flex-col md:flex-row justify-between items-center text-center md:text-left text-gray-500 text-xs gap-2 md:gap-0">
-          <p>© {currentYear} Abdullah all Mojahid. All rights reserved.</p>
-          <p>
-            Made with ❤️ using{" "}
-            <span className="font-semibold text-white">Mojahid</span>
-          </p>
-        </div>
+         
       </div>
     </footer>
   );
