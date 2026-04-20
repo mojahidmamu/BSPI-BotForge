@@ -60,84 +60,114 @@ const Transactions = () => {
         { value: 'cash', label: 'Cash', icon: '💵' }
     ];
 
-    // Dummy data for fallback
-    const dummyTransactions = [
-        {
-            _id: '1',
-            transactionId: 'TRX-2024-001',
-            date: '2024-04-15',
-            type: 'income',
-            category: 'Membership Fee',
-            amount: 500,
-            status: 'completed',
-            user: { name: 'Rahim Uddin', email: 'rahim@example.com', roll: 'CST-001' },
-            paymentMethod: 'bKash',
-            description: 'Annual membership fee 2024-25'
-        },
-        {
-            _id: '2',
-            transactionId: 'TRX-2024-002',
-            date: '2024-04-14',
-            type: 'income',
-            category: 'Workshop Registration',
-            amount: 300,
-            status: 'completed',
-            user: { name: 'Karim Khan', email: 'karim@example.com', roll: 'CST-002' },
-            paymentMethod: 'Nagad',
-            description: 'Robotics Workshop 2024'
-        },
-        {
-            _id: '3',
-            transactionId: 'TRX-2024-003',
-            date: '2024-04-13',
-            type: 'expense',
-            category: 'Equipment Purchase',
-            amount: 2500,
-            status: 'completed',
-            user: { name: 'Admin', email: 'admin@bspi.edu.bd', roll: 'ADMIN' },
-            paymentMethod: 'Bank Transfer',
-            description: 'Arduino kits and sensors'
-        }
-    ];
-
+    // লোকাল স্টোরেজ থেকে ডাটা লোড করা
     useEffect(() => {
-        fetchTransactions();
-    }, [typeFilter, statusFilter, search, page]);
+        loadTransactionsFromStorage();
+    }, []);
+
+    // লোকাল স্টোরেজে ডাটা সেভ করা
+    const saveTransactionsToStorage = (transactionList) => {
+        localStorage.setItem('bspi_transactions', JSON.stringify(transactionList));
+    };
+
+    // লোকাল স্টোরেজ থেকে ডাটা লোড করা
+    const loadTransactionsFromStorage = () => {
+        setLoading(true);
+        try {
+            const storedTransactions = localStorage.getItem('bspi_transactions');
+            
+            if (storedTransactions && JSON.parse(storedTransactions).length > 0) {
+                // লোকাল স্টোরেজে ডাটা থাকলে সেটা ব্যবহার করবে
+                const loadedTransactions = JSON.parse(storedTransactions);
+                setTransactions(loadedTransactions);
+                setTotalTransactions(loadedTransactions.length);
+                setTotalPages(Math.ceil(loadedTransactions.length / 10));
+            } else {
+                // প্রথমবার ডিফল্ট ডাটা সেট করবে
+                const defaultTransactions = [
+                    {
+                        _id: '1',
+                        transactionId: 'TRX-2024-001',
+                        date: new Date().toISOString().split('T')[0],
+                        type: 'income',
+                        category: 'Membership Fee',
+                        amount: 500,
+                        status: 'completed',
+                        user: { name: 'Rahim Uddin', email: 'rahim@example.com', roll: 'CST-001' },
+                        paymentMethod: 'bKash',
+                        description: 'Annual membership fee 2024-25'
+                    },
+                    {
+                        _id: '2',
+                        transactionId: 'TRX-2024-002',
+                        date: new Date().toISOString().split('T')[0],
+                        type: 'income',
+                        category: 'Workshop Registration',
+                        amount: 300,
+                        status: 'completed',
+                        user: { name: 'Karim Khan', email: 'karim@example.com', roll: 'CST-002' },
+                        paymentMethod: 'Nagad',
+                        description: 'Robotics Workshop 2024'
+                    },
+                    {
+                        _id: '3',
+                        transactionId: 'TRX-2024-003',
+                        date: new Date().toISOString().split('T')[0],
+                        type: 'expense',
+                        category: 'Equipment Purchase',
+                        amount: 2500,
+                        status: 'completed',
+                        user: { name: 'Admin', email: 'admin@bspi.edu.bd', roll: 'ADMIN' },
+                        paymentMethod: 'Bank Transfer',
+                        description: 'Arduino kits and sensors'
+                    }
+                ];
+                setTransactions(defaultTransactions);
+                setTotalTransactions(defaultTransactions.length);
+                saveTransactionsToStorage(defaultTransactions);
+            }
+        } catch (error) {
+            console.error('Error loading transactions:', error);
+            toast.error('Failed to load transactions');
+        } finally {
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
         calculateStats();
     }, [transactions]);
 
-    const fetchTransactions = async () => {
-        setLoading(true);
-        try {
-            const response = await axios.get('http://localhost:5000/api/admin/transactions', {
-                params: { search, type: typeFilter, status: statusFilter, page, limit: 10 }
-            });
-            
-            if (response.data.success) {
-                setTransactions(response.data.data);
-                setTotalTransactions(response.data.total);
-                setTotalPages(response.data.pages);
-            }
-        } catch (error) {
-            console.error('Error fetching transactions:', error);
-            // Fallback to dummy data
-            let filtered = [...dummyTransactions];
-            if (typeFilter !== 'all') filtered = filtered.filter(t => t.type === typeFilter);
-            if (statusFilter !== 'all') filtered = filtered.filter(t => t.status === statusFilter);
-            if (search) {
-                filtered = filtered.filter(t => 
-                    t.transactionId.toLowerCase().includes(search.toLowerCase()) ||
-                    t.user.name.toLowerCase().includes(search.toLowerCase())
-                );
-            }
-            setTransactions(filtered);
-            setTotalTransactions(filtered.length);
-            toast.error('Using demo data. Backend not connected.');
-        } finally {
-            setLoading(false);
+    useEffect(() => {
+        // ফিল্টার এবং সার্চ করার জন্য
+        const filtered = getFilteredTransactions();
+        setTotalTransactions(filtered.length);
+        setTotalPages(Math.ceil(filtered.length / 10));
+    }, [search, typeFilter, statusFilter, transactions]);
+
+    const getFilteredTransactions = () => {
+        let filtered = [...transactions];
+        if (typeFilter !== 'all') {
+            filtered = filtered.filter(t => t.type === typeFilter);
         }
+        if (statusFilter !== 'all') {
+            filtered = filtered.filter(t => t.status === statusFilter);
+        }
+        if (search) {
+            filtered = filtered.filter(t => 
+                t.transactionId.toLowerCase().includes(search.toLowerCase()) ||
+                t.user.name.toLowerCase().includes(search.toLowerCase()) ||
+                t.user.email.toLowerCase().includes(search.toLowerCase())
+            );
+        }
+        return filtered;
+    };
+
+    const getPaginatedTransactions = () => {
+        const filtered = getFilteredTransactions();
+        const start = (page - 1) * 10;
+        const end = start + 10;
+        return filtered.slice(start, end);
     };
 
     const calculateStats = () => {
@@ -166,25 +196,9 @@ const Transactions = () => {
         
         setCreating(true);
         try {
-            const response = await axios.post('http://localhost:5000/api/admin/transactions', newTransaction);
-            if (response.data.success) {
-                toast.success('Transaction created successfully!');
-                setShowCreateModal(false);
-                setNewTransaction({
-                    type: 'income',
-                    category: '',
-                    amount: '',
-                    user: { name: '', email: '', roll: '' },
-                    paymentMethod: 'cash',
-                    description: ''
-                });
-                fetchTransactions();
-            }
-        } catch (error) {
-            // Add to dummy data for demo
-            const demoTransaction = {
+            const newTrans = {
                 _id: Date.now().toString(),
-                transactionId: `TRX-DEMO-${Date.now()}`,
+                transactionId: `TRX-${Date.now()}`,
                 date: new Date().toISOString().split('T')[0],
                 type: newTransaction.type,
                 category: newTransaction.category,
@@ -194,8 +208,12 @@ const Transactions = () => {
                 paymentMethod: newTransaction.paymentMethod,
                 description: newTransaction.description
             };
-            setTransactions(prev => [demoTransaction, ...prev]);
-            toast.success('Transaction added (Demo mode)');
+            
+            const updatedTransactions = [newTrans, ...transactions];
+            setTransactions(updatedTransactions);
+            saveTransactionsToStorage(updatedTransactions); // লোকাল স্টোরেজে সেভ
+            
+            toast.success('Transaction created successfully!');
             setShowCreateModal(false);
             setNewTransaction({
                 type: 'income',
@@ -205,14 +223,18 @@ const Transactions = () => {
                 paymentMethod: 'cash',
                 description: ''
             });
+        } catch (error) {
+            console.error('Error creating transaction:', error);
+            toast.error('Failed to create transaction');
         } finally {
             setCreating(false);
         }
     };
 
     const exportToCSV = () => {
+        const filtered = getFilteredTransactions();
         const headers = ['Transaction ID', 'Date', 'Type', 'Category', 'Amount', 'Status', 'User', 'Email', 'Payment Method', 'Description'];
-        const csvData = transactions.map(t => [
+        const csvData = filtered.map(t => [
             t.transactionId,
             new Date(t.date).toLocaleDateString(),
             t.type,
@@ -248,6 +270,9 @@ const Transactions = () => {
     const getTypeColor = (type) => {
         return type === 'income' ? 'text-green-600' : 'text-red-600';
     };
+
+    const displayedTransactions = getPaginatedTransactions();
+    const totalFiltered = getFilteredTransactions().length;
 
     return (
         <div className="space-y-6">
@@ -320,17 +345,17 @@ const Transactions = () => {
                     <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} className="px-4 py-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600">
                         <option value="all">All Status</option><option value="completed">Completed</option><option value="pending">Pending</option><option value="cancelled">Cancelled</option>
                     </select>
-                    <button onClick={fetchTransactions} className="px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition flex items-center gap-2"><RefreshCw className="w-4 h-4" />Refresh</button>
+                    <button onClick={loadTransactionsFromStorage} className="px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition flex items-center gap-2"><RefreshCw className="w-4 h-4" />Refresh</button>
                 </div>
             </div>
 
             {/* Transactions Table */}
             <div className="bg-white dark:bg-gray-800 rounded-xl shadow overflow-hidden">
-                <div className="p-4 border-b dark:border-gray-700"><h3 className="font-bold">All Transactions ({totalTransactions})</h3></div>
+                <div className="p-4 border-b dark:border-gray-700"><h3 className="font-bold">All Transactions ({totalFiltered})</h3></div>
                 <div className="overflow-x-auto">
                     {loading ? (
                         <div className="text-center py-12"><div className="w-12 h-12 border-4 border-purple-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div><p className="text-gray-500">Loading transactions...</p></div>
-                    ) : transactions.length === 0 ? (
+                    ) : displayedTransactions.length === 0 ? (
                         <div className="text-center py-12"><p className="text-gray-500">No transactions found</p><button onClick={() => setShowCreateModal(true)} className="mt-4 px-4 py-2 bg-purple-500 text-white rounded-lg">Create First Transaction</button></div>
                     ) : (
                         <table className="w-full">
@@ -338,7 +363,7 @@ const Transactions = () => {
                                 <tr><th className="p-3 text-left">Transaction ID</th><th className="p-3 text-left">Date</th><th className="p-3 text-left">Type</th><th className="p-3 text-left">Category</th><th className="p-3 text-left">User</th><th className="p-3 text-left">Amount</th><th className="p-3 text-left">Status</th><th className="p-3 text-left">Actions</th></tr>
                             </thead>
                             <tbody>
-                                {transactions.map((transaction) => (
+                                {displayedTransactions.map((transaction) => (
                                     <tr key={transaction._id} className="border-t dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50">
                                         <td className="p-3 font-mono text-sm">{transaction.transactionId}</td>
                                         <td className="p-3 text-sm">{new Date(transaction.date).toLocaleDateString()}</td>
