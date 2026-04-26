@@ -14,7 +14,7 @@ const Activities = () => {
         {
             id: 1,
             title: "Intra Club Competition 2026",
-            date: "April 20-25, 2026",
+            date: "April 26-30, 2026",
             venue: "Robotics Lab",
             type: "Competition"
         },
