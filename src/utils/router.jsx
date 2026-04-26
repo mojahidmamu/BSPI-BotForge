@@ -22,6 +22,9 @@ import Suspended from "../Components/Suspended";
 import Role from "../Components/Role";
 import AddAdmin from "../Components/AddAdmin";
 import Achievement from "../Components/Achievement/Achievement";
+import Notices from "../Components/Activities/Notices";
+import Events from "../Components/Activities/Events";
+import CreateNotice from "../Components/CreateNotice";
 
 export const router = createBrowserRouter([
   {
@@ -39,6 +42,16 @@ export const router = createBrowserRouter([
         {
             path: '/activities', 
             element: <Activities></Activities>,
+            children: [
+                {
+                path: 'events',
+                element: <Events />
+                },
+                {
+                path: 'notices',
+                element: <Notices />
+                }
+            ]
         },
         {
             path: '/executive', 
@@ -101,6 +114,7 @@ export const router = createBrowserRouter([
                     { path: 'audit-logs', element: <AuditLogs /> },
                     { path: 'roles', element: <Role/> },
                     { path: 'add-admin', element: <AddAdmin/> },
+                    {path: 'create-notice', element: <CreateNotice></CreateNotice>}
 
                 
                 // { path: 'refunds', element: <Refunds /> },

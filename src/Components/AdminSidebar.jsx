@@ -17,6 +17,7 @@ const AdminSidebar = ({ isOpen, setIsOpen }) => {
         { path: '/admin-dashboard/roles', icon: <Shield size={18} />, label: 'Roles & Permissions' },
         { path: '/admin-dashboard/audit-logs', icon: <FileText size={18} />, label: 'Audit Logs' },
         { path: '/admin-dashboard/add-admin', icon: <PlusCircle size={18} />, label: 'Add Admin' },
+        { path: '/admin-dashboard/create-notice', icon: <PlusCircle size={18} />, label: 'Create Notice' },
     ];
 
     const isActive = (path) => location.pathname === path;

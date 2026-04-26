@@ -31,11 +31,51 @@ const NavBar = () => {
                     Home
                 </Link>
             </li>
-            <li>
-                <Link to="/activities" className="hover:text-purple-400 transition-colors duration-200">
-                    Activities
-                </Link>
-            </li>
+            <li className="relative group">
+    
+    {/* Main Link */}
+    <Link 
+        to="/activities" 
+        
+    >
+        Activities
+
+        {/* underline animation */}
+        <span className="absolute left-0 -bottom-1 w-0 h-[2px] bg-gradient-to-r from-purple-500 to-indigo-500 transition-all duration-300 group-hover:w-full"></span>
+    </Link>
+
+    {/* Dropdown */}
+    <ul className="absolute left-0 mt-10 w-44 bg-white/90 dark:bg-gray-800/90 backdrop-blur-md shadow-xl rounded-xl border border-gray-200 dark:border-gray-700 
+        opacity-0 invisible scale-95 translate-y-2 
+        group-hover:opacity-100 group-hover:visible group-hover:scale-100 group-hover:translate-y-0 
+        transition-all duration-300 ease-out z-50 overflow-hidden">
+
+        {/* Event */}
+        <li>
+            <Link 
+                to="/activities/events" 
+                className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 dark:text-gray-200 
+                hover:bg-gradient-to-r hover:from-purple-100 hover:to-indigo-100 
+                dark:hover:bg-gray-700 transition duration-200"
+            >
+                🎉 Event
+            </Link>
+        </li>
+
+        {/* Notice */}
+        <li>
+            <Link 
+                to="/activities/notices" 
+                className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 dark:text-gray-200 
+                hover:bg-gradient-to-r hover:from-purple-100 hover:to-indigo-100 
+                dark:hover:bg-gray-700 transition duration-200"
+            >
+                📢 Notice
+            </Link>
+        </li>
+
+    </ul>
+</li>
             <li>
                 <Link to="/achievement" className="hover:text-purple-400 transition-colors duration-200">
                     Achievement
