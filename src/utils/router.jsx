@@ -21,6 +21,7 @@ import AuditLogs from "../Components/AuditLogs";
 import Suspended from "../Components/Suspended";
 import Role from "../Components/Role";
 import AddAdmin from "../Components/AddAdmin";
+import Achievement from "../Components/Achievement/Achievement";
 
 export const router = createBrowserRouter([
   {
@@ -42,6 +43,10 @@ export const router = createBrowserRouter([
         {
             path: '/executive', 
             element: <Executive></Executive>,
+        },
+        {
+            path: '/achievement',
+            element: <Achievement></Achievement>,
         },
         {
             path: '/login', 

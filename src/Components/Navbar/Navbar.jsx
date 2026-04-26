@@ -37,6 +37,11 @@ const NavBar = () => {
                 </Link>
             </li>
             <li>
+                <Link to="/achievement" className="hover:text-purple-400 transition-colors duration-200">
+                    Achievement
+                </Link>
+            </li>
+            <li>
                 <Link to="/executive" className="hover:text-purple-400 transition-colors duration-200">
                     Executive
                 </Link>
