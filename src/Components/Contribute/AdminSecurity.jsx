@@ -6,7 +6,7 @@ import axios from 'axios';
 import { Mail, Lock, Send, ArrowRight } from 'lucide-react';
 
 const AdminSecurity = () => {
-    const [step, setStep] = useState(1); // 1: Email, 2: Code
+    const [step, setStep] = useState(1);
     const [email, setEmail] = useState('');
     const [securityCode, setSecurityCode] = useState('');
     const [error, setError] = useState('');
@@ -38,7 +38,7 @@ const AdminSecurity = () => {
             }
         } catch (error) {
             console.error('Send code error:', error);
-            setError(error.response?.data?.error || 'Failed to send code. Please try again.');
+            setError(error.response?.data?.error || 'You are not authorized as admin!');
         } finally {
             setLoading(false);
         }
@@ -124,7 +124,6 @@ const AdminSecurity = () => {
             
             <div className="max-w-md w-full">
                 <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl overflow-hidden">
-                    {/* Header */}
                     <div className="bg-gradient-to-r from-purple-600 to-blue-600 px-6 py-8 text-center">
                         <div className="inline-flex p-3 bg-white/20 rounded-full mb-4">
                             <span className="text-4xl">👑</span>
@@ -137,13 +136,10 @@ const AdminSecurity = () => {
                         </p>
                     </div>
 
-                    {/* Step 1: Email Form */}
                     {step === 1 && (
                         <form onSubmit={handleSendCode} className="p-6 space-y-6">
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                    Admin Email Address
-                                </label>
+                                <label className="block text-sm font-medium mb-2">Admin Email Address</label>
                                 <div className="relative">
                                     <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                                     <input
@@ -151,26 +147,26 @@ const AdminSecurity = () => {
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
                                         placeholder="admin@bspi.edu.bd"
-                                        className="w-full pl-10 pr-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 dark:bg-gray-700 dark:border-gray-600"
+                                        className="w-full pl-10 pr-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-purple-500"
                                         autoFocus
                                         required
                                     />
                                 </div>
-                                <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
-                                    Only registered admin emails will receive the security code
+                                <p className="text-xs text-gray-500 mt-2">
+                                    Only registered admins will receive the security code
                                 </p>
                             </div>
 
                             {error && (
-                                <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-3">
-                                    <p className="text-red-600 dark:text-red-400 text-sm text-center">{error}</p>
+                                <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+                                    <p className="text-red-600 text-sm text-center">{error}</p>
                                 </div>
                             )}
 
                             <button
                                 type="submit"
                                 disabled={loading}
-                                className="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white py-3 rounded-lg font-bold hover:from-purple-700 hover:to-blue-700 transition disabled:opacity-50 flex items-center justify-center gap-2"
+                                className="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white py-3 rounded-lg font-bold hover:shadow-lg transition disabled:opacity-50 flex items-center justify-center gap-2"
                             >
                                 {loading ? (
                                     <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
@@ -186,7 +182,7 @@ const AdminSecurity = () => {
                                 <button
                                     type="button"
                                     onClick={() => navigate('/')}
-                                    className="text-sm text-gray-500 dark:text-gray-400 hover:text-purple-600"
+                                    className="text-sm text-gray-500 hover:text-purple-600"
                                 >
                                     ← Back to Home
                                 </button>
@@ -194,20 +190,15 @@ const AdminSecurity = () => {
                         </form>
                     )}
 
-                    {/* Step 2: Code Verification Form */}
                     {step === 2 && (
                         <form onSubmit={handleVerifyCode} className="p-6 space-y-6">
                             <div className="text-center mb-4">
-                                <p className="text-sm text-gray-600 dark:text-gray-400">
-                                    We sent a 6-digit code to
-                                </p>
-                                <p className="font-semibold text-gray-800 dark:text-white">{email}</p>
+                                <p className="text-sm text-gray-600">We sent a 6-digit code to</p>
+                                <p className="font-semibold text-gray-800">{email}</p>
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                    Security Code
-                                </label>
+                                <label className="block text-sm font-medium mb-2">Security Code</label>
                                 <div className="relative">
                                     <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                                     <input
@@ -215,14 +206,11 @@ const AdminSecurity = () => {
                                         value={securityCode}
                                         onChange={(e) => {
                                             const value = e.target.value.replace(/[^0-9]/g, '');
-                                            if (value.length <= 6) {
-                                                setSecurityCode(value);
-                                                setError('');
-                                            }
+                                            if (value.length <= 6) setSecurityCode(value);
                                         }}
                                         maxLength="6"
                                         placeholder="••••••"
-                                        className="w-full pl-10 pr-4 py-3 text-center text-2xl tracking-widest border-2 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 dark:bg-gray-700 dark:border-gray-600"
+                                        className="w-full pl-10 pr-4 py-3 text-center text-2xl tracking-widest border-2 rounded-lg focus:ring-2 focus:ring-purple-500"
                                         autoFocus
                                         required
                                     />
@@ -230,15 +218,15 @@ const AdminSecurity = () => {
                             </div>
 
                             {error && (
-                                <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-3">
-                                    <p className="text-red-600 dark:text-red-400 text-sm text-center">{error}</p>
+                                <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+                                    <p className="text-red-600 text-sm text-center">{error}</p>
                                 </div>
                             )}
 
                             <button
                                 type="submit"
                                 disabled={loading || securityCode.length !== 6}
-                                className="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white py-3 rounded-lg font-bold hover:from-purple-700 hover:to-blue-700 transition disabled:opacity-50 flex items-center justify-center gap-2"
+                                className="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white py-3 rounded-lg font-bold hover:shadow-lg transition disabled:opacity-50 flex items-center justify-center gap-2"
                             >
                                 {loading ? (
                                     <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
@@ -255,7 +243,7 @@ const AdminSecurity = () => {
                                     type="button"
                                     onClick={handleResendCode}
                                     disabled={resendDisabled}
-                                    className="text-sm text-purple-600 hover:text-purple-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                                    className="text-sm text-purple-600 hover:text-purple-700 disabled:opacity-50"
                                 >
                                     {resendDisabled ? `Resend code in ${countdown}s` : 'Resend Code'}
                                 </button>
@@ -267,7 +255,7 @@ const AdminSecurity = () => {
                                             setEmail('');
                                             setError('');
                                         }}
-                                        className="text-sm text-gray-500 dark:text-gray-400 hover:text-purple-600"
+                                        className="text-sm text-gray-500 hover:text-purple-600"
                                     >
                                         ← Use different email
                                     </button>
