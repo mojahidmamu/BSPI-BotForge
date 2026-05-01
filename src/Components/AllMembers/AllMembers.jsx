@@ -32,11 +32,15 @@ const AllMembers = () => {
     const [filters, setFilters] = useState({ 
         search: '', 
         department: 'all', 
+        bloodGroup: 'all',  
         sortBy: 'newest', 
         cgpaOrder: 'desc' 
     });
     const [loading, setLoading] = useState(true);
     const [showFilters, setShowFilters] = useState(false);
+
+    // ✅ ব্লাড গ্রুপ লিস্ট
+    const bloodGroups = ['all', 'A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
     
     // Email validation modal state
     const [showEmailModal, setShowEmailModal] = useState(false);
@@ -57,6 +61,7 @@ const AllMembers = () => {
             const params = new URLSearchParams();
             if (filters.search) params.append('search', filters.search);
             if (filters.department !== 'all') params.append('department', filters.department);
+            if (filters.bloodGroup !== 'all') params.append('bloodGroup', filters.bloodGroup); 
             if (filters.sortBy === 'cgpa') params.append('sortBy', 'cgpa');
             if (filters.sortBy === 'session') params.append('sortBy', 'session');
             params.append('order', filters.cgpaOrder);
@@ -69,6 +74,18 @@ const AllMembers = () => {
         } finally {
             setLoading(false);
         }
+    };
+
+    // ✅ ব্লাড গ্রুপ স্ট্যাটাস গণনা
+    const bloodGroupStats = {
+        'A+': members.filter(m => m.bloodGroup === 'A+').length,
+        'A-': members.filter(m => m.bloodGroup === 'A-').length,
+        'B+': members.filter(m => m.bloodGroup === 'B+').length,
+        'B-': members.filter(m => m.bloodGroup === 'B-').length,
+        'AB+': members.filter(m => m.bloodGroup === 'AB+').length,
+        'AB-': members.filter(m => m.bloodGroup === 'AB-').length,
+        'O+': members.filter(m => m.bloodGroup === 'O+').length,
+        'O-': members.filter(m => m.bloodGroup === 'O-').length,
     };
 
     // Handle card click - open email validation modal
@@ -218,6 +235,41 @@ const AllMembers = () => {
                     </div>
                 </motion.div>
 
+                {/* ✅ ইমার্জেন্সি ব্যানার */}
+                <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="mb-6 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-4"
+                >
+                    <div className="flex items-center gap-3">
+                        <div className="p-2 bg-red-100 dark:bg-red-900/50 rounded-full">
+                            <Droplet className="w-5 h-5 text-red-600 dark:text-red-400" />
+                        </div>
+                        <div>
+                            <h3 className="font-semibold text-red-700 dark:text-red-400">Emergency Blood Donation</h3>
+                            <p className="text-sm text-red-600 dark:text-red-300">Search members by blood group for emergency needs</p>
+                        </div>
+                    </div>
+                </motion.div>
+
+                 {/* ✅ ব্লাড গ্রুপ কুইক ফিল্টার স্ট্যাটাস বার */}
+                <div className="grid grid-cols-4 md:grid-cols-8 gap-2 mb-6">
+                    {Object.entries(bloodGroupStats).map(([bg, count]) => (
+                        <button
+                            key={bg}
+                            onClick={() => setFilters({...filters, bloodGroup: bg})}
+                            className={`p-2 rounded-lg text-center transition-all ${
+                                filters.bloodGroup === bg 
+                                    ? 'bg-red-500 text-white shadow-lg scale-105' 
+                                    : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-red-100 dark:hover:bg-red-900/30'
+                            }`}
+                        >
+                            <div className="text-sm font-bold">{bg}</div>
+                            <div className="text-xs">{count}</div>
+                        </button>
+                    ))}
+                </div>
+
                 {/* Search & Filters Section */}
                 <motion.div 
                     initial={{ opacity: 0, y: -10 }}
@@ -225,7 +277,7 @@ const AllMembers = () => {
                     className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden mb-4"
                 >
                     <div className="p-4 md:p-6">
-                        <div className="flex flex-col md:flex-row gap-4">
+                        <div className="flex fleX-col md:flex-row gap-4">
                             {/* Search Bar */}
                             <div className="flex-1 relative">
                                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
@@ -250,6 +302,7 @@ const AllMembers = () => {
 
                             {/* Filters - Desktop always visible, Mobile toggle */}
                             <div className={`${showFilters ? 'flex' : 'hidden'} md:flex flex-col md:flex-row gap-4 md:flex-1`}>
+                                {/* Department Filter */}
                                 <select
                                     value={filters.department}
                                     onChange={(e) => setFilters({...filters, department: e.target.value})}
@@ -262,6 +315,20 @@ const AllMembers = () => {
                                     ))}
                                 </select>
 
+                                {/* ✅ Blood Group Filter Dropdown */}
+                                <select
+                                    value={filters.bloodGroup}
+                                    onChange={(e) => setFilters({...filters, bloodGroup: e.target.value})}
+                                    className="px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+                                >
+                                    {bloodGroups.map(bg => (
+                                        <option key={bg} value={bg}>
+                                            {bg === 'all' ? 'All Blood Groups' : bg}
+                                        </option>
+                                    ))}
+                                </select>
+
+                                {/* Sort By Filter */}
                                 <select
                                     value={filters.sortBy}
                                     onChange={(e) => setFilters({...filters, sortBy: e.target.value})}
@@ -272,6 +339,7 @@ const AllMembers = () => {
                                     <option value="session">Sort by Session</option>
                                 </select>
 
+                                {/* CGPA Order (conditional) */}
                                 {filters.sortBy === 'cgpa' && (
                                     <select
                                         value={filters.cgpaOrder}
@@ -292,9 +360,14 @@ const AllMembers = () => {
                     <motion.div 
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
-                        className="mb-6 text-gray-600 dark:text-gray-400 text-sm"
+                        className="mb-6 text-gray-600 dark:text-gray-400 text-sm flex justify-between items-center"
                     >
-                        Found {members.length} member{members.length !== 1 ? 's' : ''}
+                        <span>Found {members.length} member{members.length !== 1 ? 's' : ''}</span>
+                        {filters.bloodGroup !== 'all' && (
+                            <span className="px-2 py-1 bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-full text-xs">
+                                Blood Group: {filters.bloodGroup}
+                            </span>
+                        )}
                     </motion.div>
                 )}
 
@@ -341,6 +414,19 @@ const AllMembers = () => {
                                             <div className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-500/0 to-indigo-500/0 group-hover:from-purple-500/20 group-hover:to-indigo-500/20 transition-all duration-300"></div>
                                         </div>
                                         
+                                        {/* ✅ Blood Group Badge */}
+                                        {member.bloodGroup && (
+                                            <div className="absolute top-2 right-2">
+                                                <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                                                    member.bloodGroup.includes('+') 
+                                                        ? 'bg-red-500 text-white' 
+                                                        : 'bg-red-700 text-white'
+                                                }`}>
+                                                    🩸 {member.bloodGroup}
+                                                </span>
+                                            </div>
+                                        )}
+                                        
                                         {/* View Details Badge */}
                                         <div className="absolute bottom-2 right-2 bg-black/50 backdrop-blur-sm rounded-full px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                                             <Eye className="w-3 h-3 text-white" />
@@ -366,6 +452,12 @@ const AllMembers = () => {
                                                 <Calendar className="w-4 h-4 text-purple-500" />
                                                 <span>Session: {member.session}</span>
                                             </div>
+                                            {member.bloodGroup && (
+                                                <div className="flex items-center justify-center gap-2 text-gray-600 dark:text-gray-300">
+                                                    <Droplet className="w-4 h-4 text-red-500" />
+                                                    <span>Blood: {member.bloodGroup}</span>
+                                                </div>
+                                            )}
                                         </div>
 
                                         {/* View Details Button */}
