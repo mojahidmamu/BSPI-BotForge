@@ -27,7 +27,7 @@ import Events from "../Components/Activities/Events";
 import CreateNotice from "../Components/CreateNotice";
 
 export const router = createBrowserRouter([
-  {
+   {
     path: "/",
     element: <MainLayout></MainLayout>,
     children: [
@@ -116,19 +116,16 @@ export const router = createBrowserRouter([
                     { path: 'add-admin', element: <AddAdmin/> },
                     {path: 'create-notice', element: <CreateNotice></CreateNotice>}
 
-                
-                // { path: 'refunds', element: <Refunds /> },
-                // { path: 'subscriptions', element: <Subscriptions /> },
-                // { path: 'feature-flags', element: <FeatureFlags /> },
-                // { path: 'env-variables', element: <EnvVariables /> },
-                // { path: 'background-jobs', element: <BackgroundJobs /> },
-                // { path: 'maintenance', element: <Maintenance /> },
-                // { path: 'user-lookup', element: <UserLookup /> },
-                // { path: 'bulk-actions', element: <BulkActions /> },
+                    // { path: 'refunds', element: <Refunds /> },
+                    // { path: 'subscriptions', element: <Subscriptions /> },
+                    // { path: 'feature-flags', element: <FeatureFlags /> },
+                    // { path: 'env-variables', element: <EnvVariables /> },
+                    // { path: 'background-jobs', element: <BackgroundJobs /> },
+                    // { path: 'maintenance', element: <Maintenance /> },
+                    // { path: 'user-lookup', element: <UserLookup /> },
+                    // { path: 'bulk-actions', element: <BulkActions /> },
             ]
         },
     ],
-  },
-]);
-
-// pass in mongoDB: hIrnMfe2av3GHWNr
+},
+]); 
