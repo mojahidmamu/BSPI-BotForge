@@ -12,11 +12,13 @@ export default function Second() {
         <div className="flex flex-col md:flex-row justify-between items-center gap-8">
           {/* Branding */}
           <div className="text-center md:text-left">
-            <h2 className="text-2xl font-bold text-white mb-1">
+            
+            <h2 className="text-2xl font-bold text-white mb-1"> 
+              <span className="text-xl font-bold text-green-400">Build By: </span>
               Abdullah all Mojahid
             </h2>
             <p className="text-sm text-gray-400 uppercase">
-              Full Stack Developer • Building Scalable Website
+              Full Stack Developer • Problem Solver • Tech Enthusiast • Competetive Programmer
             </p>
           </div>
 
