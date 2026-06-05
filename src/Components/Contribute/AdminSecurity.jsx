@@ -38,7 +38,7 @@ const AdminSecurity = () => {
             }
         } catch (error) {
             console.error('Send code error:', error);
-            setError(error.response?.data?.error || 'You are not authorized as admin!');
+            setError(error.response?.data?.error || 'You are not authorized as admin!...');
         } finally {
             setLoading(false);
         }
@@ -48,7 +48,7 @@ const AdminSecurity = () => {
         e.preventDefault();
         
         if (securityCode.length !== 6) {
-            setError('Please enter a 6-digit security code');
+            setError('Please enter a 6-digit security code...');
             return;
         }
         
