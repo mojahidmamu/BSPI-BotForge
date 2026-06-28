@@ -115,15 +115,6 @@ export const router = createBrowserRouter([
                     { path: 'roles', element: <Role/> },
                     { path: 'add-admin', element: <AddAdmin/> },
                     {path: 'create-notice', element: <CreateNotice></CreateNotice>}
-
-                    // { path: 'refunds', element: <Refunds /> },
-                    // { path: 'subscriptions', element: <Subscriptions /> },
-                    // { path: 'feature-flags', element: <FeatureFlags /> },
-                    // { path: 'env-variables', element: <EnvVariables /> },
-                    // { path: 'background-jobs', element: <BackgroundJobs /> },
-                    // { path: 'maintenance', element: <Maintenance /> },
-                    // { path: 'user-lookup', element: <UserLookup /> },
-                    // { path: 'bulk-actions', element: <BulkActions /> },
             ]
         },
     ],
