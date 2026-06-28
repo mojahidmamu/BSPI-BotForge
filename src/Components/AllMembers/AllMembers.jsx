@@ -56,6 +56,8 @@ const AllMembers = () => {
     }, [filters]);
 
     const fetchMembers = async () => {
+        console.log("fetchMembers called")
+
         setLoading(true);
         try {
             const params = new URLSearchParams();
@@ -66,8 +68,14 @@ const AllMembers = () => {
             if (filters.sortBy === 'session') params.append('sortBy', 'session');
             params.append('order', filters.cgpaOrder);
             
-            const res = await axios.get(`http://localhost:5000/api/students/approved?${params}`);
-            setMembers(res.data.data);
+            const url = `http://localhost:5000/api/students/approved?${params}`;
+
+            // console.log(url);
+
+            const res = await axios.get(url);
+
+            // console.log(res);
+            setMembers(res.data.data || []);
         } catch (error) {
             console.error('Error fetching members:', error);
             toast.error('মেম্বার লোড করতে সমস্যা হয়েছে');
