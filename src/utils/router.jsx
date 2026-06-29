@@ -27,7 +27,7 @@ import Events from "../Components/Activities/Events";
 import CreateNotice from "../Components/CreateNotice";
 
 export const router = createBrowserRouter([
-   {
+{
     path: "/",
     element: <MainLayout></MainLayout>,
     children: [
@@ -101,7 +101,10 @@ export const router = createBrowserRouter([
                 </ProtectedRoute>
             )
         }, 
-        {
+        
+    ],
+},
+{
             path: 'admin-dashboard', 
             element:<AdminLayout></AdminLayout>,
             children: [
@@ -117,6 +120,4 @@ export const router = createBrowserRouter([
                     {path: 'create-notice', element: <CreateNotice></CreateNotice>}
             ]
         },
-    ],
-},
 ]); 
