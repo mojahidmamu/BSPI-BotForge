@@ -11,7 +11,7 @@ import {
   Shield, 
   FileText, 
   PlusCircle, 
-  Megaphone , Mail, 
+  Megaphone , Mail, Calendar 
 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 
@@ -26,6 +26,7 @@ const AdminSidebar = ({ isOpen, setIsOpen }) => {
         { path: '/admin-dashboard/transactions', icon: <CreditCard size={18}/>, label: 'Transactions' },
         { path: '/admin-dashboard/add-admin', icon: <PlusCircle size={18} />, label: 'Add Admin' },
         { path: '/admin-dashboard/create-notice', icon: <Megaphone size={18} />, label: 'Create Notice' },
+        { path: '/admin-dashboard/manage-events', icon: <Calendar size={18} />, label: 'Manage Events' },
         { path: '/admin-dashboard/bulk-email', icon: <Mail size={18} />, label: 'Bulk Email' },
         { path: '/admin-dashboard/audit-logs', icon: <FileText size={18} />, label: 'Audit Logs' },
         { path: '/admin-dashboard/roles', icon: <Shield size={18} />, label: 'Roles & Permissions' },

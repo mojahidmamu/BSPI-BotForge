@@ -1,249 +1,161 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { 
-    Calendar, 
-    MapPin,
-} from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Helmet } from 'react-helmet-async';
+import { motion, AnimatePresence } from 'framer-motion';
+import axios from 'axios';
+import { Calendar, MapPin, Trophy, BookOpen, Users, Sparkles } from 'lucide-react';
+import { toast } from 'react-hot-toast';
 import { Link } from 'react-router-dom';
 import BuildTogether from './BuildTogether';
-import { Helmet } from 'react-helmet-async';
 
 const Events = () => {
-    // Upcoming Events
-    const events = [
-        {
-            id: 1,
-            title: "Intra Club Competition 2026",
-            date: "April 26-30, 2026",
-            venue: "Robotics Lab",
-            type: "Competition"
-        },
-        {
-            id: 2,
-            title: "National Robotics Competition 2024",
-            date: "May 15-17, 2024",
-            venue: "BSPI Auditorium",
-            type: "Competition"
-        },
-        {
-            id: 3,
-            title: "Workshop on Arduino Programming",
-            date: "Jyly 25, 2024",
-            venue: "Robotics Lab",
-            type: "Workshop"
-        },
-        {
-            id: 4,
-            title: "AI & Robotics Seminar",
-            date: "December 5, 2024",
-            venue: "Conference Hall",
-            type: "Seminar"
-        }
-    ];
+    const [events, setEvents] = useState([]);
+    const [activeTab, setActiveTab] = useState('upcoming');
+    const [loading, setLoading] = useState(true);
 
-    // Completed Events
-    const completedEvents = [
-        {
-            id: 1,
-            title: "Innovation Inventra",
-            date: "November 26-29, 2025",
-            venue: "BSPI Auditorium",
-            type: "Seminer"
-        },
-        {
-            id: 1,
-            title: "Line Following Robot Workshop",
-            date: "October 10, 2025",
-            venue: "Robotics Lab",
-            type: "Workshop"
-        },
-        {
-            id: 2,
-            title: "Inter Department Robotics Contest",
-            date: "September 18-19, 2025",
-            venue: "BSPI Auditorium",
-            type: "Competition"
-        },
-        {
-            id: 3,
-            title: "Intra Club Project Competition",
-            date: "April 28, 2025",
-            venue:"Robotics Lab",
-            type: "Competetion"
-        },
-        {
-            id: 4,
-            title: "Grand Opening Ceremony and Freshers Reception",
-            date: "February 25, 2025",
-            venue: "BSPI Auditorium",
-            type: "Seminar"
-        }
-    ];
+    useEffect(() => {
+        fetchEvents();
+    }, [activeTab]);
 
+    const fetchEvents = async () => {
+        setLoading(true);
+        try {
+            const res = await axios.get(`http://localhost:5000/api/events?status=${activeTab}`);
+            setEvents(res.data.data);
+        } catch (error) {
+            console.error('Error fetching events:', error);
+            toast.error('Failed to load events');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const getTypeIcon = (type) => {
+        switch (type) {
+            case 'Competition': return <Trophy className="w-4 h-4" />;
+            case 'Workshop': return <BookOpen className="w-4 h-4" />;
+            case 'Seminar': return <Users className="w-4 h-4" />;
+            default: return <Sparkles className="w-4 h-4" />;
+        }
+    };
+
+    const containerVariants = {
+        hidden: { opacity: 0 },
+        visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
+    };
+
+    const cardVariants = {
+        hidden: { y: 20, opacity: 0 },
+        visible: { y: 0, opacity: 1 }
+    };
 
     return (
-        <div>
+        <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 py-8 px-4 md:px-8">
             <Helmet>
-                        <title>BSPI BotForge | Events</title>
-                    </Helmet>
-             {/* Header & Title  */}
-            <div className="max-w-4xl mx-auto pt-20 text-center space-y-4 mb-8">
+                <title>BSPI BotForge | Events</title>
+            </Helmet>
+
+            {/* Header */}
+            <div className="max-w-4xl mx-auto pt-16 text-center space-y-4 mb-8">
                 <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight">
                     <span className="text-slate-900 dark:text-white">Event </span>
                     <span className="bg-gradient-to-r from-purple-500 via-indigo-500 to-teal-400 bg-clip-text text-transparent">
                         BSPIRC
                     </span>
                 </h2>
-
-                {/* Gradient Underline */}
-                <div className="flex justify-center ">
-                    <span className="h-1 w-32 md:w-40 rounded-full bg-gradient-to-r from-purple-500 via-indigo-500 to-teal-400 animate-pulse"></span>
+                <div className="flex justify-center">
+                    <span className="h-1 w-32 md:w-40 rounded-full bg-gradient-to-r from-purple-500 via-indigo-500 to-teal-400 animate-pulse" />
                 </div>
-
-                {/* Optional Subtext */}
                 <p className="text-gray-500 dark:text-gray-300 mt-2 text-sm md:text-base">
-                        Explore our upcoming and completed events with detailed insights and highlights.
-                    </p>
+                    Explore our upcoming and completed events with detailed insights and highlights.
+                </p>
             </div>
 
-            {/* Event */}
-             {/* Upcoming Events Section */}
-            <section className="py-6">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="grid lg:grid-cols-2 gap-12">
-                        {/* Left - Events */}
-                        <motion.div
-    initial={{ opacity: 0, x: -30 }}
-    whileInView={{ opacity: 1, x: 0 }}
-    transition={{ duration: 0.6 }}
->
-    {/* Title */}
-    <h2 className="text-2xl md:text-3xl font-bold mb-6 flex items-center gap-2">
-        <Calendar className="w-6 h-6 text-purple-600 animate-pulse" />
-        Upcoming Events in 2026
-    </h2>
+            {/* Tabs */}
+            <div className="max-w-3xl mx-auto flex justify-center gap-4 mb-8">
+                <button
+                    onClick={() => setActiveTab('upcoming')}
+                    className={`px-6 py-2 rounded-full font-semibold transition-all duration-300 ${
+                        activeTab === 'upcoming'
+                            ? 'bg-purple-600 text-white shadow-lg shadow-purple-500/30'
+                            : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-purple-100 dark:hover:bg-purple-900/30'
+                    }`}
+                >
+                    Upcoming
+                </button>
+                <button
+                    onClick={() => setActiveTab('completed')}
+                    className={`px-6 py-2 rounded-full font-semibold transition-all duration-300 ${
+                        activeTab === 'completed'
+                            ? 'bg-purple-600 text-white shadow-lg shadow-purple-500/30'
+                            : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-purple-100 dark:hover:bg-purple-900/30'
+                    }`}
+                >
+                    Completed
+                </button>
+            </div>
 
-    {/* Cards */}
-    <div className="space-y-5">
-        {events.map((event, index) => (
-            <motion.div
-                key={event.id}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: index * 0.1 }}
-                whileHover={{ scale: 1.03 }}
-                className="group bg-gradient-to-r from-white via-purple-50 to-indigo-50 
-                dark:from-gray-800 dark:via-gray-800 dark:to-gray-900 
-                border border-purple-100 dark:border-gray-700
-                rounded-2xl p-5 shadow-md hover:shadow-xl 
-                transition-all duration-300"
-            >
-                <div className="flex items-start gap-4">
-
-                    {/* Date Box */}
-                    <div className="bg-gradient-to-br from-purple-500 to-indigo-500 
-                        text-white rounded-xl p-3 text-center min-w-[80px] shadow-md">
-                        <div className="font-bold text-lg">
-                            {event.date.split(',')[0].split(' ')[0]}
-                        </div>
-                        <div className="text-xs opacity-90">
-                            {event.date.split(',')[0].split(' ')[1]}
-                        </div>
+            {/* Events Grid */}
+            <div className="max-w-7xl mx-auto mb-12">
+                {loading ? (
+                    <div className="flex justify-center items-center h-40">
+                        <div className="w-10 h-10 border-4 border-purple-500 border-t-transparent rounded-full animate-spin" />
                     </div>
-
-                    {/* Content */}
-                    <div className="flex-1">
-                        <h3 className="font-bold text-gray-900 dark:text-white mb-1 text-lg group-hover:text-purple-600 transition">
-                            {event.title}
-                        </h3>
-
-                        <p className="text-sm text-gray-600 dark:text-gray-400 flex items-center gap-2">
-                            <MapPin className="w-4 h-4 text-purple-500" />
-                            {event.venue}
-                        </p>
-
-                        {/* Badge */}
-                        <span className="inline-block mt-3 px-3 py-1 
-                            bg-purple-100 dark:bg-purple-900/30 
-                            text-purple-600 dark:text-purple-400 
-                            text-xs rounded-full font-medium tracking-wide">
-                            {event.type}
-                        </span>
+                ) : events.length === 0 ? (
+                    <div className="text-center py-12 text-gray-500 dark:text-gray-400">
+                        <Calendar className="w-16 h-16 mx-auto mb-4 opacity-30" />
+                        <p className="text-lg">No {activeTab} events found.</p>
                     </div>
-                </div>
-
-                {/* Bottom Glow Line */}
-                <div className="h-1 mt-4 w-0 group-hover:w-full bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full transition-all duration-300"></div>
-            </motion.div>
-        ))}
-    </div>
-</motion.div>
-
-                        {/* Completed Event */}
-                        {/* Right - Events */}
-                        <motion.div
-                            initial={{ opacity: 0, x: -30 }}
-                            whileInView={{ opacity: 1, x: 0 }}
-                            transition={{ duration: 0.5 }}
-                        >
-                            <h2 className="text-2xl md:text-3xl font-bold mb-6 flex items-center gap-2">
-                                <Calendar className="w-6 h-6 text-green-600" />
-                                Completed Events in 2025
-                            </h2>
-
-                            <div className="space-y-4">
-                                {completedEvents.map((event) => (
-                                    <div
-                                        key={event.id}
-                                        className="bg-green-50 dark:bg-green-900/20 border border-green-100 dark:border-green-800 rounded-xl p-4 shadow-md hover:shadow-lg transition-all"
-                                    >
-                                        <div className="flex items-start gap-4">
-
-                                            {/* Date Box */}
-                                            <div className="bg-green-100 dark:bg-green-900/40 rounded-lg p-3 text-center min-w-[80px]">
-                                                <div className="text-green-600 dark:text-green-400 font-bold">
-                                                    {event.date.split(',')[0].split(' ')[0]}
-                                                </div>
-                                                <div className="text-xs text-gray-600 dark:text-gray-400">
-                                                    {event.date.split(',')[0].split(' ')[1]}
-                                                </div>
-                                            </div>
-
-                                            {/* Content */}
-                                            <div className="flex-1">
-                                                <h3 className="font-bold text-gray-900 dark:text-white mb-1">
-                                                    {event.title}
-                                                </h3>
-
-                                                <p className="text-sm text-gray-600 dark:text-gray-400 flex items-center gap-2">
-                                                    <MapPin className="w-3 h-3" />
-                                                    {event.venue}
+                ) : (
+                    <motion.div
+                        variants={containerVariants}
+                        initial="hidden"
+                        animate="visible"
+                        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+                    >
+                        <AnimatePresence>
+                            {events.map((event, index) => (
+                                <motion.div
+                                    key={event._id}
+                                    variants={cardVariants}
+                                    whileHover={{ y: -8 }}
+                                    className="group relative bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden border border-gray-100 dark:border-gray-700 transition-all duration-300 hover:shadow-xl"
+                                >
+                                    <div className="p-6">
+                                        {/* Date Badge */}
+                                        <div className="inline-block bg-gradient-to-br from-purple-500 to-indigo-500 text-white rounded-lg px-3 py-1 text-sm font-bold mb-4">
+                                            {event.date}
+                                        </div>
+                                        <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 group-hover:text-purple-600 transition-colors">
+                                            {event.title}
+                                        </h3>
+                                        <p className="text-sm text-gray-600 dark:text-gray-400 flex items-center gap-2 mb-3">
+                                            <MapPin className="w-4 h-4 text-purple-500" />
+                                            {event.venue}
+                                        </p>
+                                        <div className="flex items-center justify-between">
+                                            <span className="flex items-center gap-1 px-3 py-1 bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 text-xs rounded-full">
+                                                {getTypeIcon(event.type)}
+                                                {event.type}
+                                            </span>
+                                            {event.description && (
+                                                <p className="text-xs text-gray-500 dark:text-gray-400 line-clamp-2">
+                                                    {event.description}
                                                 </p>
-
-                                                {/* Type Badge */}
-                                                <span className="inline-block mt-2 px-2 py-1 bg-green-100 dark:bg-green-900/40 text-green-600 dark:text-green-400 text-xs rounded-full">
-                                                    {event.type}
-                                                </span>
-
-                                                {/* Completed Badge (Optional 🔥) */}
-                                                <span className="ml-2 inline-block mt-2 px-2 py-1 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-xs rounded-full">
-                                                    Completed
-                                                </span>
-                                            </div>
+                                            )}
                                         </div>
                                     </div>
-                                ))}
-                            </div>
-                        </motion.div>
+                                    {/* Bottom glow */}
+                                    <div className="h-1 w-0 group-hover:w-full bg-gradient-to-r from-purple-500 to-indigo-500 transition-all duration-300" />
+                                </motion.div>
+                            ))}
+                        </AnimatePresence>
+                    </motion.div>
+                )}
+            </div>
 
-                        
-                    </div>
-                </div>
-            </section>
 
-           
-
-             {/* Call to Action Section */}
+            {/*  */}
+            {/* Call to Action Section */}
             <section className="py-16 bg-gray-900 dark:bg-gray-950 ">
                 <div className="max-w-4xl mx-auto text-center px-4">
                     <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
