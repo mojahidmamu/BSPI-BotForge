@@ -1,5 +1,4 @@
 import { createBrowserRouter } from "react-router-dom";
-  
 import MainLayout from "../Layout/MainLayout";
 import Home from "../Components/Home/Home"; 
 import MemberForm from "../Components/Contribute/MemberForm"; 
@@ -25,6 +24,7 @@ import Achievement from "../Components/Achievement/Achievement";
 import Notices from "../Components/Activities/Notices";
 import Events from "../Components/Activities/Events";
 import CreateNotice from "../Components/CreateNotice";
+import BulkEmail from "../Components/Admin/BulkEmail";
 
 export const router = createBrowserRouter([
 {
@@ -117,7 +117,8 @@ export const router = createBrowserRouter([
                     { path: 'audit-logs', element: <AuditLogs /> },
                     { path: 'roles', element: <Role/> },
                     { path: 'add-admin', element: <AddAdmin/> },
-                    {path: 'create-notice', element: <CreateNotice></CreateNotice>}
+                    {path: 'create-notice', element: <CreateNotice></CreateNotice>},
+                    {path: 'bulk-email', element: <BulkEmail></BulkEmail> }
             ]
         },
 ]); 
