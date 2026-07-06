@@ -21,16 +21,17 @@ const AdminSidebar = ({ isOpen, setIsOpen }) => {
 
     const menuItems = [
         { path: '/admin-dashboard/dashboard', icon: <LayoutDashboard size={18} />, label: 'Dashboard' },
-        { path: '/admin-dashboard/users', icon: <Users size={18} />, label: 'All Users' },
+        { path: '/admin-dashboard/members', icon: <Users size={18} />, label: 'All Members' },
         { path: '/admin-dashboard/pending', icon: <UserCheck size={18} />, label: 'Pending Approval' },
+        { path: '/admin-dashboard/suspended', icon: <UserX size={18} />, label: 'Suspended Accounts' },
         { path: '/admin-dashboard/transactions', icon: <CreditCard size={18}/>, label: 'Transactions' },
         { path: '/admin-dashboard/add-admin', icon: <PlusCircle size={18} />, label: 'Add Admin' },
         { path: '/admin-dashboard/create-notice', icon: <Megaphone size={18} />, label: 'Create Notice' },
         { path: '/admin-dashboard/manage-events', icon: <Calendar size={18} />, label: 'Manage Events' },
         { path: '/admin-dashboard/bulk-email', icon: <Mail size={18} />, label: 'Bulk Email' },
         { path: '/admin-dashboard/audit-logs', icon: <FileText size={18} />, label: 'Audit Logs' },
+        { path: '/admin-dashboard/users', icon: <Users size={18} />, label: 'All Users' },
         { path: '/admin-dashboard/roles', icon: <Shield size={18} />, label: 'Roles & Permissions' },
-        { path: '/admin-dashboard/suspended', icon: <UserX size={18} />, label: 'Suspended Accounts' },
     ];
 
     const isActive = (path) => location.pathname === path;

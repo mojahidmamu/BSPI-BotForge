@@ -26,6 +26,7 @@ import Events from "../Components/Activities/Events";
 import CreateNotice from "../Components/CreateNotice";
 import BulkEmail from "../Components/Admin/BulkEmail";
 import ManageEvents from "../Components/Admin/ManageEvents";
+import AdminMembers from "../Components/Admin/AdminMembers";
 
 export const router = createBrowserRouter([
 {
@@ -121,6 +122,7 @@ export const router = createBrowserRouter([
                     {path: 'create-notice', element: <CreateNotice></CreateNotice>},
                     {path: 'bulk-email', element: <BulkEmail></BulkEmail> }, 
                     {path: 'manage-events', element: <ManageEvents /> },
+                    {path: 'members', element: <AdminMembers></AdminMembers> },
             ]
         },
 ]); 
